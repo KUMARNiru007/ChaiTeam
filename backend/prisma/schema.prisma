@@ -19,11 +19,15 @@ enum userRole {
   ADMIN
 }
 
-model User{
-  id String @id @default(uuid())
-  name String
-  email String
-  role userRole @default(USER)
-  createdAT DateTime @default(now())
-  updatedAT DateTime @updatedAt
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  email        String
+  image        String?
+  isVerified   Boolean  @default(true)
+  role         userRole @default(USER)
+  accessToken  String?
+  refreshToken String?
+  createdAT    DateTime @default(now())
+  updatedAT    DateTime @updatedAt
 }
