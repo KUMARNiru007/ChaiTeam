@@ -1,15 +1,34 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
+
+import userAuthRoutes from './routes/userAuth.routes.js';
 
 dotenv.config();
 
 const app = express();
 
 const PORT = process.env.PORT || 4000;
+const isProduction = process.env.NODE_ENV === 'production';
+
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL,
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authroization'],
+  }),
+);
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 app.get('/', (req, res) => {
   res.send('Hi, welcome to ChaiTeam');
 });
+
+app.use('/api/v1/auth', userAuthRoutes);
 
 app.listen(PORT, () => {
   console.log(`App is listning on PORT: ${PORT}`);
