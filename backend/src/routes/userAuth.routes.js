@@ -1,5 +1,12 @@
 import express from 'express';
-import { googleLogin } from '../controllers/auth.controlers.js';
+import {
+  check,
+  googleLogin,
+  gtihubLogin,
+  logout,
+  tokenRefresh,
+} from '../controllers/auth.controlers.js';
+import { authMiddleWare } from '../middleware/auth.middleware.js';
 
 const router = express.Router();
 
@@ -13,5 +20,20 @@ router.get('/google', (req, res) => {
 });
 
 router.get('/google/callback', googleLogin);
+
+router.get('/github', (req, res) => {
+  const redirectUrl = process.env.GITHUB_CALLBACK_URL;
+  const clientId = process.env.GITHUB_CLIENT_ID;
+
+  const url = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUrl}&scope=user:email`;
+
+  res.redirect(url);
+});
+
+router.get('/github/callback', gtihubLogin);
+
+router.get('/check', authMiddleWare, check);
+router.get('/refreshToken', tokenRefresh);
+router.get('/logout', authMiddleWare, logout);
 
 export default router;

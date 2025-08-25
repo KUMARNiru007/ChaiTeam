@@ -22,10 +22,11 @@ enum userRole {
 model User {
   id           String   @id @default(uuid())
   name         String
-  email        String
+  email        String   @unique
   image        String?
   isVerified   Boolean  @default(true)
   role         userRole @default(USER)
+  provider     String?
   accessToken  String?
   refreshToken String?
   createdAT    DateTime @default(now())
