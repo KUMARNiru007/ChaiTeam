@@ -1,8 +1,7 @@
 import { db } from '../libs/db.js';
 import { ApiError } from '../utils/ApiError.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
-
-import {v4,uuidv4} from 'uuid';
+import crypto from 'crypto';
 
 
 export const createBatch = async (req, res) => {
@@ -20,7 +19,7 @@ export const createBatch = async (req, res) => {
  
     const newBatch = await db.batch.create({
       data: {
-        id: uuidv4(),
+        id: crypto.randomUUID(),
         name,
         description: description || "",
         capacity,
@@ -34,7 +33,7 @@ export const createBatch = async (req, res) => {
     
     await db.batchActivity.create({
       data: {
-        id: uuidv4(),
+        id: crypto.randomUUID(),
         batch_id: newBatch.id,
         user_id: null,
         activity_type: "batch_created",
@@ -49,7 +48,7 @@ export const createBatch = async (req, res) => {
    
     await db.adminActivity.create({
       data: {
-        id: uuidv4(),
+        id: crypto.randomUUID(),
         admin_id: adminId,
         target_type: "batch",
         target_id: newBatch.id,
