@@ -12,12 +12,12 @@ import {
     getBatchUsers,
     getMyBatch
 } from '../controllers/batch.controller.js';
-import { verifyJWT } from '../middleware/auth.middleware.js';
+import { authMiddleWare } from '../middleware/auth.middleware.js';
 
 const batchRouter = express.Router();
 
 // Apply JWT verification to all batch routes
-batchRouter.use(verifyJWT);
+batchRouter.use(authMiddleWare);
 
 // Batch management routes
 batchRouter.post('/create', createBatch);
