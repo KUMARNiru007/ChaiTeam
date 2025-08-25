@@ -4,6 +4,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
 import userAuthRoutes from './routes/userAuth.routes.js';
+import batchRoutes from './routes/batch.routes.js';
 
 dotenv.config();
 
@@ -29,6 +30,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/v1/auth', userAuthRoutes);
+app.use('api/v1/batch', batchRoutes);
 
 app.listen(PORT, () => {
   console.log(`App is listning on PORT: ${PORT}`);

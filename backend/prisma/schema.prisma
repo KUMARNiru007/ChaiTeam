@@ -18,6 +18,11 @@ enum userRole {
   USER
   ADMIN
 }
+enum status {
+  ACTIVE
+  INACTIVE
+  COMPLETED
+}
 
 model User {
   id           String   @id @default(uuid())
@@ -32,3 +37,12 @@ model User {
   createdAT    DateTime @default(now())
   updatedAT    DateTime @updatedAt
 }
+
+  model Batch {
+  id  String @unique
+  name String 
+   createdAT    DateTime @default(now())
+  updatedAT    DateTime @updatedAt
+  capacity  Int
+  status   status @default(ACTIVE)
+  }
