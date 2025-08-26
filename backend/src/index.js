@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 
 import userAuthRoutes from './routes/userAuth.routes.js';
 import batchRoutes from './routes/batch.routes.js';
+import groupRoutes from './routes/groups.routes.js'
 
 dotenv.config();
 
@@ -31,6 +32,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/v1/auth', userAuthRoutes);
 app.use('api/v1/batch', batchRoutes);
+app.use('api/v1/groups',groupRoutes)
 
 app.listen(PORT, () => {
   console.log(`App is listning on PORT: ${PORT}`);
