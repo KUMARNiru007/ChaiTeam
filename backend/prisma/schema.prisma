@@ -4,7 +4,6 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
-
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
@@ -19,6 +18,7 @@ enum userRole {
   USER
   ADMIN
 }
+
 enum status {
   ACTIVE
   INACTIVE
@@ -39,19 +39,35 @@ model User {
   updatedAT    DateTime @updatedAt
 
   // Relations
-  groupsLeader    Groups[] @relation("GroupLeader")  
+  groupsLeader Groups[] @relation("GroupLeader")
 }
 
 model Batch {
-  id        String   @id @default(uuid())
-  name      String
+  id          String  @id @default(uuid())
+  name        String
+  description String?
+  status      status  @default(ACTIVE)
+
   createdAT DateTime @default(now())
   updatedAT DateTime @updatedAt
-  capacity  Int
-  status    status   @default(ACTIVE)
 
   // Relations
-  groups    Groups[]
+  groups       Groups[]
+  batchMembers BatchMember[]
+}
+
+model BatchMember {
+  id      String @id @default(uuid())
+  name    String
+  email   String
+  batchId String
+
+  createdAT DateTime @default(now())
+
+  // Relations 
+  batch Batch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+
+  @@unique([batchId, email]) // It ensure there i single user from one email in each batch
 }
 
 model Groups {
@@ -69,6 +85,6 @@ model Groups {
   visible_to_users Boolean   @default(true)
 
   // Relations
-  batch            Batch     @relation(fields: [batch_id], references: [id])
-  leader           User      @relation("GroupLeader", fields: [leader_id], references: [id])
+  batch  Batch @relation(fields: [batch_id], references: [id])
+  leader User  @relation("GroupLeader", fields: [leader_id], references: [id])
 }
