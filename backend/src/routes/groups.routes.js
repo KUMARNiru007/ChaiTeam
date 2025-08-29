@@ -1,22 +1,35 @@
-import express from "express";
+import express from 'express';
 import {
   createGroup,
   getAllGroups,
   getGroupById,
   updateGroup,
   deleteGroup,
-} from "../controllers/groups.controller.js";
+  addMemberToGroup,
+  ApplyToJoinGroup,
+  fetchAllJoinApplications,
+  leaveGroup,
+  kickMemberFromGroup,
+} from '../controllers/groups.controller.js';
 
-
-import { authMiddleWare } from "../middleware/auth.middleware.js";
+import { authMiddleWare } from '../middleware/auth.middleware.js';
+import { validateBatchId } from '../middleware/batch.middleware.js';
 
 const router = express.Router();
 
-
-router.post("/", authMiddleWare, createGroup); 
-router.get("/", authMiddleWare, getAllGroups);
-router.get("/:groupId", authMiddleWare, getGroupById);
-router.put("/:groupId", authMiddleWare, updateGroup);
-router.delete("/:groupId", authMiddleWare, deleteGroup); 
+router.post('/createGroup', authMiddleWare, validateBatchId, createGroup);
+router.get('/getAllGroups', authMiddleWare, getAllGroups);
+router.get('/getGroupById/:groupId', authMiddleWare, getGroupById);
+router.post('/applyToJoinGroup/:groupId', authMiddleWare, ApplyToJoinGroup);
+router.get(
+  '/allApplications/:groupId',
+  authMiddleWare,
+  fetchAllJoinApplications,
+);
+router.post('/addMemberToGroup/:groupId', authMiddleWare, addMemberToGroup);
+router.post('/leaveGroup/:groupId', authMiddleWare, leaveGroup);
+router.post('/kickMember/:groupId', authMiddleWare, kickMemberFromGroup);
+router.put('/updateGroup/:groupId', authMiddleWare, updateGroup);
+router.delete('/disbannedGroup/:groupId', authMiddleWare, deleteGroup);
 
 export default router;

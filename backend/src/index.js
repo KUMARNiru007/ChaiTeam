@@ -32,7 +32,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/v1/auth', userAuthRoutes);
 app.use('/api/v1/batch', batchRoutes);
-app.use('api/v1/groups', groupRoutes);
+app.use('/api/v1/groups', groupRoutes);
 
 app.listen(PORT, () => {
   console.log(`App is listning on PORT: ${PORT}`);
