@@ -11,7 +11,7 @@ export const createNotice = async (req, res) => {
       throw new ApiError(400, 'Group ID and message are required');
     }
 
-    // Verify user is member of the group
+    // Verify 
     const groupMember = await db.groupMember.findFirst({
       where: {
         groupId,
