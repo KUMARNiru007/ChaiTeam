@@ -46,6 +46,12 @@ enum applicationStatus {
   WITHDRAWN
 }
 
+enum noticeScope {
+  GROUP
+  BATCH
+  GLOBAL
+}
+
 model User {
   id           String   @id @default(uuid())
   name         String
@@ -64,6 +70,7 @@ model User {
   groupsLeader     Groups[]          @relation("GroupLeader")
   groupMember      GroupMember?
   joinApplications JoinApplication[]
+  noticeCreated    Notices[]
 }
 
 model Batch {
@@ -78,6 +85,7 @@ model Batch {
   // Relations
   groups       Groups[]
   batchMembers BatchMember[]
+  notices      Notices[]
 }
 
 model BatchMember {
@@ -115,6 +123,7 @@ model Groups {
   leader           User              @relation("GroupLeader", fields: [leader_id], references: [id])
   member           GroupMember[]
   joinApplications JoinApplication[]
+  notices          Notices[]
 }
 
 model GroupMember {
@@ -144,4 +153,22 @@ model JoinApplication {
   // Relations
   user  User   @relation(fields: [userId], references: [id])
   group Groups @relation(fields: [groupId], references: [id], onDelete: Cascade)
+}
+
+model Notices {
+  id          String      @id @default(uuid())
+  title       String
+  content     String
+  scope       noticeScope @default(GROUP)
+  createdById String
+  groupId     String?
+  batchId     String?
+  isEdited    Boolean     @default(false)
+  createdAt   DateTime    @default(now())
+  updateAt    DateTime    @updatedAt
+
+  // Relations
+  createdBy User    @relation(fields: [createdById], references: [id])
+  group     Groups? @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  batch     Batch?  @relation(fields: [batchId], references: [id], onDelete: Cascade)
 }
