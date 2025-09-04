@@ -64,6 +64,18 @@ enum userActivityType {
   DISBANNED_GROUP
 }
 
+enum gropActivityType {
+  GROUP_CREATED
+  GROUP_UPDATED
+  GROUP_DISBANDED
+  MEMBER_JOINED
+  MEMBER_LEFT
+  MEMBER_KICKED
+  NOTICE_CREATED
+  NOTICE_UPDATED
+  NOTICE_DELETED
+}
+
 model User {
   id           String   @id @default(uuid())
   name         String
@@ -137,6 +149,7 @@ model Groups {
   member           GroupMember[]
   joinApplications JoinApplication[]
   notices          Notices[]
+  groupActivity    GroupActivity[]
 }
 
 model GroupMember {
@@ -195,4 +208,15 @@ model UserActivity {
 
   // Relations
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model GroupActivity {
+  id          String           @id @default(uuid())
+  groupId     String
+  action      gropActivityType
+  description String?
+  createAT    DateTime         @default(now())
+
+  // Relations 
+  group Groups @relation(fields: [groupId], references: [id], onDelete: Cascade)
 }

@@ -45,6 +45,15 @@ export const createNotice = async (req, res) => {
       },
     });
 
+    if (scope === 'GROUP') {
+      await db.groupActivity.create({
+        data: {
+          groupId: groupId,
+          action: 'NOTICE_CREATED',
+        },
+      });
+    }
+
     return res
       .status(201)
       .json(new ApiResponse(201, newNotice, 'New ntice created Successfully'));
@@ -203,6 +212,15 @@ export const updateNotice = async (req, res) => {
       },
     });
 
+    if (updateNotice.scope === 'GROUP') {
+      await db.groupActivity.create({
+        data: {
+          groupId: updatedNotice.groupId,
+          action: 'NOTICE_UPDATED',
+        },
+      });
+    }
+
     return res
       .status(200)
       .json(new ApiResponse(200, updatedNotice, 'Notice updated successfully'));
@@ -248,6 +266,15 @@ export const deleteNotice = async (req, res) => {
     await db.notices.delte({
       where: { id: noticeId },
     });
+
+    if (notice.scope === 'GROUP') {
+      await db.groupActivity.create({
+        data: {
+          groupId: notice.groupId,
+          action: 'NOTICE_DELETED',
+        },
+      });
+    }
 
     return res
       .status(200)

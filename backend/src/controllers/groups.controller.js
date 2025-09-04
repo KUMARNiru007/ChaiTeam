@@ -1,7 +1,6 @@
 import { db } from '../libs/db.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 import { ApiError } from '../utils/ApiError.js';
-import { group } from 'console';
 export const createGroup = async (req, res) => {
   try {
     const { name, description, tags, batchId } = req.body;
@@ -57,6 +56,14 @@ export const createGroup = async (req, res) => {
         userId: userId,
         action: 'CREATED_GROUP',
         description: `${req.user.name} created group: ${group.name}.`,
+      },
+    });
+
+    await db.groupActivity.create({
+      data: {
+        groupId: group.id,
+        action: 'GROUP_CREATED',
+        description: `${group.name} is created by ${req.user.name} on ${group.createdAT}`,
       },
     });
 
@@ -309,6 +316,14 @@ export const addMemberToGroup = async (req, res) => {
       },
     });
 
+    await db.groupActivity.create({
+      data: {
+        groupId: groupId,
+        action: 'MEMBER_JOINED',
+        description: `${user.name} is added to the group.`,
+      },
+    });
+
     res
       .status(200)
       .json(
@@ -386,6 +401,16 @@ export const leaveGroup = async (req, res) => {
       },
     });
 
+    await db.groupActivity.create({
+      data: {
+        groupId: groupId,
+        action: 'MEMBER_LEFT',
+        description: `${user.name} leaved the group. 
+        Reason by User :-
+        ${reason}`,
+      },
+    });
+
     res
       .status(200)
       .json(new ApiResponse(200, null, 'User left the group successfully'));
@@ -449,6 +474,16 @@ export const kickMemberFromGroup = async (req, res) => {
       },
     });
 
+    await db.groupActivity.create({
+      data: {
+        groupId: groupId,
+        action: 'MAMBER_KICKED',
+        description: `${user.name} is kicked from the group.
+        Reason by Leader :- 
+        ${reason}`,
+      },
+    });
+
     res
       .status(200)
       .json(
@@ -484,6 +519,14 @@ export const updateGroup = async (req, res) => {
         description,
         tags,
         status,
+      },
+    });
+
+    await db.groupActivity.create({
+      data: {
+        groupId: groupId,
+        action: 'GROUP_UPDATED',
+        description: `Group details has been upadetd.`,
       },
     });
 
