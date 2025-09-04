@@ -72,6 +72,14 @@ const googleLogin = async (req, res) => {
       },
     });
 
+    await db.userActivity.create({
+      data: {
+        userId: user.id,
+        action: 'ACCOUNT_CREATED',
+        description: `${user.name} first time landed on ${user.createdAT}`,
+      },
+    });
+
     const accessCookieOptions = {
       httpOnly: true,
       sameSite: 'none',
@@ -161,6 +169,14 @@ const gtihubLogin = async (req, res) => {
       },
       data: {
         refreshToken,
+      },
+    });
+
+    await db.userActivity.create({
+      data: {
+        userId: user.id,
+        action: 'ACCOUNT_CREATED',
+        description: `${user.name} first time landed on ${user.createdAT}`,
       },
     });
 

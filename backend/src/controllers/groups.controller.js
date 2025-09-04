@@ -1,6 +1,7 @@
 import { db } from '../libs/db.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 import { ApiError } from '../utils/ApiError.js';
+import { group } from 'console';
 export const createGroup = async (req, res) => {
   try {
     const { name, description, tags, batchId } = req.body;
@@ -48,6 +49,14 @@ export const createGroup = async (req, res) => {
       where: { id: userId },
       data: {
         isInGroup: true,
+      },
+    });
+
+    await db.userActivity.create({
+      data: {
+        userId: userId,
+        action: 'CREATED_GROUP',
+        description: `${req.user.name} created group: ${group.name}.`,
       },
     });
 
@@ -152,6 +161,18 @@ export const ApplyToJoinGroup = async (req, res) => {
         name: req.user.name,
         email: req.user.email,
         reason,
+      },
+    });
+
+    const group = await db.groups.findUnique({
+      where: { id: groupId },
+    });
+
+    await db.userActivity.create({
+      data: {
+        userId: req.user.id,
+        action: 'APPLIED_TO_JOIN_GROUP',
+        description: `${req.user.name} applied or put request to join group ${group.name}.`,
       },
     });
 
@@ -273,10 +294,18 @@ export const addMemberToGroup = async (req, res) => {
       },
     });
 
-    await db.user.update({
+    const user = await db.user.update({
       where: { id: userId },
       data: {
         isInGroup: true,
+      },
+    });
+
+    await db.userActivity.create({
+      data: {
+        userId: userId,
+        action: 'JOINED_GROUP',
+        description: `${user.name} is joined the group ${group.name}.`,
       },
     });
 
@@ -334,17 +363,26 @@ export const leaveGroup = async (req, res) => {
       where: { userId },
     });
 
-    await db.groups.update({
+    const group = await db.groups.update({
       where: { id: groupId },
       data: {
         capacity: { decrement: 1 },
       },
     });
 
-    await db.user.update({
+    const user = await db.user.update({
       where: { id: userId },
       data: {
         isInGroup: false,
+      },
+    });
+
+    await db.userActivity.create({
+      data: {
+        userId: userId,
+        action: 'LEAVED_GROUP',
+        description: `${user.name} leaved the ${group.name}.
+        Reason: ${reason}`,
       },
     });
 
@@ -387,17 +425,27 @@ export const kickMemberFromGroup = async (req, res) => {
       where: { userId },
     });
 
-    await db.groups.update({
+    const group = await db.groups.update({
       where: { id: groupId },
       data: {
         capacity: { decrement: 1 },
       },
     });
 
-    await db.user.update({
+    const user = await db.user.update({
       where: { id: userId },
       data: {
         isInGroup: false,
+      },
+    });
+
+    await db.userActivity.create({
+      data: {
+        userId: userId,
+        action: 'KICKED_FROM_GROUP',
+        description: `${user.name} kicked from group ${group.name}.
+        Reason given by group leader :- 
+        ${reason}`,
       },
     });
 
@@ -481,9 +529,17 @@ export const deleteGroup = async (req, res) => {
     });
 
     await db.user.update({
-      where: { id: userId },
+      where: { id: req.user.id },
       data: {
         isInGroup: false,
+      },
+    });
+
+    await db.userActivity.create({
+      data: {
+        userId: req.user.id,
+        action: 'DISBANNED_GROUP',
+        description: `${req.user.name} Disbanned or closed it's group ${group.name}.`,
       },
     });
 

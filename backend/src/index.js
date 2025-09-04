@@ -7,6 +7,7 @@ import userAuthRoutes from './routes/userAuth.routes.js';
 import batchRoutes from './routes/batch.routes.js';
 import groupRoutes from './routes/groups.routes.js';
 import noticeboardRoutes from './routes/noticeboard.routes.js';
+import activityRoutes from './routes/Activity.routes.js';
 
 dotenv.config();
 
@@ -35,6 +36,7 @@ app.use('/api/v1/auth', userAuthRoutes);
 app.use('/api/v1/batch', batchRoutes);
 app.use('/api/v1/groups', groupRoutes);
 app.use('/api/v1/noticeboard', noticeboardRoutes);
+app.use('/api/v1/activity', activityRoutes);
 
 app.listen(PORT, () => {
   console.log(`App is listning on PORT: ${PORT}`);

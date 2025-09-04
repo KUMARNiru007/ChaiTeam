@@ -52,6 +52,18 @@ enum noticeScope {
   GLOBAL
 }
 
+enum userActivityType {
+  ACCOUNT_CREATED
+  ACCOUNT_DELTED
+  APPLIED_TO_JOIN_GROUP
+  APLICATION_WITHDRAWN
+  JOINED_GROUP
+  LEAVED_GROUP
+  KICKED_FROM_GROUP
+  CREATED_GROUP
+  DISBANNED_GROUP
+}
+
 model User {
   id           String   @id @default(uuid())
   name         String
@@ -71,6 +83,7 @@ model User {
   groupMember      GroupMember?
   joinApplications JoinApplication[]
   noticeCreated    Notices[]
+  activity         UserActivity[]
 }
 
 model Batch {
@@ -171,4 +184,15 @@ model Notices {
   createdBy User    @relation(fields: [createdById], references: [id])
   group     Groups? @relation(fields: [groupId], references: [id], onDelete: Cascade)
   batch     Batch?  @relation(fields: [batchId], references: [id], onDelete: Cascade)
+}
+
+model UserActivity {
+  id          String           @id @default(uuid())
+  userId      String
+  action      userActivityType
+  description String?
+  creatdAT    DateTime         @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
