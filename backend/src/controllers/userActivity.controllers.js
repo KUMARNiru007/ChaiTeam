@@ -10,7 +10,7 @@ export const fetchWholeUserActivity = async (req, res) => {
       return res.status(400).json(new ApiError(400, 'userId is required'));
     }
 
-    const UserAcitvity = await db.userAcitvity.findMany({
+    const UserAcitvity = await db.userActivity.findMany({
       where: { userId: userId },
     });
 

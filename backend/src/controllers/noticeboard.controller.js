@@ -75,7 +75,7 @@ export const getGroupNotices = async (req, res) => {
 
     const groupNotices = await db.notices.findMany({
       where: {
-        OR: [{ groupId: groupId }],
+        groupId: groupId,
       },
       include: {
         createdBy: { select: { id: true, name: true, email: true } },
@@ -84,6 +84,8 @@ export const getGroupNotices = async (req, res) => {
       },
       orderBy: { createdAt: 'desc' },
     });
+
+    // console.log('Group Notices: ', groupNotices);
 
     return res
       .status(200)
@@ -110,9 +112,9 @@ export const getBatchNotices = async (req, res) => {
       return res.status(400).json(new ApiError(500, 'batchId is required'));
     }
 
-    const batchNotices = await db.notices.findmany({
+    const batchNotices = await db.notices.findMany({
       where: {
-        OR: [{ batchId: batchId }],
+        batchId: batchId,
       },
       include: {
         createdBy: { select: { id: true, name: true, email: true } },
@@ -143,7 +145,7 @@ export const getGlobalNotices = async (req, res) => {
   try {
     const globalNotices = await db.notices.findMany({
       where: {
-        OR: [{ scope: 'GLOBAL' }],
+        scope: 'GLOBAL',
       },
       include: {
         createdBy: { select: { id: true, name: true, email: true } },
@@ -199,7 +201,12 @@ export const updateNotice = async (req, res) => {
     if (notice.createdById !== user.id && user.role !== 'ADMIN') {
       return res
         .status(401)
-        .json(new ApiError(401, 'You can only edit your own notices'));
+        .json(
+          new ApiError(
+            401,
+            'You can only edit your own notices or You are not allowed to update this notice',
+          ),
+        );
     }
 
     const updatedNotice = await db.notices.update({
@@ -208,11 +215,11 @@ export const updateNotice = async (req, res) => {
         title,
         content,
         isEdited: true,
-        updatedAt: new Date(),
+        updateAt: new Date(),
       },
     });
 
-    if (updateNotice.scope === 'GROUP') {
+    if (updatedNotice.scope === 'GROUP') {
       await db.groupActivity.create({
         data: {
           groupId: updatedNotice.groupId,
@@ -249,7 +256,7 @@ export const deleteNotice = async (req, res) => {
       return res.status(404).json(new ApiError(404, 'Notice Not Found'));
     }
 
-    const groupMemeber = await db.groupMemeber.findUnique({
+    const groupMemeber = await db.groupMember.findUnique({
       where: { userId: user.id },
     });
 
@@ -260,10 +267,10 @@ export const deleteNotice = async (req, res) => {
     ) {
       return res
         .status(401)
-        .json(new ApiError(401, 'you are nto allowd to delete this notice'));
+        .json(new ApiError(401, 'you are not allowd to delete this notice'));
     }
 
-    await db.notices.delte({
+    await db.notices.delete({
       where: { id: noticeId },
     });
 

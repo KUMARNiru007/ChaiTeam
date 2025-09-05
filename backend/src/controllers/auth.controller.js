@@ -60,6 +60,14 @@ const googleLogin = async (req, res) => {
           provider: 'google',
         },
       });
+
+      await db.userActivity.create({
+        data: {
+          userId: user.id,
+          action: 'ACCOUNT_CREATED',
+          description: `${user.name} first time landed on ${user.createdAT}`,
+        },
+      });
     }
 
     const accessToken = generateAccessToken(user);
@@ -69,14 +77,6 @@ const googleLogin = async (req, res) => {
       where: { id: user.id },
       data: {
         refreshToken,
-      },
-    });
-
-    await db.userActivity.create({
-      data: {
-        userId: user.id,
-        action: 'ACCOUNT_CREATED',
-        description: `${user.name} first time landed on ${user.createdAT}`,
       },
     });
 
@@ -158,6 +158,14 @@ const gtihubLogin = async (req, res) => {
           provider: 'github',
         },
       });
+
+      await db.userActivity.create({
+        data: {
+          userId: user.id,
+          action: 'ACCOUNT_CREATED',
+          description: `${user.name} first time landed on ${user.createdAT}`,
+        },
+      });
     }
 
     const accessToken = generateAccessToken(user);
@@ -169,14 +177,6 @@ const gtihubLogin = async (req, res) => {
       },
       data: {
         refreshToken,
-      },
-    });
-
-    await db.userActivity.create({
-      data: {
-        userId: user.id,
-        action: 'ACCOUNT_CREATED',
-        description: `${user.name} first time landed on ${user.createdAT}`,
       },
     });
 

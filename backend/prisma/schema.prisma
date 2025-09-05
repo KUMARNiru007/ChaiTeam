@@ -62,6 +62,7 @@ enum userActivityType {
   KICKED_FROM_GROUP
   CREATED_GROUP
   DISBANNED_GROUP
+  PROFILE_UPDATED
 }
 
 enum gropActivityType {

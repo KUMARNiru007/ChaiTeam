@@ -16,7 +16,7 @@ export const authMiddleWare = async (req, res, next) => {
       decoded = jwt.verify(token, process.env.JWT_ACCESS_TOKEN_SECRET);
     } catch (error) {
       return res
-        .staus(401)
+        .status(401)
         .json(new ApiError(401, 'Unauthorized: Invalid Token'));
     }
 

@@ -477,7 +477,7 @@ export const kickMemberFromGroup = async (req, res) => {
     await db.groupActivity.create({
       data: {
         groupId: groupId,
-        action: 'MAMBER_KICKED',
+        action: 'MEMBER_KICKED',
         description: `${user.name} is kicked from the group.
         Reason by Leader :- 
         ${reason}`,

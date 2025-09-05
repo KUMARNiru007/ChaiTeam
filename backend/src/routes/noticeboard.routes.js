@@ -5,7 +5,9 @@ import {
   updateNotice,
   deleteNotice,
   pinNotice,
-  unpinNotice
+  unpinNotice,
+  getBatchNotices,
+  getGlobalNotices,
 } from '../controllers/noticeboard.controller.js';
 import { authMiddleWare } from '../middleware/auth.middleware.js';
 
@@ -13,11 +15,12 @@ const router = express.Router();
 
 router.use(authMiddleWare);
 
-
 router.post('/create', createNotice);
-router.get('/group/:groupId', getGroupNotices);
-router.put('/:noticeId', updateNotice);
-router.delete('/:noticeId', deleteNotice);
+router.get('/getGroupNotices/:groupId', getGroupNotices);
+router.get('/getBatchNotices/:batchId', getBatchNotices);
+router.get('/getGlobalNotices', getGlobalNotices);
+router.put('/updateNotice/:noticeId', updateNotice);
+router.delete('/deleteNotice/:noticeId', deleteNotice);
 router.patch('/pin/:noticeId', pinNotice);
 router.patch('/unpin/:noticeId', unpinNotice);
 
