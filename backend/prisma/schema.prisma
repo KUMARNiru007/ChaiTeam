@@ -77,6 +77,11 @@ enum gropActivityType {
   NOTICE_DELETED
 }
 
+enum noticeType {
+  NORMAL
+  PINNED
+}
+
 model User {
   id           String   @id @default(uuid())
   name         String
@@ -188,6 +193,7 @@ model Notices {
   content     String
   scope       noticeScope @default(GROUP)
   createdById String
+  type        noticeType  @default(NORMAL)
   groupId     String?
   batchId     String?
   isEdited    Boolean     @default(false)
