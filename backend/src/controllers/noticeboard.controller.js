@@ -327,16 +327,6 @@ export const pinNotice = async (req, res) => {
     const pinnedNotice = await db.notices.update({
       where: { id: noticeId },
       data: { type: 'PINNED' },
-      include: {
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            profile_color: true,
-          },
-        },
-      },
     });
 
     return res
@@ -383,16 +373,7 @@ export const unpinNotice = async (req, res) => {
     const unpinnedNotice = await db.notices.update({
       where: { id: noticeId },
       data: { type: 'NORMAL' },
-      include: {
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            profile_color: true,
-          },
-        },
-      },
+
     });
 
     return res

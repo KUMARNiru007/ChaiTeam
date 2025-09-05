@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
@@ -12,6 +6,132 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String           @id @default(uuid())
+  name             String
+  email            String           @unique
+  role             userRole         @default(USER)
+  createdAT        DateTime         @default(now())
+  updatedAT        DateTime         @updatedAt
+  accessToken      String?
+  image            String?
+  isVerified       Boolean          @default(true)
+  refreshToken     String?
+  provider         String?
+  isInGroup        Boolean          @default(false)
+  groupMember      GroupMember?
+  groupsLeader     Groups?          @relation("GroupLeader")
+  joinApplications JoinApplication?
+  noticeCreated    Notices[]
+  activity         UserActivity[]
+}
+
+model Batch {
+  id           String        @id @default(uuid())
+  name         String
+  createdAT    DateTime      @default(now())
+  updatedAT    DateTime      @updatedAt
+  status       status        @default(ACTIVE)
+  description  String?
+  batchMembers BatchMember[]
+  groups       Groups[]
+  notices      Notices[]
+}
+
+model BatchMember {
+  id        String   @id @default(uuid())
+  batchId   String
+  email     String
+  name      String
+  createdAT DateTime @default(now())
+  batch     Batch    @relation(fields: [batchId], references: [id], onDelete: Cascade)
+
+  @@unique([batchId, email])
+}
+
+model Groups {
+  id               String            @id @default(uuid())
+  name             String
+  description      String?
+  tags             Json?
+  leader_id        String            @unique
+  createdAT        DateTime          @default(now())
+  updatedAT        DateTime          @updatedAt
+  disbanded_at     DateTime?
+  disbanded_reason String?
+  visible_to_users Boolean           @default(true)
+  status           groupStatus       @default(ACTIVE)
+  batchId          String
+  batchName        String
+  capacity         Int
+  groupActivity    GroupActivity[]
+  member           GroupMember[]
+  batch            Batch             @relation(fields: [batchId], references: [id])
+  leader           User              @relation("GroupLeader", fields: [leader_id], references: [id])
+  joinApplications JoinApplication[]
+  notices          Notices[]
+}
+
+model GroupMember {
+  id      String          @id @default(uuid())
+  userId  String          @unique
+  groupId String
+  name    String
+  email   String
+  role    groupMemberRole
+  group   Groups          @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user    User            @relation(fields: [userId], references: [id])
+}
+
+model JoinApplication {
+  id        String            @id @default(uuid())
+  userId    String            @unique
+  groupId   String
+  reason    String
+  status    applicationStatus @default(PENDING)
+  createdAT DateTime          @default(now())
+  updatedAT DateTime          @updatedAt
+  email     String
+  name      String
+  group     Groups            @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user      User              @relation(fields: [userId], references: [id])
+}
+
+model Notices {
+  id          String      @id @default(uuid())
+  title       String
+  content     String
+  scope       noticeScope @default(GROUP)
+  createdById String
+  groupId     String?
+  batchId     String?
+  isEdited    Boolean     @default(false)
+  createdAt   DateTime    @default(now())
+  updateAt    DateTime    @updatedAt
+  type        noticeType  @default(NORMAL)
+  batch       Batch?      @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  createdBy   User        @relation(fields: [createdById], references: [id])
+  group       Groups?     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+}
+
+model UserActivity {
+  id          String           @id @default(uuid())
+  userId      String
+  action      userActivityType
+  description String?
+  creatdAT    DateTime         @default(now())
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model GroupActivity {
+  id          String           @id @default(uuid())
+  groupId     String
+  action      gropActivityType
+  description String?
+  createAT    DateTime         @default(now())
+  group       Groups           @relation(fields: [groupId], references: [id], onDelete: Cascade)
 }
 
 enum userRole {
@@ -71,159 +191,13 @@ enum gropActivityType {
   GROUP_DISBANDED
   MEMBER_JOINED
   MEMBER_LEFT
-  MEMBER_KICKED
   NOTICE_CREATED
   NOTICE_UPDATED
   NOTICE_DELETED
+  MEMBER_KICKED
 }
 
 enum noticeType {
   NORMAL
   PINNED
-}
-
-model User {
-  id           String   @id @default(uuid())
-  name         String
-  email        String   @unique
-  image        String?
-  isVerified   Boolean  @default(true)
-  role         userRole @default(USER)
-  isInGroup    Boolean  @default(false)
-  provider     String?
-  accessToken  String?
-  refreshToken String?
-  createdAT    DateTime @default(now())
-  updatedAT    DateTime @updatedAt
-
-  // Relations
-  groupsLeader     Groups[]          @relation("GroupLeader")
-  groupMember      GroupMember?
-  joinApplications JoinApplication[]
-  noticeCreated    Notices[]
-  activity         UserActivity[]
-}
-
-model Batch {
-  id          String  @id @default(uuid())
-  name        String
-  description String?
-  status      status  @default(ACTIVE)
-
-  createdAT DateTime @default(now())
-  updatedAT DateTime @updatedAt
-
-  // Relations
-  groups       Groups[]
-  batchMembers BatchMember[]
-  notices      Notices[]
-}
-
-model BatchMember {
-  id      String @id @default(uuid())
-  name    String
-  email   String
-  batchId String
-
-  createdAT DateTime @default(now())
-
-  // Relations 
-  batch Batch @relation(fields: [batchId], references: [id], onDelete: Cascade)
-
-  @@unique([batchId, email]) // It ensure there i single user from one email in each batch
-}
-
-model Groups {
-  id               String      @id @default(uuid())
-  name             String
-  description      String?
-  tags             Json?
-  batchId          String
-  batchName        String
-  capacity         Int
-  leader_id        String      @unique
-  createdAT        DateTime    @default(now())
-  updatedAT        DateTime    @updatedAt
-  status           groupStatus @default(ACTIVE)
-  disbanded_at     DateTime?
-  disbanded_reason String?
-  visible_to_users Boolean     @default(true)
-
-  // Relations
-  batch            Batch             @relation(fields: [batchId], references: [id])
-  leader           User              @relation("GroupLeader", fields: [leader_id], references: [id])
-  member           GroupMember[]
-  joinApplications JoinApplication[]
-  notices          Notices[]
-  groupActivity    GroupActivity[]
-}
-
-model GroupMember {
-  id      String          @id @default(uuid())
-  userId  String          @unique
-  groupId String
-  name    String
-  email   String
-  role    groupMemberRole
-
-  // Relations
-  user  User   @relation(fields: [userId], references: [id])
-  group Groups @relation(fields: [groupId], references: [id], onDelete: Cascade)
-}
-
-model JoinApplication {
-  id        String            @id @default(uuid())
-  userId    String            @unique
-  groupId   String
-  name      String
-  email     String
-  reason    String
-  status    applicationStatus @default(PENDING)
-  createdAT DateTime          @default(now())
-  updatedAT DateTime          @updatedAt
-
-  // Relations
-  user  User   @relation(fields: [userId], references: [id])
-  group Groups @relation(fields: [groupId], references: [id], onDelete: Cascade)
-}
-
-model Notices {
-  id          String      @id @default(uuid())
-  title       String
-  content     String
-  scope       noticeScope @default(GROUP)
-  createdById String
-  type        noticeType  @default(NORMAL)
-  groupId     String?
-  batchId     String?
-  isEdited    Boolean     @default(false)
-  createdAt   DateTime    @default(now())
-  updateAt    DateTime    @updatedAt
-
-  // Relations
-  createdBy User    @relation(fields: [createdById], references: [id])
-  group     Groups? @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  batch     Batch?  @relation(fields: [batchId], references: [id], onDelete: Cascade)
-}
-
-model UserActivity {
-  id          String           @id @default(uuid())
-  userId      String
-  action      userActivityType
-  description String?
-  creatdAT    DateTime         @default(now())
-
-  // Relations
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-model GroupActivity {
-  id          String           @id @default(uuid())
-  groupId     String
-  action      gropActivityType
-  description String?
-  createAT    DateTime         @default(now())
-
-  // Relations 
-  group Groups @relation(fields: [groupId], references: [id], onDelete: Cascade)
 }
