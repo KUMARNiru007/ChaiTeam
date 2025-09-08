@@ -9,35 +9,39 @@ datasource db {
 }
 
 model User {
-  id               String           @id @default(uuid())
-  name             String
-  email            String           @unique
-  role             userRole         @default(USER)
-  createdAT        DateTime         @default(now())
-  updatedAT        DateTime         @updatedAt
-  accessToken      String?
-  image            String?
-  isVerified       Boolean          @default(true)
-  refreshToken     String?
-  provider         String?
-  isInGroup        Boolean          @default(false)
-  groupMember      GroupMember?
-  groupsLeader     Groups?          @relation("GroupLeader")
-  joinApplications JoinApplication?
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  role         userRole @default(USER)
+  createdAT    DateTime @default(now())
+  updatedAT    DateTime @updatedAt
+  accessToken  String?
+  image        String?
+  isVerified   Boolean  @default(true)
+  refreshToken String?
+  provider     String?
+
+  // Relations
+  groupMember      GroupMember[]
+  groupsLeader     Groups[]          @relation("GroupLeader")
+  joinApplications JoinApplication[]
   noticeCreated    Notices[]
   activity         UserActivity[]
 }
 
 model Batch {
-  id           String        @id @default(uuid())
-  name         String
-  createdAT    DateTime      @default(now())
-  updatedAT    DateTime      @updatedAt
-  status       status        @default(ACTIVE)
-  description  String?
+  id          String   @id @default(uuid())
+  name        String
+  createdAT   DateTime @default(now())
+  updatedAT   DateTime @updatedAt
+  status      status   @default(ACTIVE)
+  description String?
+
+  // Relations
   batchMembers BatchMember[]
   groups       Groups[]
   notices      Notices[]
+  GroupMember  GroupMember[]
 }
 
 model BatchMember {
@@ -46,57 +50,74 @@ model BatchMember {
   email     String
   name      String
   createdAT DateTime @default(now())
-  batch     Batch    @relation(fields: [batchId], references: [id], onDelete: Cascade)
+
+  // Relations
+  batch Batch @relation(fields: [batchId], references: [id], onDelete: Cascade)
 
   @@unique([batchId, email])
 }
 
 model Groups {
-  id               String            @id @default(uuid())
+  id               String      @id @default(uuid())
   name             String
   description      String?
   tags             Json?
-  leader_id        String            @unique
-  createdAT        DateTime          @default(now())
-  updatedAT        DateTime          @updatedAt
+  leader_id        String
+  createdAT        DateTime    @default(now())
+  updatedAT        DateTime    @updatedAt
   disbanded_at     DateTime?
   disbanded_reason String?
-  visible_to_users Boolean           @default(true)
-  status           groupStatus       @default(ACTIVE)
+  visible_to_users Boolean     @default(true)
+  status           groupStatus @default(ACTIVE)
   batchId          String
   batchName        String
   capacity         Int
+
+  // Relations
   groupActivity    GroupActivity[]
   member           GroupMember[]
   batch            Batch             @relation(fields: [batchId], references: [id])
   leader           User              @relation("GroupLeader", fields: [leader_id], references: [id])
   joinApplications JoinApplication[]
   notices          Notices[]
+
+  @@unique([leader_id, batchId])
 }
 
 model GroupMember {
   id      String          @id @default(uuid())
-  userId  String          @unique
+  userId  String
   groupId String
+  batchId String
   name    String
   email   String
   role    groupMemberRole
-  group   Groups          @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  user    User            @relation(fields: [userId], references: [id])
+
+  // Relations
+  group Groups @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user  User   @relation(fields: [userId], references: [id])
+  batch Batch  @relation(fields: [batchId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, batchId])
 }
 
 model JoinApplication {
   id        String            @id @default(uuid())
-  userId    String            @unique
+  email     String
+  name      String
+  userId    String
   groupId   String
   reason    String
   status    applicationStatus @default(PENDING)
   createdAT DateTime          @default(now())
   updatedAT DateTime          @updatedAt
-  email     String
-  name      String
-  group     Groups            @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  user      User              @relation(fields: [userId], references: [id])
+
+  // Relations
+  group Groups @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user  User   @relation(fields: [userId], references: [id])
+
+  @@unique([userId, groupId]) // ensures one application per group
+  @@unique([userId, groupId, status]) // pervents multiple pending apps for same group
 }
 
 model Notices {
@@ -111,9 +132,11 @@ model Notices {
   createdAt   DateTime    @default(now())
   updateAt    DateTime    @updatedAt
   type        noticeType  @default(NORMAL)
-  batch       Batch?      @relation(fields: [batchId], references: [id], onDelete: Cascade)
-  createdBy   User        @relation(fields: [createdById], references: [id])
-  group       Groups?     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  // Relations
+  batch     Batch?  @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  createdBy User    @relation(fields: [createdById], references: [id])
+  group     Groups? @relation(fields: [groupId], references: [id], onDelete: Cascade)
 }
 
 model UserActivity {
