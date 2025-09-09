@@ -13,14 +13,16 @@ export const createGroup = async (req, res) => {
         .json(new ApiError(400, 'Input fields are required'));
     }
 
-    const existing = await db.groupMember.findUnique({
-      where: { userId },
+    const existing = await db.groupMember.findFirst({
+      where: { userId, batchId },
     });
 
     if (existing) {
       return res
         .status(400)
-        .json(new ApiError(400, 'User is already a part of another group'));
+        .json(
+          new ApiError(400, 'You are already belong to group of this batch'),
+        );
     }
 
     const group = await db.groups.create({
@@ -35,6 +37,7 @@ export const createGroup = async (req, res) => {
         member: {
           create: {
             userId,
+            batchId,
             name: req.user.name,
             email: req.user.email,
             role: 'LEADER',
@@ -44,12 +47,12 @@ export const createGroup = async (req, res) => {
       include: { member: true },
     });
 
-    await db.user.update({
-      where: { id: userId },
-      data: {
-        isInGroup: true,
-      },
-    });
+    // await db.user.update({
+    //   where: { id: userId },
+    //   data: {
+    //     isInGroup: true,
+    //   },
+    // });
 
     await db.userActivity.create({
       data: {
@@ -136,18 +139,18 @@ export const ApplyToJoinGroup = async (req, res) => {
         .json(new ApiError(400, 'Reason to join the group is required'));
     }
 
-    const alreadyApplied = await db.joinApplication.findUnique({
-      where: { userId: req.user.id },
+    const alreadyApplied = await db.joinApplication.findFirst({
+      where: { userId: req.user.id, groupId },
     });
 
     if (alreadyApplied) {
       return res
         .status(400)
-        .json(new ApiError(400, 'You are already applied to another group'));
+        .json(new ApiError(400, 'You are already applied the group'));
     }
 
-    const alreadyJoined = await db.groupMember.findUnique({
-      where: { userId: req.user.id },
+    const alreadyJoined = await db.groupMember.findFirst({
+      where: { userId: req.user.id, groupId },
     });
 
     if (alreadyJoined) {
@@ -229,7 +232,7 @@ export const fetchAllJoinApplications = async (req, res) => {
         new ApiResponse(
           200,
           allApplications,
-          'All Applicatiosn fetched successfully',
+          'All Application fetched successfully',
         ),
       );
   } catch (error) {
@@ -259,20 +262,24 @@ export const addMemberToGroup = async (req, res) => {
         .json(new ApiError(400, "User's name and email are required"));
     }
 
-    // const existing = await db.groupMember.findUnique({
-    //   where: { userId },
-    // });
-
-    // if (existing) {
-    //   return res
-    //     .status(400)
-    //     .json(new ApiError(400, 'User already exists in another group'));
-    // }
-
     const group = await db.groups.findUnique({
       where: { id: groupId },
       include: { member: true },
     });
+
+    if (!group) {
+      return res.status(404).json(new ApiError(404, 'Group Not Found'));
+    }
+
+    const existing = await db.groupMember.findFirst({
+      where: { userId, batchId: group.batchId },
+    });
+
+    if (existing) {
+      return res
+        .status(400)
+        .json(new ApiError(400, 'You are already a member of another group'));
+    }
 
     if (group.capacity >= 4) {
       return res
@@ -284,14 +291,15 @@ export const addMemberToGroup = async (req, res) => {
       data: {
         userId,
         groupId,
+        batchId: group.batchId,
         role: 'MEMBER',
         name,
         email,
       },
     });
 
-    await db.joinApplication.delete({
-      where: { userId },
+    await db.joinApplication.deleteMany({
+      where: { userId, groupId },
     });
 
     await db.groups.update({
@@ -301,18 +309,11 @@ export const addMemberToGroup = async (req, res) => {
       },
     });
 
-    const user = await db.user.update({
-      where: { id: userId },
-      data: {
-        isInGroup: true,
-      },
-    });
-
     await db.userActivity.create({
       data: {
         userId: userId,
         action: 'JOINED_GROUP',
-        description: `${user.name} is joined the group ${group.name}.`,
+        description: `${name} is joined the group ${group.name}.`,
       },
     });
 
@@ -320,7 +321,7 @@ export const addMemberToGroup = async (req, res) => {
       data: {
         groupId: groupId,
         action: 'MEMBER_JOINED',
-        description: `${user.name} is added to the group.`,
+        description: `${name} is added to the group.`,
       },
     });
 
@@ -364,9 +365,24 @@ export const leaveGroup = async (req, res) => {
         .json(new ApiError(400, 'Resone to leave the group is required'));
     }
 
-    const member = await db.groupMember.findUnique({
-      where: { userId },
+    const group = await db.groups.findUnique({
+      where: { id: groupId },
+      include: { member: true },
     });
+
+    if (!group) {
+      return res.status(404).json(new ApiError(404, 'Group Not Found'));
+    }
+
+    const member = await db.groupMember.findFirst({
+      where: { userId, groupId },
+    });
+
+    if (!member) {
+      return res
+        .status(400)
+        .json(new ApiError(400, 'User is not a member of this group'));
+    }
 
     if (member.role === 'LEADER') {
       return res
@@ -375,28 +391,28 @@ export const leaveGroup = async (req, res) => {
     }
 
     await db.groupMember.delete({
-      where: { userId },
+      where: { id: member.id },
     });
 
-    const group = await db.groups.update({
+    await db.groups.update({
       where: { id: groupId },
       data: {
         capacity: { decrement: 1 },
       },
     });
 
-    const user = await db.user.update({
-      where: { id: userId },
-      data: {
-        isInGroup: false,
-      },
-    });
+    // const user = await db.user.update({
+    //   where: { id: userId },
+    //   data: {
+    //     isInGroup: false,
+    //   },
+    // });
 
     await db.userActivity.create({
       data: {
         userId: userId,
         action: 'LEAVED_GROUP',
-        description: `${user.name} leaved the ${group.name}.
+        description: `${member.name} leaved the ${group.name}.
         Reason: ${reason}`,
       },
     });
@@ -405,7 +421,7 @@ export const leaveGroup = async (req, res) => {
       data: {
         groupId: groupId,
         action: 'MEMBER_LEFT',
-        description: `${user.name} leaved the group. 
+        description: `${member.name} leaved the group. 
         Reason by User :-
         ${reason}`,
       },
@@ -444,10 +460,35 @@ export const kickMemberFromGroup = async (req, res) => {
         );
     }
 
+    const member = await db.groupMember.findFirst({
+      where: { userId, groupId },
+    });
+
+    if (!member) {
+      return res
+        .status(400)
+        .json(new ApiError(400, 'User is not membe of this group'));
+    }
+
+    const leader = await db.groupMember.findFirst({
+      where: { userId: req.user.id, groupId },
+    });
+
+    if (leader.role !== 'LEADER') {
+      return res
+        .status(401)
+        .json(
+          new ApiError(
+            401,
+            'You don;t have permission to kick memeber from group. Only leader can do that',
+          ),
+        );
+    }
+
     // Storing the reason and userDetails heer in notice board
 
     await db.groupMember.delete({
-      where: { userId },
+      where: { id: member.id },
     });
 
     const group = await db.groups.update({
@@ -457,12 +498,12 @@ export const kickMemberFromGroup = async (req, res) => {
       },
     });
 
-    const user = await db.user.update({
-      where: { id: userId },
-      data: {
-        isInGroup: false,
-      },
-    });
+    // const user = await db.user.update({
+    //   where: { id: userId },
+    //   data: {
+    //     isInGroup: false,
+    //   },
+    // });
 
     await db.userActivity.create({
       data: {
@@ -571,12 +612,12 @@ export const deleteGroup = async (req, res) => {
       where: { id: groupId },
     });
 
-    await db.user.update({
-      where: { id: req.user.id },
-      data: {
-        isInGroup: false,
-      },
-    });
+    // await db.user.update({
+    //   where: { id: req.user.id },
+    //   data: {
+    //     isInGroup: false,
+    //   },
+    // });
 
     await db.userActivity.create({
       data: {
