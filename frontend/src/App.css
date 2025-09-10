@@ -1,0 +1,255 @@
+/* === Buttons === */
+.btn-primary {
+  background: var(--chai-btn-primary);
+  color: var(--chai-bg-primary);
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-weight: var(--font-weight-medium);
+  border: none;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background: var(--chai-btn-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 161, 22, 0.3);
+}
+
+.btn-secondary {
+  background: var(--chai-btn-secondary);
+  color: var(--chai-text-primary);
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--chai-border-primary);
+  border-radius: 0.375rem;
+  font-weight: var(--font-weight-medium);
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  background: var(--chai-btn-secondary-hover);
+  border-color: var(--chai-border-secondary);
+  transform: translateY(-1px);
+}
+
+/* === Tabs === */
+.tab {
+  padding: 0.5rem 1rem;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.tab-active {
+  color: var(--chai-orange);
+  border-bottom: 2px solid var(--chai-border-accent);
+  font-weight: var(--font-weight-semibold);
+}
+
+.tab-inactive {
+  color: var(--chai-text-secondary);
+}
+
+.tab-inactive:hover {
+  color: var(--chai-orange);
+  background: rgba(255, 161, 22, 0.1);
+}
+
+/* === Headings === */
+.h1 {
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-bold);
+  color: var(--chai-text-primary);
+}
+
+.h2 {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-bold);
+  color: var(--chai-text-primary);
+}
+
+/* === Code Blocks === */
+.code-block {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-base);
+  background: var(--chai-code-bg);
+  color: var(--chai-code-text);
+  padding: 1rem;
+  border-radius: 0.375rem;
+  overflow-x: auto;
+  border: 1px solid var(--chai-border-primary);
+}
+
+/* === Form Elements === */
+.form-input {
+  background-color: var(--chai-bg-secondary);
+  border: 1px solid var(--chai-border-primary);
+  color: var(--chai-text-primary);
+  padding: 0.75rem 1rem;
+  border-radius: 0.375rem;
+  font-size: var(--font-size-sm);
+  transition: all 0.2s ease-in-out;
+  width: 100%;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--chai-border-accent);
+  box-shadow: 0 0 0 2px rgba(255, 161, 22, 0.2);
+}
+
+.form-input::placeholder {
+  color: var(--chai-text-muted);
+}
+
+/* === Cards === */
+.card {
+  background-color: var(--chai-bg-secondary);
+  border: 1px solid var(--chai-border-primary);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.card:hover {
+  border-color: var(--chai-border-secondary);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* === Navigation === */
+.navbar {
+  background-color: var(--chai-bg-secondary);
+  border-bottom: 1px solid var(--chai-border-primary);
+  backdrop-filter: blur(10px);
+}
+
+.nav-link {
+  color: var(--chai-text-secondary);
+  transition: color 0.2s ease-in-out;
+  font-weight: var(--font-weight-medium);
+}
+
+.nav-link:hover {
+  color: var(--chai-orange);
+}
+
+.nav-link.active {
+  color: var(--chai-orange);
+}
+
+/* === Tables === */
+.table {
+  background-color: var(--chai-bg-secondary);
+  border: 1px solid var(--chai-border-primary);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.table th {
+  background-color: var(--chai-bg-tertiary);
+  color: var(--chai-text-primary);
+  font-weight: var(--font-weight-semibold);
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--chai-border-primary);
+}
+
+.table td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--chai-border-primary);
+  color: var(--chai-text-secondary);
+}
+
+.table tr:hover {
+  background-color: var(--chai-bg-tertiary);
+}
+
+/* === Status Badges === */
+.badge {
+  background-color: var(--chai-bg-tertiary);
+  color: var(--chai-text-secondary);
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  border: 1px solid var(--chai-border-primary);
+}
+
+.badge.success {
+  background-color: rgba(0, 184, 163, 0.1);
+  color: var(--chai-success);
+  border-color: var(--chai-success);
+}
+
+.badge.error {
+  background-color: rgba(255, 77, 79, 0.1);
+  color: var(--chai-error);
+  border-color: var(--chai-error);
+}
+
+.badge.warning {
+  background-color: rgba(250, 173, 20, 0.1);
+  color: var(--chai-warning);
+  border-color: var(--chai-warning);
+}
+
+/* === Modal === */
+.modal {
+  background-color: var(--chai-bg-secondary);
+  border: 1px solid var(--chai-border-primary);
+  border-radius: 0.5rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+}
+
+.modal-header {
+  border-bottom: 1px solid var(--chai-border-primary);
+  color: var(--chai-text-primary);
+}
+
+.modal-body {
+  color: var(--chai-text-secondary);
+}
+
+/* === Dropdown === */
+.dropdown-menu {
+  background-color: var(--chai-bg-secondary);
+  border: 1px solid var(--chai-border-primary);
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+}
+
+.dropdown-item {
+  color: var(--chai-text-secondary);
+  transition: all 0.2s ease-in-out;
+}
+
+.dropdown-item:hover {
+  background-color: var(--chai-bg-tertiary);
+  color: var(--chai-orange);
+}
+
+/* === Loading States === */
+.loading {
+  color: var(--chai-orange);
+}
+
+/* === Scrollbar === */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--chai-bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--chai-border-primary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--chai-border-secondary);
+}
