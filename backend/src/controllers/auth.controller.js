@@ -41,17 +41,39 @@ const googleLogin = async (req, res) => {
     const payload = ticket.getPayload();
     const { email, name, picture, sub: googleId } = payload;
 
+    const userInBatch = await db.batchMember.findFirst({
+      where: { email },
+    });
     let user = await db.user.findFirst({ where: { email } });
 
-    if (user) {
-      if (user.provider !== 'google') {
-        throw new ApiError(
-          400,
-          `Account already exists with ${user.provider}. Please login through ${user.provider}`,
-        );
-      }
-    }
-    if (!user) {
+    // if (user) {
+    //   if (user.provider !== 'google') {
+    //     throw new ApiError(
+    //       400,
+    //       `Account already exists with ${user.provider}. Please login through ${user.provider}`,
+    //     );
+    //   }
+    // }
+    // if (!user) {
+    //   user = await db.user.create({
+    //     data: {
+    //       email,
+    //       name,
+    //       image: picture,
+    //       provider: 'google',
+    //     },
+    //   });
+
+    //   await db.userActivity.create({
+    //     data: {
+    //       userId: user.id,
+    //       action: 'ACCOUNT_CREATED',
+    //       description: `${user.name} first time landed on ${user.createdAT}`,
+    //     },
+    //   });
+    // }
+
+    if (userInBatch && !user) {
       user = await db.user.create({
         data: {
           email,
@@ -68,6 +90,15 @@ const googleLogin = async (req, res) => {
           description: `${user.name} first time landed on ${user.createdAT}`,
         },
       });
+    } else if (!userInBatch) {
+      return res
+        .status(401)
+        .json(
+          new ApiError(
+            401,
+            'You are not alowed to logIn in this app. As, you are not a memebr of any batch',
+          ),
+        );
     }
 
     const accessToken = generateAccessToken(user);
@@ -139,17 +170,37 @@ const gtihubLogin = async (req, res) => {
     const githubUser = userResponse.data;
     const email = emailResponse.data.find((e) => e.primary).email;
 
+    const userInGroup = await db.groupMember.findFirst({ where: { email } });
     let user = await db.user.findFirst({ where: { email } });
 
-    if (user) {
-      if (user.provider !== 'github') {
-        throw new ApiError(
-          400,
-          `Account already exists with ${user.provider}. Please login through ${user.provider}`,
-        );
-      }
-    }
-    if (!user) {
+    // if (user) {
+    //   if (user.provider !== 'github') {
+    //     throw new ApiError(
+    //       400,
+    //       `Account already exists with ${user.provider}. Please login through ${user.provider}`,
+    //     );
+    //   }
+    // }
+    // if (!user) {
+    //   user = await db.user.create({
+    //     data: {
+    //       email,
+    //       name: githubUser.name || githubUser.login,
+    //       image: githubUser.avatar_url,
+    //       provider: 'github',
+    //     },
+    //   });
+
+    //   await db.userActivity.create({
+    //     data: {
+    //       userId: user.id,
+    //       action: 'ACCOUNT_CREATED',
+    //       description: `${user.name} first time landed on ${user.createdAT}`,
+    //     },
+    //   });
+    // }
+
+    if (userInGroup && !user) {
       user = await db.user.create({
         data: {
           email,
@@ -166,6 +217,15 @@ const gtihubLogin = async (req, res) => {
           description: `${user.name} first time landed on ${user.createdAT}`,
         },
       });
+    } else if (!userInGroup) {
+      return res
+        .status(401)
+        .json(
+          new ApiError(
+            401,
+            'You are not alowed to logIn in this app. As, you are not a memebr of any batch',
+          ),
+        );
     }
 
     const accessToken = generateAccessToken(user);
