@@ -4,6 +4,7 @@ import Home from '../pages/Home';
 import AboutUs from '../pages/AboutUs';
 import NotFound from '../pages/NotFound';
 import Docs from '../Layout/Docs.jsx';
+import { Routes, Route } from 'react-router-dom';
 
 function Layout() {
   return (
@@ -26,8 +27,6 @@ function Layout() {
           </div>
         </div>
       </div>
- 
-
     </div>
   )
 }
