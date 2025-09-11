@@ -1,12 +1,15 @@
 import './App.css'
-import Home from './pages/Home.jsx'
+import Layout from './Layout/Layout.jsx';
+
+
+
 function App() {
   
 
   return (
-    <>
-      <Home/>
-    </>
+    <div className='flex flex-col min-h-screen'>
+      <Layout/>
+    </div>
   )
 }
 

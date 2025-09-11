@@ -4,12 +4,13 @@ import Footer from '../components/Footer.jsx'
 
 const Home = () => {
   return (
-    <>
+
+     <div className={`flex flex-col items-center justify-center min-h-screen w-full bg-gradient-to-br transition-colors duration-300`}>
     <Navbar/>
-    <div>Home</div>
+    <Hero/>
     <Footer/>
-    </>
+    </div>
   )
 }
 
-export default Home
+export default Home;
