@@ -1,13 +1,31 @@
-import React,{useState,useEffect, useRef} from 'react'
-import {Link, useLocation} from 'react-router-dom';
+import React from 'react';
+import { NavLink } from 'react-router-dom';
 
+const Sidebar = () => {
+  const navItems = [
+    { path: 'batches', label: 'Batches' },
+    { path: 'groups', label: 'Groups' },
+    { path: 'noticeboard', label: 'Noticeboard' },
+    { path: 'profile', label: 'Profile' },
+  ];
 
-
-
-function Sidebar() {
   return (
-    <div>Sidebar</div>
-  )
-}
+    <aside className="sidebar">
+      <nav>
+        {navItems.map(({ path, label }) => (
+          <NavLink
+            key={path}
+            to={path}
+            className={({ isActive }) => 
+              isActive ? 'nav-link active' : 'nav-link'
+            }
+          >
+            {label}
+          </NavLink>
+        ))}
+      </nav>
+    </aside>
+  );
+};
 
-export default Sidebar
+export default Sidebar;
