@@ -7,7 +7,7 @@ const NoticeBoard = () => {
   const [activeTab, setActiveTab] = useState('all');
   const [selectedNotice, setSelectedNotice] = useState(null);
 
-  // Sample notices data based on your schema
+  // Sample notices 
   const noticesData = [
     {
       id: "notice-1",
@@ -269,7 +269,8 @@ const NoticeBoard = () => {
               }}></i>
               <span style={{
                 color: '#8c8c8c',
-                fontSize: '0.7rem'
+                fontSize: '0.75rem',
+                fontWeight: '500'
               }}>
                 Edited
               </span>
@@ -281,17 +282,19 @@ const NoticeBoard = () => {
           display: 'flex',
           alignItems: 'center',
           backgroundColor: '#404040',
-          padding: '0.25rem 0.5rem',
-          borderRadius: '0.25rem',
-          gap: '0.25rem'
+          padding: '0.375rem 0.75rem',
+          borderRadius: '0.375rem',
+          gap: '0.375rem'
         }}>
           <i className={getScopeIcon(notice.scope)} style={{ 
             color: '#b3b3b3', 
-            fontSize: '12px' 
+            fontSize: '14px' 
           }}></i>
           <span style={{
             color: '#b3b3b3',
-            fontSize: '0.75rem'
+            fontSize: '0.8rem',
+            fontWeight: '500',
+            textTransform: 'capitalize'
           }}>
             {notice.scope.toLowerCase()}
           </span>
@@ -300,13 +303,13 @@ const NoticeBoard = () => {
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         {/* Left Content */}
-        <div style={{ flex: 1 }}>
+        <div style={{ flex: 1, paddingRight: '1rem' }}>
           {/* Notice Title */}
           <h3 style={{
             color: '#ffffff',
             fontSize: '1.125rem',
             fontWeight: '600',
-            marginBottom: '0.5rem',
+            marginBottom: '0.75rem',
             lineHeight: '1.4'
           }}>
             {notice.title}
@@ -314,10 +317,10 @@ const NoticeBoard = () => {
 
           {/* Notice Preview Content */}
           <p style={{
-            color: '#b3b3b3',
+            color: '#cccccc',
             fontSize: '0.875rem',
-            lineHeight: '1.5',
-            margin: '0 0 1rem 0',
+            lineHeight: '1.6',
+            margin: '0 0 1.25rem 0',
             display: '-webkit-box',
             WebkitLineClamp: 2,
             WebkitBoxOrient: 'vertical',
@@ -327,7 +330,7 @@ const NoticeBoard = () => {
           </p>
 
           {/* Author, Batch/Group, and Time Row */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <i className="ri-user-line" style={{ 
                 color: '#8c8c8c', 
@@ -335,17 +338,19 @@ const NoticeBoard = () => {
               }}></i>
               <span style={{ 
                 color: '#ffffff',
-                fontSize: '0.8rem',
-                marginRight: '0.25rem'
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                marginRight: '0.5rem'
               }}>
                 {notice.createdBy.name}
               </span>
               <span style={{
                 backgroundColor: '#404040',
                 color: '#b3b3b3',
-                padding: '0.125rem 0.375rem',
+                padding: '0.2rem 0.5rem',
                 borderRadius: '0.25rem',
-                fontSize: '0.7rem'
+                fontSize: '0.75rem',
+                fontWeight: '500'
               }}>
                 {notice.createdBy.role}
               </span>
@@ -358,8 +363,8 @@ const NoticeBoard = () => {
                   fontSize: '14px'
                 }}></i>
                 <span style={{ 
-                  color: '#8c8c8c',
-                  fontSize: '0.75rem'
+                  color: '#b3b3b3',
+                  fontSize: '0.8rem'
                 }}>
                   {notice.batch ? notice.batch.name : notice.group?.name}
                 </span>
@@ -373,7 +378,7 @@ const NoticeBoard = () => {
               }}></i>
               <span style={{ 
                 color: '#8c8c8c',
-                fontSize: '0.75rem'
+                fontSize: '0.8rem'
               }}>
                 {formatDate(notice.createdAt)}
               </span>
@@ -382,7 +387,14 @@ const NoticeBoard = () => {
         </div>
 
         {/* Right Arrow */}
-        <div style={{ marginLeft: '1rem', display: 'flex', alignItems: 'center' }}>
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center',
+          padding: '0.5rem',
+          borderRadius: '50%',
+          backgroundColor: 'rgba(255, 255, 255, 0.05)',
+          transition: 'all 0.2s ease'
+        }}>
           <i className="ri-arrow-right-line" style={{ 
             color: '#8c8c8c', 
             fontSize: '20px' 
@@ -399,7 +411,7 @@ const NoticeBoard = () => {
       left: 0,
       right: 0,
       bottom: 0,
-      backgroundColor: 'rgba(0, 0, 0, 0.8)',
+      backgroundColor: 'rgba(0, 0, 0, 0.85)',
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
@@ -413,21 +425,22 @@ const NoticeBoard = () => {
       <div style={{
         backgroundColor: '#2d2d2d',
         border: '1px solid #404040',
-        borderRadius: '0.75rem',
-        padding: '2rem',
-        maxWidth: '800px',
+        borderRadius: '1rem',
+        padding: '2.5rem',
+        maxWidth: '900px',
         width: '100%',
-        maxHeight: '80vh',
+        maxHeight: '85vh',
         overflowY: 'auto',
-        position: 'relative'
+        position: 'relative',
+        boxShadow: '0 20px 40px rgba(0, 0, 0, 0.5)'
       }}>
         {/* Close Button */}
         <button 
           onClick={onClose}
           style={{
             position: 'absolute',
-            top: '1rem',
-            right: '1rem',
+            top: '1.5rem',
+            right: '1.5rem',
             backgroundColor: 'transparent',
             border: 'none',
             color: '#8c8c8c',
@@ -439,7 +452,8 @@ const NoticeBoard = () => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: '20px'
+            fontSize: '20px',
+            transition: 'all 0.2s ease'
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.backgroundColor = '#404040';
@@ -454,24 +468,24 @@ const NoticeBoard = () => {
         </button>
 
         {/* Header */}
-        <div style={{ marginBottom: '1.5rem', paddingRight: '3rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+        <div style={{ marginBottom: '2rem', paddingRight: '4rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
             <div style={{
               display: 'flex',
               alignItems: 'center',
               backgroundColor: getTypeColor(notice.type) + '20',
-              padding: '0.375rem 0.75rem',
-              borderRadius: '0.375rem',
+              padding: '0.5rem 1rem',
+              borderRadius: '0.5rem',
               gap: '0.5rem'
             }}>
               <i className={getTypeIcon(notice.type)} style={{ 
                 color: getTypeColor(notice.type), 
-                fontSize: '16px' 
+                fontSize: '18px' 
               }}></i>
               <span style={{
                 color: getTypeColor(notice.type),
-                fontSize: '0.875rem',
-                fontWeight: '600',
+                fontSize: '0.95rem',
+                fontWeight: '700',
                 textTransform: 'uppercase'
               }}>
                 {notice.type}
@@ -482,17 +496,18 @@ const NoticeBoard = () => {
               display: 'flex',
               alignItems: 'center',
               backgroundColor: '#404040',
-              padding: '0.375rem 0.75rem',
-              borderRadius: '0.375rem',
+              padding: '0.5rem 1rem',
+              borderRadius: '0.5rem',
               gap: '0.5rem'
             }}>
               <i className={getScopeIcon(notice.scope)} style={{ 
                 color: '#b3b3b3', 
-                fontSize: '14px' 
+                fontSize: '16px' 
               }}></i>
               <span style={{
                 color: '#b3b3b3',
-                fontSize: '0.875rem',
+                fontSize: '0.9rem',
+                fontWeight: '600',
                 textTransform: 'capitalize'
               }}>
                 {notice.scope} Level
@@ -504,17 +519,18 @@ const NoticeBoard = () => {
                 display: 'flex',
                 alignItems: 'center',
                 backgroundColor: '#404040',
-                padding: '0.375rem 0.75rem',
-                borderRadius: '0.375rem',
+                padding: '0.5rem 1rem',
+                borderRadius: '0.5rem',
                 gap: '0.5rem'
               }}>
                 <i className="ri-pencil-line" style={{ 
                   color: '#8c8c8c', 
-                  fontSize: '14px' 
+                  fontSize: '16px' 
                 }}></i>
                 <span style={{
                   color: '#8c8c8c',
-                  fontSize: '0.875rem'
+                  fontSize: '0.9rem',
+                  fontWeight: '600'
                 }}>
                   Edited
                 </span>
@@ -524,8 +540,8 @@ const NoticeBoard = () => {
 
           <h2 style={{
             color: '#ffffff',
-            fontSize: '1.5rem',
-            fontWeight: '700',
+            fontSize: '1.75rem',
+            fontWeight: '800',
             margin: 0,
             lineHeight: '1.3'
           }}>
@@ -536,9 +552,9 @@ const NoticeBoard = () => {
         {/* Content */}
         <div style={{
           color: '#e6e6e6',
-          fontSize: '1rem',
-          lineHeight: '1.6',
-          marginBottom: '2rem',
+          fontSize: '1.1rem',
+          lineHeight: '1.7',
+          marginBottom: '2.5rem',
           whiteSpace: 'pre-wrap'
         }}>
           {notice.content}
@@ -547,34 +563,35 @@ const NoticeBoard = () => {
         {/* Metadata */}
         <div style={{
           borderTop: '1px solid #404040',
-          paddingTop: '1.5rem'
+          paddingTop: '2rem'
         }}>
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-            gap: '1rem'
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: '1.5rem'
           }}>
             {/* Author Info */}
             <div>
               <h4 style={{
                 color: '#ffffff',
-                fontSize: '0.875rem',
-                fontWeight: '600',
-                margin: '0 0 0.5rem 0'
+                fontSize: '0.95rem',
+                fontWeight: '700',
+                margin: '0 0 0.75rem 0'
               }}>
                 Created By
               </h4>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <i className="ri-user-line" style={{ color: '#8c8c8c', fontSize: '16px' }}></i>
-                <span style={{ color: '#e6e6e6', fontSize: '0.875rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <i className="ri-user-line" style={{ color: '#8c8c8c', fontSize: '18px' }}></i>
+                <span style={{ color: '#e6e6e6', fontSize: '0.95rem', fontWeight: '500' }}>
                   {notice.createdBy.name}
                 </span>
                 <span style={{
                   backgroundColor: '#404040',
                   color: '#b3b3b3',
-                  padding: '0.125rem 0.5rem',
-                  borderRadius: '0.25rem',
-                  fontSize: '0.75rem'
+                  padding: '0.25rem 0.75rem',
+                  borderRadius: '0.375rem',
+                  fontSize: '0.8rem',
+                  fontWeight: '500'
                 }}>
                   {notice.createdBy.role}
                 </span>
@@ -586,18 +603,18 @@ const NoticeBoard = () => {
               <div>
                 <h4 style={{
                   color: '#ffffff',
-                  fontSize: '0.875rem',
-                  fontWeight: '600',
-                  margin: '0 0 0.5rem 0'
+                  fontSize: '0.95rem',
+                  fontWeight: '700',
+                  margin: '0 0 0.75rem 0'
                 }}>
                   {notice.batch ? 'Batch' : 'Group'}
                 </h4>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                   <i className={notice.batch ? "ri-team-line" : "ri-group-line"} style={{ 
                     color: '#8c8c8c', 
-                    fontSize: '16px' 
+                    fontSize: '18px' 
                   }}></i>
-                  <span style={{ color: '#e6e6e6', fontSize: '0.875rem' }}>
+                  <span style={{ color: '#e6e6e6', fontSize: '0.95rem', fontWeight: '500' }}>
                     {notice.batch ? notice.batch.name : notice.group?.name}
                   </span>
                 </div>
@@ -608,23 +625,23 @@ const NoticeBoard = () => {
             <div>
               <h4 style={{
                 color: '#ffffff',
-                fontSize: '0.875rem',
-                fontWeight: '600',
-                margin: '0 0 0.5rem 0'
+                fontSize: '0.95rem',
+                fontWeight: '700',
+                margin: '0 0 0.75rem 0'
               }}>
                 Timeline
               </h4>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <i className="ri-time-line" style={{ color: '#8c8c8c', fontSize: '14px' }}></i>
-                  <span style={{ color: '#8c8c8c', fontSize: '0.75rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  <i className="ri-time-line" style={{ color: '#8c8c8c', fontSize: '16px' }}></i>
+                  <span style={{ color: '#8c8c8c', fontSize: '0.85rem' }}>
                     Created: {formatDate(notice.createdAt)}
                   </span>
                 </div>
                 {notice.isEdited && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <i className="ri-pencil-line" style={{ color: '#8c8c8c', fontSize: '14px' }}></i>
-                    <span style={{ color: '#8c8c8c', fontSize: '0.75rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    <i className="ri-pencil-line" style={{ color: '#8c8c8c', fontSize: '16px' }}></i>
+                    <span style={{ color: '#8c8c8c', fontSize: '0.85rem' }}>
                       Updated: {formatDate(notice.updateAt)}
                     </span>
                   </div>
@@ -641,7 +658,6 @@ const NoticeBoard = () => {
     <div style={{
       backgroundColor: '#1a1a1a',
       minHeight: '100vh',
-      padding: '2rem',
       color: '#ffffff'
     }}>
       {/* Header */}
@@ -649,7 +665,8 @@ const NoticeBoard = () => {
         display: 'flex', 
         justifyContent: 'space-between', 
         alignItems: 'flex-start',
-        marginBottom: '2rem'
+        marginBottom: '2rem',
+        padding: '2rem 2rem 0 2rem'
       }}>
         <div>
           <h1 style={{
@@ -682,25 +699,46 @@ const NoticeBoard = () => {
             display: 'flex',
             alignItems: 'center',
             gap: '0.5rem',
-            transition: 'background-color 0.2s ease'
+            transition: 'all 0.2s ease',
+            boxShadow: '0 4px 12px rgba(255, 161, 22, 0.3)',
+            height: '40px'
           }}
-          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#e6940f'}
-          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ffa116'}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = '#e6940f';
+            e.currentTarget.style.transform = 'translateY(-1px)';
+            e.currentTarget.style.boxShadow = '0 6px 16px rgba(255, 161, 22, 0.4)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = '#ffa116';
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = '0 4px 12px rgba(255, 161, 22, 0.3)';
+          }}
           >
             <i className="ri-add-line" style={{ fontSize: '16px' }}></i>
             Create Notice
           </button>
 
           <div style={{
-            width: '32px',
-            height: '32px',
+            width: '40px',
+            height: '40px',
             backgroundColor: '#2d2d2d',
             borderRadius: '50%',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            cursor: 'pointer'
-          }}>
+            cursor: 'pointer',
+            border: '1px solid #404040',
+            transition: 'all 0.2s ease'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = '#404040';
+            e.currentTarget.style.borderColor = '#525252';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = '#2d2d2d';
+            e.currentTarget.style.borderColor = '#404040';
+          }}
+          >
             <i className="ri-moon-line" style={{ color: '#ffffff', fontSize: '16px' }}></i>
           </div>
         </div>
@@ -712,7 +750,8 @@ const NoticeBoard = () => {
         gap: '1rem', 
         marginBottom: '2rem',
         alignItems: 'center',
-        flexWrap: 'wrap'
+        flexWrap: 'wrap',
+        padding: '0 2rem'
       }}>
         {/* Search */}
         <div style={{ position: 'relative', flex: '1', minWidth: '300px' }}>
@@ -737,8 +776,12 @@ const NoticeBoard = () => {
               borderRadius: '0.375rem',
               fontSize: '0.875rem',
               width: '100%',
-              outline: 'none'
+              outline: 'none',
+              transition: 'border-color 0.2s ease',
+              height: '40px'
             }}
+            onFocus={(e) => e.target.style.borderColor = '#ffa116'}
+            onBlur={(e) => e.target.style.borderColor = '#404040'}
           />
         </div>
 
@@ -754,8 +797,13 @@ const NoticeBoard = () => {
             borderRadius: '0.375rem',
             fontSize: '0.875rem',
             outline: 'none',
-            minWidth: '150px'
+            minWidth: '150px',
+            cursor: 'pointer',
+            transition: 'border-color 0.2s ease',
+            height: '40px'
           }}
+          onFocus={(e) => e.target.style.borderColor = '#ffa116'}
+          onBlur={(e) => e.target.style.borderColor = '#404040'}
         >
           <option>All Scopes</option>
           <option>Institute</option>
@@ -775,8 +823,13 @@ const NoticeBoard = () => {
             borderRadius: '0.375rem',
             fontSize: '0.875rem',
             outline: 'none',
-            minWidth: '150px'
+            minWidth: '150px',
+            cursor: 'pointer',
+            transition: 'border-color 0.2s ease',
+            height: '40px'
           }}
+          onFocus={(e) => e.target.style.borderColor = '#ffa116'}
+          onBlur={(e) => e.target.style.borderColor = '#404040'}
         >
           <option>All Types</option>
           <option>Normal</option>
@@ -789,7 +842,8 @@ const NoticeBoard = () => {
       <div style={{ 
         display: 'flex', 
         borderBottom: '1px solid #404040',
-        marginBottom: '2rem'
+        marginBottom: '2rem',
+        padding: '0 2rem'
       }}>
         {[
           { key: 'all', label: 'All Notices', count: tabCounts.all },
@@ -811,16 +865,27 @@ const NoticeBoard = () => {
               borderBottom: activeTab === tab.key ? '2px solid #ffa116' : '2px solid transparent',
               transition: 'all 0.2s ease'
             }}
+            onMouseEnter={(e) => {
+              if (activeTab !== tab.key) {
+                e.currentTarget.style.color = '#e6e6e6';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (activeTab !== tab.key) {
+                e.currentTarget.style.color = '#b3b3b3';
+              }
+            }}
           >
             {tab.label} ({tab.count})
           </button>
         ))}
       </div>
 
-      {/* Notice Cards - Single Column */}
+      {/* Notice Cards Container */}
       <div style={{
-        maxWidth: '800px',
-        margin: '0 auto'
+        maxWidth: '1200px',
+        margin: '0 auto',
+        padding: '0 2rem'
       }}>
         {filteredNotices.map(notice => (
           <NoticeCard key={notice.id} notice={notice} onClick={setSelectedNotice} />
@@ -831,14 +896,32 @@ const NoticeBoard = () => {
       {filteredNotices.length === 0 && (
         <div style={{
           textAlign: 'center',
-          padding: '3rem',
+          padding: '3rem 2rem',
           color: '#8c8c8c',
-          maxWidth: '800px',
+          maxWidth: '600px',
           margin: '0 auto'
         }}>
-          <i className="ri-notification-line" style={{ fontSize: '3rem', marginBottom: '1rem', display: 'block' }}></i>
-          <p style={{ fontSize: '1.125rem', marginBottom: '0.5rem' }}>No notices found</p>
-          <p style={{ fontSize: '0.875rem' }}>Try adjusting your search or filters</p>
+          <i className="ri-notification-line" style={{ 
+            fontSize: '3rem', 
+            marginBottom: '1rem', 
+            display: 'block',
+            color: '#525252'
+          }}></i>
+          <h3 style={{ 
+            fontSize: '1.125rem', 
+            marginBottom: '0.5rem',
+            color: '#b3b3b3',
+            fontWeight: '600'
+          }}>
+            No notices found
+          </h3>
+          <p style={{ 
+            fontSize: '0.875rem',
+            color: '#8c8c8c',
+            lineHeight: '1.5'
+          }}>
+            Try adjusting your search terms or filters to find what you're looking for.
+          </p>
         </div>
       )}
 
