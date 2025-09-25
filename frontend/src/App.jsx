@@ -9,6 +9,7 @@ import Docs from './Layout/Docs';
 import Profile from './pages/Profile';
 import LoginPage from './pages/LoginPage';
 import NotFound from './pages/NotFound';
+import NoticeBoard from './docs/NoticeBoard';
 
 function App() {
   return (
@@ -21,7 +22,7 @@ function App() {
         <Route path="batches" element={<Batches />} />
         <Route path="batches/:id" element={<BatchPage />} />
         <Route path="groups" element={<Groups />} />
-        <Route path="noticeboard" element={<Docs />} />
+        <Route path="noticeboard" element={<NoticeBoard />} />
         <Route path="profile" element={<Profile />} />
       </Route>
 
