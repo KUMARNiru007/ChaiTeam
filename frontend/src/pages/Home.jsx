@@ -1,27 +1,21 @@
-import React from 'react'
-import { useNavigate } from 'react-router-dom';
-import Navbar from '../components/Navbar.jsx'
-import Hero from '../components/Hero.jsx'
-import Footer from '../components/Footer.jsx'
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar.jsx";
+import Hero from "../components/Hero.jsx";
+import Footer from "../components/Footer.jsx";
+import Features from "../components/Features.jsx";
 
 const Home = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen w-full bg-gradient-to-br transition-colors duration-300">
+    <div className="parkinsans-light flex flex-col items-center min-h-screen w-full">
       <Navbar />
       <Hero />
-      <div className="text-center my-8">
-        <button
-          onClick={() => navigate('/dashboard')}
-          className="px-6 py-3 text-lg"
-        >
-          Get Started
-        </button>
-      </div>
+      <Features />
       <Footer />
     </div>
-  )
-}
+  );
+};
 
 export default Home;

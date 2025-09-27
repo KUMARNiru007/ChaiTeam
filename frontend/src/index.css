@@ -1,37 +1,63 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&family=Instrument+Serif:ital@0;1&family=Winky+Sans:ital,wght@0,300..900;1,300..900&display=swap');
+/* @import url("https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&family=Instrument+Serif:ital@0;1&family=Winky+Sans:ital,wght@0,300..900;1,300..900&display=swap"); */
+
+@import url("https://fonts.googleapis.com/css2?family=Parkinsans:wght@300..800&display=swap");
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Parkinsans:wght@300..800&display=swap");
+
+.parkinsans-light {
+  font-family: "Parkinsans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
+}
+
+.parkinsans-Regular {
+  font-family: "Parkinsans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.parkinsans-bold {
+  font-family: "Parkinsans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+}
 
 :root {
   /* Brand Colors */
   --chaiteam-orange: #ffa116;
+  --chaiteam-organe-dark: #f97316;
   --chaiteam-orange-hover: #ff8c00;
   --chaiteam-orange-light: #ffb74d;
-  
+
   /* Background Colors */
   --chaiteam-bg-primary: #1a1a1a;
   --chaiteam-bg-secondary: #2d2d2d;
   --chaiteam-bg-tertiary: #3c3c3c;
   --chaiteam-bg-elevated: #404040;
   --chaiteam-bg-overlay: rgba(0, 0, 0, 0.8);
-  
+
   /* Text Colors */
   --chaiteam-text-primary: #ffffff;
   --chaiteam-text-secondary: #b3b3b3;
   --chaiteam-text-muted: #8c8c8c;
   --chaiteam-text-disabled: #666666;
-  
+
   /* Border Colors */
   --chaiteam-border-primary: #404040;
   --chaiteam-border-secondary: #525252;
   --chaiteam-border-accent: #ffa116;
-  
+
   /* Status Colors */
   --chaiteam-success: #00b8a3;
-  --chaiteam-submit:#289D55;
+  --chaiteam-submit: #289d55;
   --chaiteam-error: #ff4d4f;
   --chaiteam-warning: #faad14;
   --chaiteam-info: #1890ff;
-  
+
   /* Code Editor Colors */
   --chaiteam-code-bg: #1e1e1e;
   --chaiteam-code-text: #d4d4d4;
@@ -39,22 +65,23 @@
   --chaiteam-code-keyword: #569cd6;
   --chaiteam-code-string: #ce9178;
   --chaiteam-code-number: #b5cea8;
-  
+
   /* Button Colors */
   --chaiteam-btn-primary: #ffa116;
   --chaiteam-btn-primary-hover: #ff8c00;
+  --chaiteam-btn-start: #f97316;
   --chaiteam-btn-secondary: #404040;
   --chaiteam-btn-secondary-hover: #525252;
   --chaiteam-btn-danger: #ff4d4f;
   --chaiteam-btn-danger-hover: #ff7875;
-  
+
   /* Font Weights */
   --font-weight-light: 300;
   --font-weight-normal: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
-  
+
   /* Font Sizes */
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
@@ -71,14 +98,20 @@
 body {
   background-color: var(--chaiteam-bg-primary);
   color: var(--chaiteam-text-primary);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   line-height: 1.5;
   margin: 0;
   padding: 0;
 }
 
 /* Typography */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   color: var(--chaiteam-text-primary);
   font-weight: var(--font-weight-bold);
   margin: 0 0 1rem;
@@ -90,7 +123,7 @@ p {
 }
 
 a {
-  color: var(--chaiteam-orange);
+  /* color: var(--chaiteam-orange); */
   text-decoration: none;
   transition: color 0.2s ease;
 }
@@ -133,7 +166,9 @@ button.danger:hover {
 }
 
 /* Form elements */
-input, textarea, select {
+input,
+textarea,
+select {
   background-color: var(--chaiteam-bg-secondary);
   border: 1px solid var(--chaiteam-border-primary);
   border-radius: 0.25rem;
@@ -143,7 +178,9 @@ input, textarea, select {
   transition: border-color 0.2s ease;
 }
 
-input:focus, textarea:focus, select:focus {
+input:focus,
+textarea:focus,
+select:focus {
   border-color: var(--chaiteam-border-accent);
   outline: none;
 }
@@ -163,17 +200,26 @@ input:focus, textarea:focus, select:focus {
 }
 
 /* Status indicators */
-.success { color: var(--chaiteam-success); }
-.error { color: var(--chaiteam-error); }
-.warning { color: var(--chaiteam-warning); }
-.info { color: var(--chaiteam-info); }
+.success {
+  color: var(--chaiteam-success);
+}
+.error {
+  color: var(--chaiteam-error);
+}
+.warning {
+  color: var(--chaiteam-warning);
+}
+.info {
+  color: var(--chaiteam-info);
+}
 
 /* Code blocks */
-pre, code {
+pre,
+code {
   background-color: var(--chaiteam-code-bg);
   border-radius: 0.25rem;
   color: var(--chaiteam-code-text);
-  font-family: 'Courier New', Courier, monospace;
+  font-family: "Courier New", Courier, monospace;
   padding: 0.25rem 0.5rem;
 }
 
