@@ -1,5 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "motion/react";
+
 import GroupImage from "../assets/Groups1.png";
 
 function Hero() {
@@ -8,7 +10,12 @@ function Hero() {
   return (
     <div className="relative min-h-screen w-full bg-white text-black flex flex-col items-center pt-28 overflow-hidden">
       {/* Headings */}
-      <div className="flex flex-col items-center">
+      <motion.div
+        className="flex flex-col items-center"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.8, duration: 0.8, ease: "easeOut" }}
+      >
         <span className="parkinsans-Regular sm:text-5xl md:text-6xl lg:text-7xl pb-2">
           Find Your{" "}
           <span
@@ -22,20 +29,25 @@ function Hero() {
         <span className="parkinsans-bold sm:text-5xl md:text-6xl lg:text-7xl pb-2">
           Build Your Network
         </span>
-      </div>
+      </motion.div>
 
       {/* Subtext */}
-      <div className="pt-4 flex flex-col items-center">
+      <motion.div
+        className="pt-4 flex flex-col items-center"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.2, duration: 0.8, ease: "easeOut" }}
+      >
         <span className="text-base sm:text-lg md:text-2xl">
           Connect with like-minded students for fun,
         </span>
         <span className="text-base sm:text-lg md:text-2xl">
           friendships and future Opportunities.
         </span>
-      </div>
+      </motion.div>
 
       {/* Button */}
-      <button
+      <motion.button
         style={{
           backgroundColor: "var(--chaiteam-btn-start)",
           color: "black",
@@ -48,6 +60,9 @@ function Hero() {
           transition: "background-color 0.2s ease",
           marginTop: "35px",
         }}
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.6, duration: 0.8, ease: "easeOut" }}
         onMouseEnter={(e) =>
           (e.target.style.backgroundColor = "var(--chaiteam-btn-primary-hover)")
         }
@@ -58,16 +73,21 @@ function Hero() {
         className="z-10"
       >
         Start your journey
-      </button>
+      </motion.button>
 
-      {/* Group Image (relative to hero & overflow hidden) */}
-      <div className="absolute -bottom-[23rem] overflow-hidden w-full flex justify-center">
+      {/* Group Image (appears first) */}
+      <motion.div
+        className="absolute -bottom-[23rem] overflow-hidden w-full flex justify-center"
+        initial={{ opacity: 0, y: 100 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3, duration: 1, ease: "easeOut" }}
+      >
         <img
           src={GroupImage}
           alt="Group of students"
           className="w-full object-cover overflow-hidden"
         />
-      </div>
+      </motion.div>
     </div>
   );
 }

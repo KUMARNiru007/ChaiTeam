@@ -1,8 +1,14 @@
 import React from "react";
+import { motion } from "motion/react";
 
 const Navbar = () => {
   return (
-    <nav className="fixed top-0 z-20 backdrop-blur-xl w-full h-[75px] bg-transparent text-black flex items-center justify-between px-20 text-2xl text-cente border-b-[1px]">
+    <motion.nav
+      className="fixed top-0 z-20 backdrop-blur-xl w-full h-[75px] bg-transparent text-black flex items-center justify-between px-20 text-2xl text-cente border-b-[1px]"
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.6, duration: 0.6, ease: "easeIn" }}
+    >
       <div>
         <span className="text-2xl text-[#F97316] font-bold">Chai</span>
         <span className="text-2xl font-medium">Team</span>
@@ -50,7 +56,7 @@ const Navbar = () => {
           Get Started
         </button>
       </div>
-    </nav>
+    </motion.nav>
   );
 };
 
