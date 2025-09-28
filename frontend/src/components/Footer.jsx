@@ -33,13 +33,13 @@ const Footer = () => {
 
         <div className="flex items-center justify-center gap-5">
           <Link to="/" className="text-2xl hover:[var(--chaiteam-organe-dark)]">
-            <i class="ri-youtube-fill"></i>
+            <i className="ri-youtube-fill"></i>
           </Link>
           <Link to="/" className="text-xl hover:[var(--chaiteam-organe-dark)]">
-            <i class="ri-twitter-x-fill"></i>
+            <i className="ri-twitter-x-fill"></i>
           </Link>
           <Link to="/" className="text-xl hover:[var(--chaiteam-organe-dark)]">
-            <i class="ri-linkedin-fill"></i>
+            <i className="ri-linkedin-fill"></i>
           </Link>
         </div>
       </div>

@@ -134,10 +134,10 @@ a:hover {
 
 /* Buttons */
 button {
-  background-color: var(--chaiteam-btn-primary);
+  /* background-color: var(--chaiteam-btn-primary); */
   border: none;
   border-radius: 0.25rem;
-  color: var(--chaiteam-text-primary);
+  /* color: var(--chaiteam-text-primary); */
   cursor: pointer;
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-medium);
@@ -145,9 +145,9 @@ button {
   transition: background-color 0.2s ease;
 }
 
-button:hover {
+/* button:hover {
   background-color: var(--chaiteam-btn-primary-hover);
-}
+} */
 
 button.secondary {
   background-color: var(--chaiteam-btn-secondary);

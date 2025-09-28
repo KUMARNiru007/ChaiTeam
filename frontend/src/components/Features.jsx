@@ -178,10 +178,10 @@ const Features = () => {
         </div>
       </div>
 
-      <div className="flex flex-col items-center justify-center mt-10">
-        <span>Developed and Maintained For</span>
+      <div className="flex flex-col items-center justify-center mt-20">
+        <span className="text-xl">Developed and Maintained For</span>
         <a href="https://www.chaicode.com/" target="_blank">
-          <div className="w-36 h-auto mt-2 cursor-pointer">
+          <div className="w-64 h-auto mt-2 cursor-pointer">
             <img
               src={ChaiCodeImage}
               alt="Chai code Image"

@@ -1,7 +1,10 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "motion/react";
 
 const Navbar = () => {
+  const navigate = useNavigate();
+
   return (
     <motion.nav
       className="fixed top-0 z-20 backdrop-blur-xl w-full h-[75px] bg-transparent text-black flex items-center justify-between px-20 text-2xl text-cente border-b-[1px]"
@@ -52,6 +55,7 @@ const Navbar = () => {
           onMouseLeave={(e) =>
             (e.target.style.backgroundColor = "var(--chaiteam-btn-start)")
           }
+          onClick={() => navigate("/login")}
         >
           Get Started
         </button>
