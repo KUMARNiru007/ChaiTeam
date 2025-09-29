@@ -30,29 +30,71 @@ export const groupService = {
 export const noticeService = {
   getGlobalNotices: async () => {
     try {
-      const response = await axiosInstance.get('/noticeboard/getGlobalNotices');
-      return response.data.data;
+      const response = await axiosInstance.get('/notices/global');
+      return response.data.data || response.data;
     } catch (error) {
       console.error('Error fetching global notices:', error);
       throw error;
     }
   },
-  getBatchNotices: async (batchId) => {
+  
+  getNoticesByScope: async (scope) => {
     try {
-      const response = await axiosInstance.get(`/noticeboard/getBatchNotices/${batchId}`);
-      return response.data.data;
+      const response = await axiosInstance.get(`/notices?scope=${scope}`);
+      return response.data.data || response.data;
     } catch (error) {
-      console.error('Error fetching batch notices:', error);
+      console.error('Error fetching notices by scope:', error);
       throw error;
     }
   },
-  getGroupNotices: async (groupId) => {
+  
+  getNoticeById: async (id) => {
     try {
-      const response = await axiosInstance.get(`/noticeboard/getGroupNotices/${groupId}`);
-      return response.data.data;
+      const response = await axiosInstance.get(`/notices/${id}`);
+      return response.data.data || response.data;
     } catch (error) {
-      console.error('Error fetching group notices:', error);
+      console.error('Error fetching notice:', error);
       throw error;
     }
+  },
+  
+  createNotice: async (noticeData) => {
+    try {
+      const response = await axiosInstance.post('/notices', noticeData);
+      return response.data.data || response.data;
+    } catch (error) {
+      console.error('Error creating notice:', error);
+      throw error;
+    }
+  },
+  
+  updateNotice: async (id, noticeData) => {
+    try {
+      const response = await axiosInstance.put(`/notices/${id}`, noticeData);
+      return response.data.data || response.data;
+    } catch (error) {
+      console.error('Error updating notice:', error);
+      throw error;
+    }
+  },
+  
+  deleteNotice: async (id) => {
+    try {
+      const response = await axiosInstance.delete(`/notices/${id}`);
+      return response.data.data || response.data;
+    } catch (error) {
+      console.error('Error deleting notice:', error);
+      throw error;
+    }
+  }
+};
+
+// Auth API services
+export const authService = {
+  googleLogin: () => {
+    window.location.href = `${axiosInstance.defaults.baseURL}/auth/google`;
+  },
+  githubLogin: () => {
+    window.location.href = `${axiosInstance.defaults.baseURL}/auth/github`;
   }
 };

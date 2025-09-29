@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import GoogleIcon from "../assets/google.svg";
 import GithubIcon from "../assets/github.svg";
 import ChaiCodeImage from "../assets/chaicode-black.svg";
+import { authService } from "../services/api";
 
 function LoginPage() {
   return (
@@ -24,7 +25,10 @@ function LoginPage() {
         </div>
 
         <div className="flex justify-center gap-4 pb-2">
-          <button className="relative inline-flex items-center justify-center box-border appearance-none select-none whitespace-nowrap font-normal subpixel-antialiased overflow-hidden bg-transparent px-4 min-w-20 h-10 gap-2 !rounded-md !border-[1px] !border-black/30 hover:bg-gray-200 py-5">
+          <button
+            onClick={() => authService.googleLogin()}
+            className="relative inline-flex items-center justify-center box-border appearance-none select-none whitespace-nowrap font-normal subpixel-antialiased overflow-hidden bg-transparent px-4 min-w-20 h-10 gap-2 !rounded-md !border-[1px] !border-black/30 hover:bg-gray-200 py-5"
+          >
             <img
               src={GoogleIcon}
               alt="Google Icon"
@@ -34,16 +38,7 @@ function LoginPage() {
               Continue with Google
             </span>
           </button>
-          <button className="relative inline-flex items-center justify-center box-border appearance-none select-none whitespace-nowrap font-normal subpixel-antialiased overflow-hidden bg-transparent px-4 min-w-20 h-10 gap-2 !rounded-md !border-[1px] !border-black/30 hover:bg-gray-200 py-5">
-            <img
-              src={GithubIcon}
-              alt="Google Icon"
-              className="object-contain h-6"
-            />
-            <span className="hidden text-xs sm:ml-0.5 sm:block">
-              Continue with GitHub
-            </span>
-          </button>
+          
         </div>
 
         <div className="m-auto mb-2 mt-4 max-w-[350px] text-center text-[17px]">

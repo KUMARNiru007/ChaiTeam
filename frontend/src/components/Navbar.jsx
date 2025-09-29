@@ -68,7 +68,7 @@ const Navbar = () => {
           }
           onClick={() => navigate("/login")}
         >
-          Get Started
+          Login
         </button>
       </div>
     </motion.nav>
