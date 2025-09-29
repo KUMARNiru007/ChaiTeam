@@ -5,12 +5,15 @@ const Footer = () => {
   return (
     <footer className="bg-white text-black w-full h-[75px] px-20 flex items-center justify-between border-t-[1px]">
       <div className="text-center flex items-center justify-between gap-4">
-        <Link to="/" className="text-black hover:[var(--chaiteam-organe-dark)]">
+        <Link
+          to="/"
+          className="text-black hover:text-[var(--chaiteam-orange-hover)]"
+        >
           Help & Support
         </Link>
         <Link
           to="/"
-          className="text-black hover:[var(--chaiteam-organe-dark)]0"
+          className="text-black hover:text-[var(--chaiteam-orange-hover)]"
         >
           Report a issue
         </Link>
@@ -32,13 +35,22 @@ const Footer = () => {
         </div>
 
         <div className="flex items-center justify-center gap-5">
-          <Link to="/" className="text-2xl hover:[var(--chaiteam-organe-dark)]">
+          <Link
+            to="/"
+            className="text-2xl hover:text-[var(--chaiteam-orange-hover)]"
+          >
             <i className="ri-youtube-fill"></i>
           </Link>
-          <Link to="/" className="text-xl hover:[var(--chaiteam-organe-dark)]">
+          <Link
+            to="/"
+            className="text-xl hover:text-[var(--chaiteam-orange-hover)]"
+          >
             <i className="ri-twitter-x-fill"></i>
           </Link>
-          <Link to="/" className="text-xl hover:[var(--chaiteam-organe-dark)]">
+          <Link
+            to="/"
+            className="text-xl hover:text-[var(--chaiteam-orange-hover)]"
+          >
             <i className="ri-linkedin-fill"></i>
           </Link>
         </div>

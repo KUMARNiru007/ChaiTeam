@@ -69,7 +69,7 @@ function LoginPage() {
 
       <Link
         to="/"
-        className="mt-2 w-full flex cursor-pointer items-center justify-center gap-1 text-center font-light"
+        className="mt-2 w-full flex cursor-pointer items-center justify-center gap-1 text-center font-light hover:text-[var(--chaiteam-orange-hover)]"
       >
         👈 Back to home
       </Link>

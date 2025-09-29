@@ -94,6 +94,18 @@
   --font-size-h2: 1.875rem;
 }
 
+/* Change text selection color */
+::selection {
+  background: #ff9335; /* background highlight color */
+  color: #ffffff; /* text color */
+}
+
+/* For Firefox */
+::-moz-selection {
+  background: #ff9335;
+  color: #ffffff;
+}
+
 /* Base styles */
 body {
   background-color: var(--chaiteam-bg-primary);
@@ -128,9 +140,9 @@ a {
   transition: color 0.2s ease;
 }
 
-a:hover {
+/* a:hover {
   color: var(--chaiteam-orange-hover);
-}
+} */
 
 /* Buttons */
 button {
