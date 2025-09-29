@@ -17,7 +17,7 @@ const Features = () => {
             <div className="flex p-3 w-full justify-start items-center shrink-0 overflow-inherit subpixel-antialiased rounded-t-lg">
               <div className="relative max-w-fit min-w-min inline-flex items-center justify-between box-border whitespace-nowrap h-7 text-small bg-blue-200 text-blue-600 rounded-md p-0">
                 <span className="flex-1 text-inherit font-normal px-2">
-                  Collobrative
+                  Collobrative.
                 </span>
               </div>
             </div>
