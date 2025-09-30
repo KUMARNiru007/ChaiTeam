@@ -128,7 +128,7 @@ const googleLogin = async (req, res) => {
     res.cookie('accessToken', accessToken, accessCookieOptions);
     res.cookie('refreshToken', refreshToken, refreshCookieOptions);
 
-    return res.redirect(`${process.env.BASE_URL}`);
+    return res.redirect(`${process.env.FRONTEND_URL}/dashboard`);
   } catch (error) {
     console.error(
       'Google OAuth Error Response:',
@@ -257,7 +257,7 @@ const gtihubLogin = async (req, res) => {
     res.cookie('accessToken', accessToken, accessCookieOptions);
     res.cookie('refreshToken', refreshToken, refreshCookieOptions);
 
-    res.redirect(`${process.env.BASE_URL}`);
+    res.redirect(`${process.env.FRONTEND_URL}/dashboard`);
   } catch (error) {
     console.error(
       'GitHub OAuth error:',

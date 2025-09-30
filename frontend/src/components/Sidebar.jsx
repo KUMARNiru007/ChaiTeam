@@ -1,12 +1,12 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
+import React from "react";
+import { NavLink } from "react-router-dom";
 
 const Sidebar = () => {
   const navItems = [
-    { path: 'batches', label: 'Batches',icon:'ri-school-fill' },
-    { path: 'groups', label: 'Groups',icon:'ri-group-fill' },
-    { path: 'noticeboard', label: 'Noticeboard',icon:'ri-clapperboard-line' },
-    { path: 'profile', label: 'Profile',icon:'ri-user-line' },
+    { path: "batches", label: "Batches", icon: "ri-school-fill" },
+    { path: "groups", label: "Groups", icon: "ri-group-fill" },
+    { path: "noticeboard", label: "Noticeboard", icon: "ri-clapperboard-line" },
+    { path: "profile", label: "Profile", icon: "ri-user-line" },
   ];
   //  { path: '/dashboard', label: 'Dashboard', icon: 'ri-home-line' },
   //   { path: '/peer-reviews', label: 'Peer Reviews', icon: 'ri-star-line' },
@@ -16,7 +16,7 @@ const Sidebar = () => {
   //   { path: '/problems', label: 'Problems', icon: 'ri-code-line', badge: 'BETA' },
   //   { path: '/report-card', label: 'Report Card', icon: 'ri-user-line', badge: 'BETA' },
   return (
-    <aside className="chaiteam-sidebar">
+    <aside className="parkinsans-light chaiteam-sidebar">
       {/* Logo Section */}
       <div className="sidebar-logo">
         <div className="logo-icon">
@@ -31,8 +31,8 @@ const Sidebar = () => {
           <NavLink
             key={path}
             to={path}
-            className={({ isActive }) => 
-              `sidebar-nav-item ${isActive ? 'active' : ''}`
+            className={({ isActive }) =>
+              `sidebar-nav-item ${isActive ? "active" : ""}`
             }
           >
             <div className="nav-item-content">

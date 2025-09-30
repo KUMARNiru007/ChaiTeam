@@ -1,20 +1,24 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
+import { useTheme } from "../context/ThemeContext.jsx";
+
 const Footer = () => {
+  const { darkMode } = useTheme();
+
   return (
-    <footer className="bg-white text-black w-full h-[75px] px-20 flex items-center justify-between border-t-[1px]">
+    <footer
+      className={`w-full h-[75px] px-20 flex items-center justify-between border-t-[1px] ${
+        darkMode
+          ? "bg-[#111111] text-white border-[#343434]"
+          : "bg-white text-black"
+      }`}
+    >
       <div className="text-center flex items-center justify-between gap-4">
-        <Link
-          to="/"
-          className="text-black hover:text-[var(--chaiteam-orange-hover)]"
-        >
+        <Link to="/" className="hover:text-[var(--chaiteam-orange-hover)]">
           Help & Support
         </Link>
-        <Link
-          to="/"
-          className="text-black hover:text-[var(--chaiteam-orange-hover)]"
-        >
+        <Link to="/" className="hover:text-[var(--chaiteam-orange-hover)]">
           Report a issue
         </Link>
       </div>

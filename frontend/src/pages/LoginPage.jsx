@@ -3,13 +3,26 @@ import { Link } from "react-router-dom";
 
 import GoogleIcon from "../assets/google.svg";
 import GithubIcon from "../assets/github.svg";
-import ChaiCodeImage from "../assets/chaicode-black.svg";
+import ChaiCodeImageBlack from "../assets/chaicode-black.svg";
+import ChaiCodeImageWhite from "../assets/chaicode-white.svg";
 import { authService } from "../services/api";
 
+import { useTheme } from "../context/ThemeContext.jsx";
+
 function LoginPage() {
+  const { darkMode } = useTheme();
+
   return (
-    <div className="parkinsans-light bg-white text-black w-full min-h-screen flex flex-col justify-center items-center">
-      <div className="flex flex-col relative overflow-hidden h-auto box-border outline-none m-6 rounded-lg border-[1px] border-black/20 px-6 py-8 shadow-sm sm:w-[480px]">
+    <div
+      className={`parkinsans-light w-full min-h-screen flex flex-col justify-center items-center ${
+        darkMode ? "bg-[#111111] text-white" : "bg-white text-black"
+      }`}
+    >
+      <div
+        className={`flex flex-col relative overflow-hidden h-auto box-border outline-none m-6 rounded-lg border-[1px] px-6 py-8 shadow-sm sm:w-[480px] ${
+          darkMode ? "border-[#343434]" : " border-black/20"
+        }`}
+      >
         <div className="mt-3 flex w-full flex-col items-center justify-center gap-y-1">
           <p className="parkinsans-bold text-4xl">
             Chai
@@ -27,7 +40,11 @@ function LoginPage() {
         <div className="flex justify-center gap-4 pb-2">
           <button
             onClick={() => authService.googleLogin()}
-            className="relative inline-flex items-center justify-center box-border appearance-none select-none whitespace-nowrap font-normal subpixel-antialiased overflow-hidden bg-transparent px-4 min-w-20 h-10 gap-2 !rounded-md !border-[1px] !border-black/30 hover:bg-gray-200 py-5"
+            className={`relative inline-flex items-center justify-center box-border appearance-none select-none whitespace-nowrap font-normal subpixel-antialiased overflow-hidden bg-transparent px-4 min-w-20 h-10 gap-2 !rounded-md !border-[1px] py-5 ${
+              darkMode
+                ? "!border-[#343434] hover:bg-[#9e9e9e]/20"
+                : " !border-black/30 hover:bg-gray-200"
+            }`}
           >
             <img
               src={GoogleIcon}
@@ -38,7 +55,6 @@ function LoginPage() {
               Continue with Google
             </span>
           </button>
-          
         </div>
 
         <div className="m-auto mb-2 mt-4 max-w-[350px] text-center text-[17px]">
@@ -74,7 +90,7 @@ function LoginPage() {
         <a href="https://www.chaicode.com/" target="_blank">
           <div className="w-64 h-auto mt-2 cursor-pointer">
             <img
-              src={ChaiCodeImage}
+              src={darkMode ? ChaiCodeImageWhite : ChaiCodeImageBlack}
               alt="Chai code Image"
               className="object-cover"
             />

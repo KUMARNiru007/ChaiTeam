@@ -2,13 +2,19 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "motion/react";
 
+import { useTheme } from "../context/ThemeContext.jsx";
 import GroupImage from "../assets/Groups1.png";
 
 function Hero() {
   const navigate = useNavigate();
+  const { darkMode } = useTheme();
 
   return (
-    <div className="relative min-h-screen w-full bg-white text-black flex flex-col items-center pt-28 overflow-hidden">
+    <div
+      className={`relative min-h-screen w-full flex flex-col items-center pt-28 overflow-hidden transition-all duration-200 ${
+        darkMode ? "text-white bg-[#111111]" : "text-black bg-white"
+      }`}
+    >
       {/* Headings */}
       <motion.div
         className="flex flex-col items-center"
@@ -50,7 +56,7 @@ function Hero() {
       <motion.button
         style={{
           backgroundColor: "var(--chaiteam-btn-start)",
-          color: "black",
+          color: `${darkMode ? "white" : "black"}`,
           border: "none",
           padding: "9px 24px",
           borderRadius: "8px",

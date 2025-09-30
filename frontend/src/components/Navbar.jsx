@@ -10,8 +10,8 @@ const Navbar = () => {
 
   return (
     <motion.nav
-      className={`fixed top-0 z-20 backdrop-blur-xl w-full h-[75px] bg-transparent flex items-center justify-between px-20 text-2xl text-cente border-b-[1px] border-black ${
-        darkMode ? "text-white" : "text-black"
+      className={`fixed top-0 z-20 backdrop-blur-xl w-full h-[75px] bg-transparent flex items-center justify-between px-20 text-2xl text-cente border-b-[1px]  transition-all duration-200 ${
+        darkMode ? "text-white border-[#343434]" : "text-black border-black"
       }`}
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -50,7 +50,7 @@ const Navbar = () => {
         <button
           style={{
             backgroundColor: "var(--chaiteam-btn-start)",
-            color: `${darkMode ? "black" : "white"}`,
+            color: `${darkMode ? "white" : "black"}`,
             border: "none",
             // padding: "0px 24px",
             borderRadius: "8px",
