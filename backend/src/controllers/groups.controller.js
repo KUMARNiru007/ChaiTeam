@@ -83,15 +83,29 @@ export const createGroup = async (req, res) => {
 
 export const getAllGroups = async (req, res) => {
   try {
-    const groups = await db.groups.findMany({});
+    const { batchId } = req.query;
+    
+    const query = {
+      include: {
+        member: true,
+        leader: true
+      }
+    };
+
+    if (batchId) {
+      query.where = { batchId };
+    }
+
+    const groups = await db.groups.findMany(query);
 
     return res
       .status(200)
       .json(new ApiResponse(200, groups, 'Groups fetched successfully'));
   } catch (error) {
+    console.error("Error in getAllGroups:", error);
     return res
       .status(error.statusCode || 500)
-      .json(new ApiError(error.statusCode || 500, error.message));
+      .json(new ApiError(error.statusCode || 500, error.message || "Failed to fetch groups"));
   }
 };
 

@@ -86,9 +86,9 @@ export const getUserGroup = async (req, res) => {
     });
 
     if (!group) {
-      return req
+      return res
         .status(400)
-        .json(new ApiError(400, 'User i snot enrolled in any group'));
+        .json(new ApiError(400, 'User is not enrolled in any group'));
     }
 
     return res
