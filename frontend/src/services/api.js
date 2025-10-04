@@ -47,7 +47,10 @@ export const groupService = {
   
   getBatchGroups: async (batchId) => {
     try {
-      const response = await axiosInstance.get(`/groups/getBatchGroups/${batchId}`);
+      if (!batchId) {
+        throw new Error('Batch ID is required');
+      }
+      const response = await axiosInstance.get(`/groups/getAllGroups?batchId=${batchId}`);
       return response.data.Data;
     } catch (error) {
       console.error("Error fetching batch groups:", error);

@@ -62,9 +62,6 @@ const Groups = ({ batchId, userGroupId }) => {
     return matchesSearch && matchesStatus && matchesTab;
   });
 
-  // Rest of the component remains the same, but we'll update the GroupCard component
-  // to use the data from the API
-
   // Add loading and error states to the render
   return (
     <div className="parkinsans-light" style={{ padding: "1.5rem" }}>
@@ -139,16 +136,6 @@ const Groups = ({ batchId, userGroupId }) => {
               margin: "0 auto",
             }}
           ></div>
-          <style jsx>{`
-            @keyframes spin {
-              0% {
-                transform: rotate(0deg);
-              }
-              100% {
-                transform: rotate(360deg);
-              }
-            }
-          `}</style>
           <p style={{ marginTop: "1rem", color: "#b3b3b3" }}>
             Loading groups...
           </p>
@@ -358,7 +345,7 @@ const Groups = ({ batchId, userGroupId }) => {
                 gridColumn: "1 / -1",
                 textAlign: "center",
                 padding: "2rem",
-                color: "#b3b3b3",
+                color: "#ffa116",
               }}
             >
               No groups found matching your criteria.
