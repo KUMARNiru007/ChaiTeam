@@ -8,10 +8,9 @@ const Sidebar = () => {
   const dispatch = useDispatch();
 
   const navItems = [
-    { path: 'dashboard', label: 'Dashboard', icon: 'ri-home-3-line' },
-    { path: 'batches', label: 'Batches', icon: 'ri-school-fill' },
-    { path: 'groups', label: 'Groups', icon: 'ri-group-fill' },
-    { path: 'noticeboard', label: 'Noticeboard', icon: 'ri-clapperboard-line' },
+    { path: '/dashboard', label: 'Dashboard', icon: 'ri-home-3-line' },
+    { path: '/batches', label: 'Batches', icon: 'ri-school-fill' },
+    { path: '/noticeboard', label: 'Noticeboard', icon: 'ri-clapperboard-line' },
   ];
 
   return (

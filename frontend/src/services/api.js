@@ -4,10 +4,20 @@ import { axiosInstance } from "../lib/axios";
 export const batchService = {
   getAllBatches: async () => {
     try {
-      const response = await axiosInstance.get("/batch/all");
+      const response = await axiosInstance.get("/batch/my-batches");
       return response.data.Data;
     } catch (error) {
       console.error("Error fetching batches:", error);
+      throw error;
+    }
+  },
+
+  getBatchById: async (batchId) => {
+    try {
+      const response = await axiosInstance.get(`/batch/getBatchById/${batchId}`);
+      return response.data.Data;
+    } catch (error) {
+      console.error("Error fetching batch details:", error);
       throw error;
     }
   },
@@ -21,6 +31,36 @@ export const groupService = {
       return response.data.Data;
     } catch (error) {
       console.error("Error fetching groups:", error);
+      throw error;
+    }
+  },
+
+  getUserGroup: async (batchId) => {
+    try {
+      const response = await axiosInstance.get(`/user/getUserGroup/${batchId}`);
+      return response.data.Data;
+    } catch (error) {
+      console.error("Error fetching user's group:", error);
+      throw error;
+    }
+  },
+  
+  getBatchGroups: async (batchId) => {
+    try {
+      const response = await axiosInstance.get(`/groups/getBatchGroups/${batchId}`);
+      return response.data.Data;
+    } catch (error) {
+      console.error("Error fetching batch groups:", error);
+      throw error;
+    }
+  },
+
+  getGroupById: async (groupId) => {
+    try {
+      const response = await axiosInstance.get(`/groups/getGroupById/${groupId}`);
+      return response.data.Data;
+    } catch (error) {
+      console.error("Error fetching group details:", error);
       throw error;
     }
   },

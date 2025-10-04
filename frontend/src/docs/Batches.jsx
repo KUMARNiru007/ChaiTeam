@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { batchService } from "../services/api";
 
 const Batches = () => {
@@ -54,8 +55,11 @@ const Batches = () => {
   });
 
   // Rest of the component remains the same, but we'll update the BatchCard component
+  const navigate = useNavigate();
+
   const BatchCard = ({ batch }) => (
     <div
+      onClick={() => navigate(`/batches/${batch.id}`)}
       style={{
         backgroundColor: "#2d2d2d",
         border: "1px solid #404040",

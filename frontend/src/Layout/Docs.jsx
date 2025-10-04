@@ -5,6 +5,7 @@ import { Routes, Route } from "react-router-dom";
 // Import the missing components
 import BatchPage from "../docs/BatchPage";
 import GroupPage from "../docs/GroupPage";
+import Dashboard from "../docs/Dashboard";
 
 function Docs() {
   return (
@@ -14,6 +15,7 @@ function Docs() {
           className={` overflow-auto rounded-lg transition-colors duration-300`}
         >
           <Routes>
+            <Route path="dashboard" element={<Dashboard />} />
             <Route path="batches" element={<Batches />} />
             <Route path="batches/:id" element={<BatchPage />} />
             <Route path="groups" element={<Groups />} />

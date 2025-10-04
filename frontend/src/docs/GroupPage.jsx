@@ -1,20 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { groupService } from '../services/api';
 
 const GroupPage = () => {
+  const { batchId, groupId } = useParams();
+  const navigate = useNavigate();
   const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   
-  // Sample group data
-  const groupData = {
-    id: 1,
-    name: "React Masters",
-    description: "Focused on advanced React patterns and state management",
-    members: [
-      { id: 1, name: "John Smith", role: "Leader", avatar: "JS" },
-      { id: 2, name: "Alice Johnson", role: "Member", avatar: "AJ" },
-      { id: 3, name: "Bob Chen", role: "Member", avatar: "BC" }
-    ],
-    batchName: "Full Stack Web Development"
-  };
+  // State for group data
+  const [groupData, setGroupData] = useState(null);
+  const [isUserInGroup, setIsUserInGroup] = useState(false);
+
+  useEffect(() => {
+    const fetchGroupData = async () => {
+      try {
+        setLoading(true);
+        const [groupDetails, userGroup] = await Promise.all([
+          groupService.getGroupById(groupId),
+          groupService.getUserGroup(batchId)
+        ]);
+        
+        setGroupData(groupDetails);
+        setIsUserInGroup(userGroup && userGroup.id === groupId);
+        setError(null);
+      } catch (err) {
+        console.error('Failed to fetch group details:', err);
+        setError('Failed to load group details. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (groupId && batchId) {
+      fetchGroupData();
+    }
+  }, [groupId, batchId]);
 
   // Sample messages
   const [messages, setMessages] = useState([
@@ -73,6 +95,42 @@ const GroupPage = () => {
       handleSendMessage();
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen">
+        <p className="text-red-500 mb-4">{error}</p>
+        <button
+          onClick={() => navigate(`/batches/${batchId}/groups`)}
+          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+        >
+          Back to Groups
+        </button>
+      </div>
+    );
+  }
+
+  if (!groupData) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen">
+        <p className="text-gray-400 mb-4">Group not found</p>
+        <button
+          onClick={() => navigate(`/batches/${batchId}/groups`)}
+          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+        >
+          Back to Groups
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div style={{

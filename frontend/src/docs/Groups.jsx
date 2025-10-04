@@ -1,20 +1,27 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { groupService } from "../services/api";
 
-const Groups = () => {
+const Groups = ({ batchId, userGroupId }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedBatch, setSelectedBatch] = useState("All Batches");
   const [selectedStatus, setSelectedStatus] = useState("All Status");
-  const [activeTab, setActiveTab] = useState("active");
   const [groupsData, setGroupsData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [activeTab, setActiveTab] = useState("active");
+
+  const navigate = useNavigate();
+
+  const handleSearchChange = (e) => setSearchTerm(e.target.value);
+  const handleStatusChange = (e) => setSelectedStatus(e.target.value);
+  const handleTabChange = (tab) => setActiveTab(tab);
 
   useEffect(() => {
     const fetchGroups = async () => {
       try {
         setLoading(true);
-        const data = await groupService.getAllGroups();
+        // Updated to get groups for a specific batch
+        const data = await groupService.getBatchGroups(batchId);
         setGroupsData(data);
         setError(null);
       } catch (err) {
@@ -25,8 +32,10 @@ const Groups = () => {
       }
     };
 
-    fetchGroups();
-  }, []);
+    if (batchId) {
+      fetchGroups();
+    }
+  }, [batchId]);
 
   const tabCounts = {
     active: groupsData.filter((group) => group.status === "ACTIVE").length,
@@ -40,6 +49,8 @@ const Groups = () => {
       group.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (group.description &&
         group.description.toLowerCase().includes(searchTerm.toLowerCase()));
+    const matchesStatus =
+      selectedStatus === "All Status" ? true : group.status === selectedStatus;
     const matchesTab =
       activeTab === "active"
         ? group.status === "ACTIVE"
@@ -48,7 +59,7 @@ const Groups = () => {
         : activeTab === "disbanded"
         ? group.status === "DISBANNED"
         : false;
-    return matchesSearch && matchesTab;
+    return matchesSearch && matchesStatus && matchesTab;
   });
 
   // Rest of the component remains the same, but we'll update the GroupCard component
@@ -57,9 +68,63 @@ const Groups = () => {
   // Add loading and error states to the render
   return (
     <div className="parkinsans-light" style={{ padding: "1.5rem" }}>
-      {/* Header and filters remain the same */}
+      {/* Search and filter controls */}
+      <div style={{ marginBottom: "2rem" }}>
+        <div style={{ display: "flex", gap: "1rem", marginBottom: "1rem" }}>
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={handleSearchChange}
+            placeholder="Search groups..."
+            style={{
+              padding: "0.5rem",
+              borderRadius: "0.375rem",
+              border: "1px solid #404040",
+              backgroundColor: "#2d2d2d",
+              color: "white",
+              flex: 1
+            }}
+          />
+          <select
+            value={selectedStatus}
+            onChange={handleStatusChange}
+            style={{
+              padding: "0.5rem",
+              borderRadius: "0.375rem",
+              border: "1px solid #404040",
+              backgroundColor: "#2d2d2d",
+              color: "white"
+            }}
+          >
+            <option value="All Status">All Status</option>
+            <option value="ACTIVE">Active</option>
+            <option value="INACTIVE">Inactive</option>
+            <option value="DISBANNED">Disbanded</option>
+          </select>
+        </div>
 
-      {/* Add loading and error states */}
+        {/* Tabs */}
+        <div style={{ display: "flex", gap: "1rem", borderBottom: "1px solid #404040" }}>
+          {Object.entries(tabCounts).map(([tab, count]) => (
+            <button
+              key={tab}
+              onClick={() => handleTabChange(tab)}
+              style={{
+                padding: "0.5rem 1rem",
+                backgroundColor: "transparent",
+                border: "none",
+                borderBottom: activeTab === tab ? "2px solid #1890ff" : "none",
+                color: activeTab === tab ? "#1890ff" : "#b3b3b3",
+                cursor: "pointer"
+              }}
+            >
+              {tab.charAt(0).toUpperCase() + tab.slice(1)} ({count})
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Loading and error states */}
       {loading ? (
         <div style={{ textAlign: "center", padding: "2rem" }}>
           <div
@@ -152,20 +217,26 @@ const Groups = () => {
                   {group.description || "No description"}
                 </p>
 
-                {/* <div style={{ marginBottom: '1rem' }}>
-                  {group.tags && Array.isArray(JSON.parse(group.tags)) && JSON.parse(group.tags).map((tag, index) => (
-                    <span key={index} style={{
-                      backgroundColor: '#404040',
-                      color: '#ffffff',
-                      fontSize: '0.75rem',
-                      padding: '0.25rem 0.5rem',
-                      borderRadius: '0.25rem',
-                      marginRight: '0.5rem',
-                      marginBottom: '0.5rem',
-                      display: 'inline-block'
-                    }}>{tag}</span>
-                  ))}
-                </div> */}
+                <div style={{ marginBottom: '1rem' }}>
+  {group.tags && Array.isArray(group.tags) && group.tags.map((tag, index) => (
+    <span
+      key={index}
+      style={{
+        backgroundColor: '#404040',
+        color: '#ffffff',
+        fontSize: '0.75rem',
+        padding: '0.25rem 0.5rem',
+        borderRadius: '0.25rem',
+        marginRight: '0.5rem',
+        marginBottom: '0.5rem',
+        display: 'inline-block'
+      }}
+    >
+      {tag}
+    </span>
+  ))}
+</div>
+
 
                 <div style={{ marginBottom: "1rem" }}>
                   <div
@@ -262,6 +333,23 @@ const Groups = () => {
                     {group.batchName}
                   </span>
                 </div>
+                {/* View Group button */}
+                <button
+                  onClick={() => navigate(`/batches/${batchId}/groups/${group.id}`)}
+                  style={{
+                    width: "100%",
+                    marginTop: "1rem",
+                    padding: "0.5rem",
+                    backgroundColor: userGroupId === group.id ? "#52c41a" : "#1890ff",
+                    border: "none",
+                    borderRadius: "0.375rem",
+                    color: "white",
+                    cursor: "pointer",
+                    transition: "background-color 0.2s"
+                  }}
+                >
+                  {userGroupId === group.id ? "View Your Group" : "View Group"}
+                </button>
               </div>
             ))
           ) : (
