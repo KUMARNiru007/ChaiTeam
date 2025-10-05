@@ -1,23 +1,29 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
+import { useTheme } from '../context/ThemeContext.jsx';
 import { toggleSidebar } from '../redux/sidebarSlice.js';
 
 const Sidebar = () => {
   const isCollapsed = useSelector((state) => state.sidebar.isCollapsed);
   const dispatch = useDispatch();
+  const { darkMode } = useTheme();
 
   const navItems = [
     { path: '/dashboard', label: 'Dashboard', icon: 'ri-home-3-line' },
     { path: '/batches', label: 'Batches', icon: 'ri-school-fill' },
-    { path: '/noticeboard', label: 'Noticeboard', icon: 'ri-clapperboard-line' },
+    {
+      path: '/noticeboard',
+      label: 'Noticeboard',
+      icon: 'ri-clapperboard-line',
+    },
   ];
 
   return (
     <aside
       className={`parkinsans-light chaiteam-sidebar ${
         isCollapsed ? 'collapsed' : ''
-      }`}
+      } ${darkMode ? '' : '!bg-white !text-black'} transition-all duration-200`}
     >
       {/* Logo Section */}
       <NavLink to='/'>
@@ -26,7 +32,7 @@ const Sidebar = () => {
             <i className='ri-graduation-cap-fill'></i>
           </div>
           {!isCollapsed && (
-            <span className='logo-text'>
+            <span className={`logo-text ${darkMode ? '' : '!text-black'}`}>
               Chai
               <span className='text-[var(--chaiteam-orange)]'>Team</span>
             </span>
@@ -60,7 +66,13 @@ const Sidebar = () => {
 
             {/* Navlink */}
             <div className='absolute top-3 left-[65px] transform opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none'>
-              <div className='bg-[var(--chaiteam-bg-secondary)] text-white text-sm py-1 px-2 rounded-lg shadow-xl border border-[var(--chaiteam-border-secondary)] whitespace-nowrap'>
+              <div
+                className={` ${
+                  darkMode
+                    ? 'bg-[var(--chaiteam-bg-secondary)] text-white'
+                    : 'text-[var(--chaiteam-bg-primary)] bg-white'
+                } text-sm py-1 px-2 rounded-lg shadow-xl border border-[var(--chaiteam-border-secondary)] whitespace-nowrap`}
+              >
                 <div className='text-center text-xs'>
                   <span>{label}</span>
                 </div>
@@ -84,14 +96,14 @@ const Sidebar = () => {
             `sidebar-nav-item profile-item ${isActive ? 'active' : ''}`
           }
         >
-          <div className='nav-item-content'>
+          <div className='nav-item-content border border-[var(--chaiteam-border-primary)] rounded-lg'>
             <div className='nav-item-icon'>
               <i className='ri-user-line'></i>
             </div>
             {!isCollapsed && (
               <div className='profile-info'>
-                <span className='nav-item-label'>Profile</span>
-                <span className='user-name'>Kumar Nirupam</span>
+                <span className='nav-item-label'>Kumar Nirupam</span>
+                {/* <span className='user-name'>Kumar Nirupam</span> */}
               </div>
             )}
           </div>

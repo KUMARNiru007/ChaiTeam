@@ -112,7 +112,8 @@ export const getBatchById = async (req, res, next) => {
 export const updateBatch = async (req, res, next) => {
   try {
     const { batchId } = req.params;
-    const { name, description, status } = req.body;
+    const { name, description, status, logoImageUrl, bannerImageUrl } =
+      req.body;
 
     const existingBatch = await db.batch.findUnique({ where: { id: batchId } });
 
@@ -126,6 +127,8 @@ export const updateBatch = async (req, res, next) => {
         name,
         description,
         status,
+        logoImageUrl,
+        bannerImageUrl,
       },
     });
 
@@ -395,6 +398,8 @@ export const getAllUserBatches = async (req, res) => {
         name: true,
         description: true,
         status: true,
+        logoImageUrl: true,
+        bannerImageUrl: true,
         createdAT: true,
         updatedAT: true,
       },

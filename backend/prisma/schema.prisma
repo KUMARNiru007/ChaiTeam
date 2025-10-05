@@ -28,16 +28,18 @@ model User {
 }
 
 model Batch {
-  id           String        @id @default(uuid())
-  name         String
-  createdAT    DateTime      @default(now())
-  updatedAT    DateTime      @updatedAt
-  status       status        @default(ACTIVE)
-  description  String?
-  batchMembers BatchMember[]
-  GroupMember  GroupMember[]
-  groups       Groups[]
-  notices      Notices[]
+  id             String        @id @default(uuid())
+  name           String
+  status         status        @default(ACTIVE)
+  description    String?
+  logoImageUrl   String?
+  bannerImageUrl String?
+  createdAT      DateTime      @default(now())
+  updatedAT      DateTime      @updatedAt
+  batchMembers   BatchMember[]
+  GroupMember    GroupMember[]
+  groups         Groups[]
+  notices        Notices[]
 }
 
 model BatchMember {
@@ -66,6 +68,8 @@ model Groups {
   batchId          String
   batchName        String
   capacity         Int
+  logoImageUrl     String?
+  groupImageUrl    String?
   groupActivity    GroupActivity[]
   member           GroupMember[]
   batch            Batch             @relation(fields: [batchId], references: [id])
