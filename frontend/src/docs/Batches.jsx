@@ -19,8 +19,8 @@ const categoryOptions = [
 
 const Batches = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedBatch, setSelectedBatch] = useState('All Batches');
-  const [selectedCategory, setSelectedCategory] = useState('All Categories');
+  const [selectedBatch, setSelectedBatch] = useState('all');
+  const [selectedCategory, setSelectedCategory] = useState('all');
   const [activeTab, setActiveTab] = useState('live');
   const [batchesData, setBatchesData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -58,24 +58,42 @@ const Batches = () => {
   };
 
   const filteredBatches = batchesData.filter((batch) => {
+    // Search filter
     const matchesSearch =
       batch.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (batch.description &&
         batch.description.toLowerCase().includes(searchTerm.toLowerCase()));
+
+    // Tab filter (live/past)
     const matchesTab =
       activeTab === 'live'
         ? batch.status === 'ACTIVE'
         : activeTab === 'past'
         ? batch.status === 'COMPLETED'
         : false;
-    return matchesSearch && matchesTab;
+
+    // Batch dropdown filter
+    const matchesBatch =
+      selectedBatch === 'all' ||
+      batch.name.toLowerCase().includes(selectedBatch.toLowerCase()) ||
+      batch.id === selectedBatch;
+
+    // Category filter (you can customize this based on your batch data structure)
+    const matchesCategory =
+      selectedCategory === 'all' ||
+      (batch.category &&
+        batch.category.toLowerCase() === selectedCategory.toLowerCase()) ||
+      (batch.tags &&
+        batch.tags.some(
+          (tag) => tag.toLowerCase() === selectedCategory.toLowerCase(),
+        ));
+
+    return matchesSearch && matchesTab && matchesBatch && matchesCategory;
   });
 
-  // Rest of the component remains the same, but we'll update the BatchCard component
   const navigate = useNavigate();
 
   const BatchCard = ({ batch }) => {
-    // Dummy data for students (online and total members)
     const onlineStudents = Math.floor(Math.random() * 500) + 100;
     const totalStudents =
       batch.batchMembers?.length || Math.floor(Math.random() * 2000) + 1000;
@@ -89,7 +107,6 @@ const Batches = () => {
             : 'bg-white hover:bg-gray-100 border-[1px] border-gray-300'
         }`}
       >
-        {/* Banner Image */}
         <div className='h-28 w-full overflow-hidden'>
           <img
             src={
@@ -101,7 +118,6 @@ const Batches = () => {
           />
         </div>
 
-        {/* Logo positioned at bottom of banner */}
         <div className='absolute top-17 left-4'>
           <div
             className={`w-19 h-18 z-10 rounded-2xl border-[6px] overflow-hidden ${
@@ -123,14 +139,13 @@ const Batches = () => {
           </div>
         </div>
 
-        {/* Content Area */}
         <div className='pt-9 px-4 pb-4'>
-          <div className='flex justify-start gap-3 mb-1 text-lg'>
+          <div className='flex justify-start gap-1'>
             <span>
               <i className='ri-verified-badge-fill text-green-400 text-center'></i>
             </span>
             <h3
-              className={`font-semibold text-base line-clamp-1 ${
+              className={`font-semibold text-base  ${
                 darkMode ? 'text-white' : 'text-gray-900'
               }`}
             >
@@ -172,13 +187,11 @@ const Batches = () => {
     );
   };
 
-  // Add loading and error states to the render
   return (
     <div
       className='parkinsans-light transition-all duration-200'
       style={{ padding: '1rem' }}
     >
-      {/* Header */}
       <div
         style={{
           display: 'flex',
@@ -215,7 +228,6 @@ const Batches = () => {
           style={{
             width: '32px',
             height: '32px',
-            // backgroundColor: "#2d2d2d",
             borderRadius: '50%',
             display: 'flex',
             alignItems: 'center',
@@ -247,7 +259,9 @@ const Batches = () => {
             </span>
             <input
               type='text'
-              placeholder='Search Assignments'
+              placeholder='Search Batches'
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               className={`w-full rounded-xl border ${
                 darkMode
                   ? 'bg-[#27272A] text-white placeholder-gray-50 border-white/30'
@@ -257,26 +271,31 @@ const Batches = () => {
           </div>
         </div>
 
-        {/* Dropdown 1 */}
+        {/* Batch Dropdown */}
         <div className='relative w-full md:w-1/4'>
           <CustomDropdown
             options={batchOptions}
             placeholder='All Batches'
-            onSelect={(option) => console.log('Selected batch:', option.value)}
+            onSelect={(option) => {
+              console.log('Selected batch:', option.value);
+              setSelectedBatch(option.value);
+            }}
           />
         </div>
 
-        {/* Dropdown 2 */}
+        {/* Category Dropdown */}
         <div className='relative w-full md:w-1/4'>
           <CustomDropdown
             options={categoryOptions}
             placeholder='All Categories'
-            onSelect={(option) => console.log('Selected batch:', option.value)}
+            onSelect={(option) => {
+              console.log('Selected category:', option.value);
+              setSelectedCategory(option.value);
+            }}
           />
         </div>
       </div>
 
-      {/* Add loading and error states */}
       {loading ? (
         <div style={{ textAlign: 'center', padding: '2rem' }}>
           <div
@@ -325,7 +344,6 @@ const Batches = () => {
           </button>
         </div>
       ) : (
-        // Existing grid layout with filtered batches
         <div
           style={{
             display: 'grid',

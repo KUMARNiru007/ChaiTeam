@@ -160,7 +160,7 @@ function Dashboard() {
             <div
               className={`${
                 darkMode
-                  ? 'bg-[var(--chaiteam-card-bg)] text-white hover:bg-[#9e9e9e]/20 hover:border-[#9e9e9e]/20'
+                  ? 'bg-[var(--chaiteam-card-bg)] text-white hover:bg-[#313338]/50 hover:border-[#313338]/50'
                   : 'bg-white text-black border border-black/20 hover:bg-[#ff9335]/10 hover:border-[#ff9335]/20'
               }`}
               key={index}
