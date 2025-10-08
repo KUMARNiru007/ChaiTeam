@@ -84,12 +84,12 @@ export const createGroup = async (req, res) => {
 export const getAllGroups = async (req, res) => {
   try {
     const { batchId } = req.query;
-    
+
     const query = {
       include: {
         member: true,
-        leader: true
-      }
+        leader: true,
+      },
     };
 
     if (batchId) {
@@ -102,10 +102,15 @@ export const getAllGroups = async (req, res) => {
       .status(200)
       .json(new ApiResponse(200, groups, 'Groups fetched successfully'));
   } catch (error) {
-    console.error("Error in getAllGroups:", error);
+    console.error('Error in getAllGroups:', error);
     return res
       .status(error.statusCode || 500)
-      .json(new ApiError(error.statusCode || 500, error.message || "Failed to fetch groups"));
+      .json(
+        new ApiError(
+          error.statusCode || 500,
+          error.message || 'Failed to fetch groups',
+        ),
+      );
   }
 };
 
@@ -557,7 +562,8 @@ export const kickMemberFromGroup = async (req, res) => {
 export const updateGroup = async (req, res) => {
   try {
     const { groupId } = req.params;
-    const { name, description, tags, status } = req.body;
+    const { name, description, tags, status, logoImageUrl, groupImageUrl } =
+      req.body;
 
     if (!groupId) {
       return res.status(400).json(new ApiError(400, 'Group Id is required'));
@@ -574,6 +580,8 @@ export const updateGroup = async (req, res) => {
         description,
         tags,
         status,
+        logoImageUrl,
+        groupImageUrl,
       },
     });
 
