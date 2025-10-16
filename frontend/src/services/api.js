@@ -5,9 +5,16 @@ export const batchService = {
   getAllBatches: async () => {
     try {
       const response = await axiosInstance.get("/batch/my-batches");
+      if (!response.data || !response.data.Data) {
+        throw new Error('Invalid response format');
+      }
       return response.data.Data;
     } catch (error) {
-      console.error("Error fetching batches:", error);
+      console.error("Error fetching batches:", {
+        message: error.message,
+        status: error.response?.status,
+        data: error.response?.data
+      });
       throw error;
     }
   },

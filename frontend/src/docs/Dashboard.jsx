@@ -1,38 +1,125 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTheme } from '../context/ThemeContext.jsx';
+import NoticeBoard from './NoticeBoard.jsx';
+import { batchService, groupService } from '../services/api.js';
 
 function Dashboard() {
   const { darkMode, toggleTheme } = useTheme();
+  const [stats, setStats] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const stats = [
-    {
-      title: 'Projects',
-      icon: 'ri-grid-line',
-      value: 0,
-      total: '39 Total',
-      pending: '39 Pending',
-      totalStatus: 'success',
-      pendingStatus: 'error',
-    },
-    {
-      title: 'Blogs',
-      icon: 'ri-edit-line',
-      value: 8,
-      total: '37 Total',
-      pending: '29 Pending',
-      totalStatus: 'success',
-      pendingStatus: 'error',
-    },
-    {
-      title: 'Batch Enrolled',
-      icon: 'ri-book-open-line',
-      value: 1,
-      total: '1 Completed',
-      pending: '0 Ongoing',
-      totalStatus: 'success',
-      pendingStatus: 'error',
-    },
-  ];
+  // Fetch dashboard data
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        setLoading(true);
+        
+        // Get user's batches (this endpoint returns batches the user is enrolled in)
+        const userBatches = await batchService.getAllBatches();
+        
+        // Get all batches to show total count (using the same endpoint)
+        const allBatches = await batchService.getAllBatches();
+        
+        // Get user's groups across all batches
+        let userGroupsCount = 0;
+        let totalGroupsInBatches = 0;
+        
+        // Get groups for each batch the user is enrolled in
+        for (const batch of userBatches) {
+          try {
+            // Get user's group in this batch
+            const userGroup = await groupService.getUserGroup(batch.id);
+            if (userGroup) {
+              userGroupsCount++;
+            }
+            
+            // Get all groups in this batch
+            const batchGroups = await groupService.getBatchGroups(batch.id);
+            totalGroupsInBatches += batchGroups ? batchGroups.length : 0;
+          } catch (err) {
+            console.log(`No groups found for batch ${batch.id}:`, err.message);
+          }
+        }
+
+        // Calculate statistics
+        const totalBatches = allBatches.length;
+        const enrolledBatches = userBatches.length;
+        const availableGroups = totalGroupsInBatches - userGroupsCount;
+
+        // Update stats with real data
+        const updatedStats = [
+          {
+            title: 'Total Batches',
+            icon: 'ri-grid-line',
+            value: totalBatches,
+            total: `${totalBatches} Total`,
+            pending: `${totalBatches} Available`,
+            totalStatus: 'success',
+            pendingStatus: 'info',
+          },
+          {
+            title: 'My Groups',
+            icon: 'ri-edit-line',
+            value: userGroupsCount,
+            total: `${userGroupsCount} Joined`,
+            pending: `${availableGroups > 0 ? availableGroups : 0} Available`,
+            totalStatus: userGroupsCount > 0 ? 'success' : 'info',
+            pendingStatus: availableGroups > 0 ? 'info' : 'error',
+          },
+          {
+            title: 'Batch Enrolled',
+            icon: 'ri-book-open-line',
+            value: enrolledBatches,
+            total: `${enrolledBatches} Enrolled`,
+            pending: `${enrolledBatches} Active`,
+            totalStatus: 'success',
+            pendingStatus: 'success',
+          },
+        ];
+
+        setStats(updatedStats);
+      } catch (err) {
+        console.error('Error fetching dashboard data:', err);
+        setError('Failed to load dashboard data. Please try again later.');
+        
+        // Fallback to empty stats
+        setStats([
+          {
+            title: 'Total Batches',
+            icon: 'ri-grid-line',
+            value: 0,
+            total: '0 Total',
+            pending: '0 Available',
+            totalStatus: 'success',
+            pendingStatus: 'info',
+          },
+          {
+            title: 'My Groups',
+            icon: 'ri-edit-line',
+            value: 0,
+            total: '0 Joined',
+            pending: '0 Available',
+            totalStatus: 'success',
+            pendingStatus: 'error',
+          },
+          {
+            title: 'Batch Enrolled',
+            icon: 'ri-book-open-line',
+            value: 0,
+            total: '0 Enrolled',
+            pending: '0 Active',
+            totalStatus: 'success',
+            pendingStatus: 'success',
+          },
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
 
   const badges = [
     {
@@ -73,6 +160,19 @@ function Dashboard() {
     },
   ];
 
+  if (loading) {
+    return (
+      <div className={`min-h-screen flex items-center justify-center ${
+        darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'
+      }`}>
+        <div className="text-center">
+          <i className="ri-loader-4-line animate-spin text-2xl mb-2"></i>
+          <p>Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <link
@@ -86,10 +186,8 @@ function Dashboard() {
             : 'bg-white text-black'
         }`}
         style={{
-          // backgroundColor: 'var(--chaiteam-bg-primary, #1a1a1a)',
           minHeight: '100vh',
           padding: '1rem',
-          // color: 'var(--chaiteam-text-primary, #ffffff)',
         }}
       >
         {/* Header */}
@@ -129,12 +227,13 @@ function Dashboard() {
             style={{
               width: '32px',
               height: '32px',
-              // backgroundColor: "#2d2d2d",
               borderRadius: '50%',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               cursor: 'pointer',
+              border: darkMode ? '1px solid #555' : '1px solid #ddd',
+              backgroundColor: darkMode ? '#2d2d2d' : '#f5f5f5',
             }}
           >
             <i
@@ -146,6 +245,19 @@ function Dashboard() {
             ></i>
           </button>
         </div>
+
+        {error && (
+          <div className={`mb-4 p-3 rounded-lg ${
+            darkMode 
+              ? 'bg-red-900/30 border border-red-700 text-red-300' 
+              : 'bg-red-100 border border-red-400 text-red-700'
+          }`}>
+            <div className="flex items-center gap-2">
+              <i className="ri-error-warning-line"></i>
+              <span>{error}</span>
+            </div>
+          </div>
+        )}
 
         {/* Stats Cards */}
         <div
@@ -165,8 +277,6 @@ function Dashboard() {
               }`}
               key={index}
               style={{
-                // backgroundColor: 'var(--chaiteam-bg-secondary, #2a2a2a)',
-                // border: '1px solid',
                 borderRadius: '1.5rem',
                 padding: '1.5rem',
                 transition: 'all 0.2s ease',
@@ -177,14 +287,13 @@ function Dashboard() {
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
-                  // marginBottom: '1rem',
+                  marginBottom: '1rem',
                 }}
               >
                 <h3
                   style={{
                     fontSize: 'var(--font-size-base, 1rem)',
                     fontWeight: 'var(--font-weight-medium, 500)',
-                    // color: 'var(--chaiteam-text-secondary, #a0a0a0)',
                     margin: 0,
                   }}
                 >
@@ -194,7 +303,7 @@ function Dashboard() {
                   className={stat.icon}
                   style={{
                     fontSize: '20px',
-                    // color: 'var(--chaiteam-text-secondary, #a0a0a0)',
+                    opacity: 0.8,
                   }}
                 ></i>
               </div>
@@ -202,8 +311,7 @@ function Dashboard() {
                 style={{
                   fontSize: '2.5rem',
                   fontWeight: 'var(--font-weight-light, 300)',
-                  // color: 'var(--chaiteam-text-primary, #ffffff)',
-                  // marginBottom: '0.2rem',
+                  marginBottom: '0.5rem',
                 }}
               >
                 {stat.value}
@@ -221,7 +329,7 @@ function Dashboard() {
                     alignItems: 'center',
                     gap: '0.5rem',
                     fontSize: 'var(--font-size-sm, 0.875rem)',
-                    // color: 'var(--chaiteam-text-secondary, #a0a0a0)',
+                    opacity: 0.8,
                   }}
                 >
                   <span
@@ -230,7 +338,8 @@ function Dashboard() {
                       height: '6px',
                       borderRadius: '50%',
                       backgroundColor:
-                        stat.totalStatus === 'success' ? '#00b8a3' : '#ff4d4f',
+                        stat.totalStatus === 'success' ? '#00b8a3' : 
+                        stat.totalStatus === 'info' ? '#1890ff' : '#ff4d4f',
                     }}
                   ></span>
                   {stat.total}
@@ -241,7 +350,7 @@ function Dashboard() {
                     alignItems: 'center',
                     gap: '0.5rem',
                     fontSize: 'var(--font-size-sm, 0.875rem)',
-                    // color: 'var(--chaiteam-text-secondary, #a0a0a0)',
+                    opacity: 0.8,
                   }}
                 >
                   <span
@@ -250,9 +359,8 @@ function Dashboard() {
                       height: '6px',
                       borderRadius: '50%',
                       backgroundColor:
-                        stat.pendingStatus === 'success'
-                          ? '#00b8a3'
-                          : '#ff4d4f',
+                        stat.pendingStatus === 'success' ? '#00b8a3' :
+                        stat.pendingStatus === 'info' ? '#1890ff' : '#ff4d4f',
                     }}
                   ></span>
                   {stat.pending}
@@ -273,17 +381,15 @@ function Dashboard() {
         >
           {badges.map((badge, index) => (
             <div
-              className={`text-${badge.color} bg-${badge.backgroundColor} rounded-lg flex justify-center items-center`}
               key={index}
+              className={`rounded-lg flex justify-center items-center px-3 py-2 ${
+                darkMode 
+                  ? `bg-${badge.backgroundColor.replace('200', '900')} text-${badge.color.replace('600', '300')}`
+                  : `bg-${badge.backgroundColor} text-${badge.color}`
+              }`}
               style={{
-                // backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                // border: `1px solid ${badge.color}`,
-                // borderRadius: '0.375rem',
-                padding: '0.3rem 1rem',
-                // display: 'flex',
-                // alignItems: 'center',
+                padding: '0.5rem 1rem',
                 gap: '0.5rem',
-                // color: badge.color,
                 fontSize: 'var(--font-size-sm, 0.875rem)',
                 fontWeight: 'var(--font-weight-medium, 500)',
               }}
@@ -297,9 +403,12 @@ function Dashboard() {
         {/* Upcoming Deadlines */}
         <div style={{ marginBottom: '2rem' }}>
           <h2
-            className='text-2xl underline underline-offset-4 decoration-[var(--chaiteam-organe-dark)]'
+            className={`text-2xl underline underline-offset-4 ${
+              darkMode 
+                ? 'decoration-[var(--chaiteam-organe-dark)]' 
+                : 'decoration-[var(--chaiteam-orange)]'
+            }`}
             style={{
-              // fontSize: 'var(--font-size-h2, 1.5rem)',
               fontWeight: 'var(--font-weight-bold, 700)',
               marginBottom: '1.5rem',
             }}
@@ -307,61 +416,7 @@ function Dashboard() {
             Upcoming Deadlines
           </h2>
 
-          <div
-            className={`${
-              darkMode
-                ? 'bg-[var(--chaiteam-card-bg)] text-white border border-gray-400/20'
-                : 'bg-white text-black border border-black/20'
-            }`}
-            style={{
-              // backgroundColor: 'var(--chaiteam-bg-secondary, #2a2a2a)',
-              // border: '1px solid var(--chaiteam-border-primary, #3a3a3a)',
-              borderRadius: '1rem',
-              padding: '1.5rem',
-            }}
-          >
-            <h3
-              style={{
-                fontSize: 'var(--font-size-xl, 1.25rem)',
-                fontWeight: 'var(--font-weight-semibold, 600)',
-                marginBottom: '0.75rem',
-              }}
-            >
-              Team Builder SaaS
-            </h3>
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                // color: 'var(--chaiteam-text-secondary, #a0a0a0)',
-                fontSize: 'var(--font-size-sm, 0.875rem)',
-                marginBottom: '1rem',
-              }}
-            >
-              <i className='ri-grid-line' style={{ fontSize: '16px' }}></i>
-              <span>Web Dev Cohort</span>
-            </div>
-            <p
-              style={{
-                // color: 'var(--chaiteam-text-secondary, #a0a0a0)',
-                lineHeight: '1.6',
-                marginBottom: '1rem',
-              }}
-            >
-              Requirements as shared by Hitesh Choudhary sir on Live Class
-              session for Group formation for a given batch of students.
-            </p>
-            <div
-              style={{
-                // color: 'var(--chaiteam-text-secondary, #a0a0a0)',
-                fontSize: 'var(--font-size-sm, 0.875rem)',
-              }}
-            >
-              <strong>Start:</strong>{' '}
-              <span className='text-green-400'>May 29, 2025, 12:30 PM</span>
-            </div>
-          </div>
+          <NoticeBoard />
         </div>
       </div>
     </>
