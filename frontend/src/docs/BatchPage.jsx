@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext.jsx';
 import { batchService, groupService } from '../services/api';
 import Groups from './Groups';
@@ -285,16 +285,14 @@ function BatchPage() {
           </div>
 
           {/* User's Group Card */}
-          {userGroup && (
-            <div
+          {/* {userGroup && (
+            <Link
               className={`p-6 rounded-2xl mb-6 transition-all duration-200 ${
                 darkMode
                   ? 'bg-gradient-to-br from-orange-600 to-blue-400 hover:from-orange-700 hover:to-blue-800'
                   : 'bg-gradient-to-br from-orange-500 to-blue-600 hover:from-orange-600 hover:to-blue-700'
               } cursor-pointer shadow-lg hover:shadow-xl`}
-              onClick={() =>
-                navigate(`/batches/${batchId}/groups/${userGroup.id}`)
-              }
+              to='groups'
             >
               <div className='flex items-start justify-between mb-1'>
                 <div className='flex items-start gap-3'>
@@ -315,8 +313,8 @@ function BatchPage() {
               <p className='text-white/90 text-sm leading-relaxed'>
                 {userGroup.description || 'No description available'}
               </p>
-            </div>
-          )}
+            </Link>
+          )} */}
 
           {/* Toggle Button */}
           <div className='flex justify-between items-center mb-1'>

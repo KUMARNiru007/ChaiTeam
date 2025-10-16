@@ -1,19 +1,19 @@
-import { axiosInstance } from "../lib/axios";
+import { axiosInstance } from '../lib/axios';
 
 // Batch API services
 export const batchService = {
   getAllBatches: async () => {
     try {
-      const response = await axiosInstance.get("/batch/my-batches");
+      const response = await axiosInstance.get('/batch/my-batches');
       if (!response.data || !response.data.Data) {
         throw new Error('Invalid response format');
       }
       return response.data.Data;
     } catch (error) {
-      console.error("Error fetching batches:", {
+      console.error('Error fetching batches:', {
         message: error.message,
         status: error.response?.status,
-        data: error.response?.data
+        data: error.response?.data,
       });
       throw error;
     }
@@ -21,10 +21,12 @@ export const batchService = {
 
   getBatchById: async (batchId) => {
     try {
-      const response = await axiosInstance.get(`/batch/getBatchById/${batchId}`);
+      const response = await axiosInstance.get(
+        `/batch/getBatchById/${batchId}`,
+      );
       return response.data.Data;
     } catch (error) {
-      console.error("Error fetching batch details:", error);
+      console.error('Error fetching batch details:', error);
       throw error;
     }
   },
@@ -34,10 +36,10 @@ export const batchService = {
 export const groupService = {
   getAllGroups: async () => {
     try {
-      const response = await axiosInstance.get("/groups/getAllGroups");
+      const response = await axiosInstance.get('/groups/getAllGroups');
       return response.data.Data;
     } catch (error) {
-      console.error("Error fetching groups:", error);
+      console.error('Error fetching groups:', error);
       throw error;
     }
   },
@@ -51,26 +53,30 @@ export const groupService = {
       throw error;
     }
   },
-  
+
   getBatchGroups: async (batchId) => {
     try {
       if (!batchId) {
         throw new Error('Batch ID is required');
       }
-      const response = await axiosInstance.get(`/groups/getAllGroups?batchId=${batchId}`);
+      const response = await axiosInstance.get(
+        `/groups/getAllGroups?batchId=${batchId}`,
+      );
       return response.data.Data;
     } catch (error) {
-      console.error("Error fetching batch groups:", error);
+      console.error('Error fetching batch groups:', error);
       throw error;
     }
   },
 
   getGroupById: async (groupId) => {
     try {
-      const response = await axiosInstance.get(`/groups/getGroupById/${groupId}`);
+      const response = await axiosInstance.get(
+        `/groups/getGroupById/${groupId}`,
+      );
       return response.data.Data;
     } catch (error) {
-      console.error("Error fetching group details:", error);
+      console.error('Error fetching group details:', error);
       throw error;
     }
   },
@@ -80,10 +86,10 @@ export const groupService = {
 export const noticeService = {
   getGlobalNotices: async () => {
     try {
-      const response = await axiosInstance.get("/noticeboard/getGlobalNotices");
+      const response = await axiosInstance.get('/noticeboard/getGlobalNotices');
       return response.data.Data || response.data;
     } catch (error) {
-      console.error("Error fetching global notices:", error);
+      console.error('Error fetching global notices:', error);
       throw error;
     }
   },
@@ -93,7 +99,7 @@ export const noticeService = {
       const response = await axiosInstance.get(`/notices?scope=${scope}`);
       return response.data.data || response.data;
     } catch (error) {
-      console.error("Error fetching notices by scope:", error);
+      console.error('Error fetching notices by scope:', error);
       throw error;
     }
   },
@@ -103,17 +109,17 @@ export const noticeService = {
       const response = await axiosInstance.get(`/notices/${id}`);
       return response.data.data || response.data;
     } catch (error) {
-      console.error("Error fetching notice:", error);
+      console.error('Error fetching notice:', error);
       throw error;
     }
   },
 
   createNotice: async (noticeData) => {
     try {
-      const response = await axiosInstance.post("/notices", noticeData);
+      const response = await axiosInstance.post('/notices', noticeData);
       return response.data.data || response.data;
     } catch (error) {
-      console.error("Error creating notice:", error);
+      console.error('Error creating notice:', error);
       throw error;
     }
   },
@@ -123,7 +129,7 @@ export const noticeService = {
       const response = await axiosInstance.put(`/notices/${id}`, noticeData);
       return response.data.data || response.data;
     } catch (error) {
-      console.error("Error updating notice:", error);
+      console.error('Error updating notice:', error);
       throw error;
     }
   },
@@ -133,7 +139,7 @@ export const noticeService = {
       const response = await axiosInstance.delete(`/notices/${id}`);
       return response.data.data || response.data;
     } catch (error) {
-      console.error("Error deleting notice:", error);
+      console.error('Error deleting notice:', error);
       throw error;
     }
   },

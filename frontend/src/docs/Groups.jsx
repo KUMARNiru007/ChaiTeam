@@ -2,28 +2,27 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { groupService } from '../services/api';
 import CustomDropdown from '../components/CustomDropdown.jsx';
+import GroupsPage from './GroupPage.jsx';
 import { useTheme } from '../context/ThemeContext.jsx';
 
 const Groups = ({ batchId, userGroupId }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('All Status');
+  const [selectedTag, setSelectedTag] = useState('All Tags');
   const [groupsData, setGroupsData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('active');
+  const [selectedGroup, setSelectedGroup] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const navigate = useNavigate();
   const { darkMode } = useTheme();
-
-  const handleSearchChange = (e) => setSearchTerm(e.target.value);
-  const handleStatusChange = (e) => setSelectedStatus(e.target.value);
-  const handleTabChange = (tab) => setActiveTab(tab);
 
   useEffect(() => {
     const fetchGroups = async () => {
       try {
         setLoading(true);
-        // Updated to get groups for a specific batch
         const data = await groupService.getBatchGroups(batchId);
         setGroupsData(data);
         setError(null);
@@ -47,6 +46,24 @@ const Groups = ({ batchId, userGroupId }) => {
       .length,
   };
 
+  // Get all unique tags from groups
+  const allTags = [
+    ...new Set(
+      groupsData
+        .flatMap((group) => group.tags || [])
+        .filter((tag) => tag && tag.trim() !== ''),
+    ),
+  ].sort();
+
+  // Create options array for the dropdown
+  const tagOptions = [
+    { id: 'all-tags', label: 'All Tags' },
+    ...allTags.map((tag, index) => ({
+      id: `tag-${index}`,
+      label: tag,
+    })),
+  ];
+
   const filteredGroups = groupsData.filter((group) => {
     const matchesSearch =
       group.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -54,6 +71,12 @@ const Groups = ({ batchId, userGroupId }) => {
         group.description.toLowerCase().includes(searchTerm.toLowerCase()));
     const matchesStatus =
       selectedStatus === 'All Status' ? true : group.status === selectedStatus;
+    const matchesTag =
+      selectedTag === 'All Tags'
+        ? true
+        : group.tags &&
+          Array.isArray(group.tags) &&
+          group.tags.includes(selectedTag);
     const matchesTab =
       activeTab === 'active'
         ? group.status === 'ACTIVE'
@@ -62,10 +85,35 @@ const Groups = ({ batchId, userGroupId }) => {
         : activeTab === 'disbanded'
         ? group.status === 'DISBANNED'
         : false;
-    return matchesSearch && matchesStatus && matchesTab;
+    return matchesSearch && matchesStatus && matchesTag && matchesTab;
   });
 
-  // Add loading and error states to the render
+  const openGroupModal = (group) => {
+    setSelectedGroup(group);
+    setIsModalOpen(true);
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeGroupModal = () => {
+    setIsModalOpen(false);
+    document.body.style.overflow = 'unset';
+    setTimeout(() => setSelectedGroup(null), 300);
+  };
+
+  const handleJoinGroup = () => {
+    console.log('Join group:', selectedGroup.id);
+    // Add your join group API call here
+    // Example: await groupService.joinGroup(selectedGroup.id);
+    closeGroupModal();
+  };
+
+  const handleLeaveGroup = () => {
+    console.log('Leave group:', selectedGroup.id);
+    // Add your leave group API call here
+    // Example: await groupService.leaveGroup(selectedGroup.id);
+    closeGroupModal();
+  };
+
   return (
     <div className='parkinsans-light'>
       {/* Search Filters */}
@@ -82,7 +130,7 @@ const Groups = ({ batchId, userGroupId }) => {
             </span>
             <input
               type='text'
-              placeholder='Search Batches'
+              placeholder='Search Groups'
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className={`w-full rounded-xl border ${
@@ -94,14 +142,14 @@ const Groups = ({ batchId, userGroupId }) => {
           </div>
         </div>
 
-        {/* Batch Dropdown */}
+        {/* Tag Filter Dropdown */}
         <div className='relative w-full md:w-1/4'>
           <CustomDropdown
-            options={tabCounts}
-            placeholder='All Batches'
+            options={tagOptions}
+            placeholder='All Tags'
             onSelect={(option) => {
-              console.log('Selected batch:', option.value);
-              setSelectedBatch(option.value);
+              console.log('Selected tag:', option.label);
+              setSelectedTag(option.label || 'All Tags');
             }}
           />
         </div>
@@ -146,7 +194,7 @@ const Groups = ({ batchId, userGroupId }) => {
           </button>
         </div>
       ) : (
-        // Existing grid layout with filtered groups
+        /* Groups Grid */
         <div
           style={{
             display: 'grid',
@@ -159,174 +207,268 @@ const Groups = ({ batchId, userGroupId }) => {
             filteredGroups.map((group) => (
               <div
                 key={group.id}
+                onClick={() => openGroupModal(group)}
                 style={{
-                  backgroundColor: '#2d2d2d',
-                  border: '1px solid #404040',
-                  borderRadius: '0.5rem',
-                  padding: '1.5rem',
+                  backgroundColor: darkMode ? '#27272A' : '#ffffff',
+                  border: darkMode ? '1px solid #404040' : '1px solid #e5e7eb',
+                  borderRadius: '0.75rem',
+                  overflow: 'hidden',
                   transition: 'all 0.2s ease-in-out',
                   cursor: 'pointer',
                 }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-4px)';
+                  e.currentTarget.style.boxShadow =
+                    '0 8px 16px rgba(0,0,0,0.2)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
               >
-                <h3
-                  style={{
-                    color: '#ffffff',
-                    fontSize: '1.125rem',
-                    fontWeight: '600',
-                    marginBottom: '0.75rem',
-                  }}
-                >
-                  {group.name}
-                </h3>
+                {/* Banner Image with Logo Overlay */}
+                <div style={{ position: 'relative', height: '140px' }}>
+                  {/* Banner Image */}
+                  <div
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      backgroundColor: '#404040',
+                      backgroundImage: group.groupImageUrl
+                        ? `url(${group.groupImageUrl})`
+                        : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                    }}
+                  />
 
-                <p
-                  style={{
-                    color: '#b3b3b3',
-                    fontSize: '0.875rem',
-                    marginBottom: '1rem',
-                    lineHeight: '1.5',
-                  }}
-                >
-                  {group.description || 'No description'}
-                </p>
-
-                <div style={{ marginBottom: '1rem' }}>
-                  {group.tags &&
-                    Array.isArray(group.tags) &&
-                    group.tags.map((tag, index) => (
-                      <span
-                        key={index}
+                  {/* Logo Overlay */}
+                  <div
+                    style={{
+                      position: 'absolute',
+                      bottom: '-30px',
+                      left: '1rem',
+                      width: '70px',
+                      height: '70px',
+                      backgroundColor: darkMode ? '#18181B' : '#ffffff',
+                      border: `3px solid ${darkMode ? '#27272A' : '#ffffff'}`,
+                      borderRadius: '0.75rem',
+                      overflow: 'hidden',
+                      boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+                    }}
+                  >
+                    {group.logoImageUrl ? (
+                      <img
+                        src={group.logoImageUrl}
+                        alt={group.name}
                         style={{
-                          backgroundColor: '#404040',
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                        }}
+                      />
+                    ) : (
+                      <div
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          background:
+                            'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                           color: '#ffffff',
-                          fontSize: '0.75rem',
-                          padding: '0.25rem 0.5rem',
-                          borderRadius: '0.25rem',
-                          marginRight: '0.5rem',
-                          marginBottom: '0.5rem',
-                          display: 'inline-block',
+                          fontSize: '1.5rem',
+                          fontWeight: '700',
                         }}
                       >
-                        {tag}
+                        {group.name.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Card Content */}
+                <div style={{ padding: '2.5rem 1.5rem 1.5rem' }}>
+                  {/* Title */}
+                  <h3
+                    style={{
+                      color: darkMode ? '#ffffff' : '#111827',
+                      fontSize: '1.125rem',
+                      fontWeight: '600',
+                      marginBottom: '0.5rem',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {group.name}
+                  </h3>
+
+                  {/* Category/Batch Badge */}
+                  <div style={{ marginBottom: '0.75rem' }}>
+                    <span
+                      style={{
+                        color: darkMode ? '#9ca3af' : '#6b7280',
+                        fontSize: '0.875rem',
+                        fontWeight: '500',
+                      }}
+                    >
+                      {group.batchName || 'Games'}
+                    </span>
+                  </div>
+
+                  {/* Description */}
+                  <p
+                    style={{
+                      color: darkMode ? '#b3b3b3' : '#6b7280',
+                      fontSize: '0.875rem',
+                      lineHeight: '1.5',
+                      marginBottom: '1rem',
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden',
+                      minHeight: '2.5rem',
+                    }}
+                  >
+                    {group.description || 'No description available'}
+                  </p>
+
+                  {/* Tags */}
+                  {group.tags &&
+                    Array.isArray(group.tags) &&
+                    group.tags.length > 0 && (
+                      <div
+                        style={{
+                          marginBottom: '1rem',
+                          display: 'flex',
+                          flexWrap: 'wrap',
+                          gap: '0.5rem',
+                        }}
+                      >
+                        {group.tags.slice(0, 3).map((tag, index) => (
+                          <span
+                            key={index}
+                            style={{
+                              backgroundColor: darkMode ? '#404040' : '#f3f4f6',
+                              color: darkMode ? '#e5e7eb' : '#4b5563',
+                              fontSize: '0.75rem',
+                              padding: '0.25rem 0.625rem',
+                              borderRadius: '0.375rem',
+                              fontWeight: '500',
+                            }}
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                        {group.tags.length > 3 && (
+                          <span
+                            style={{
+                              color: darkMode ? '#9ca3af' : '#6b7280',
+                              fontSize: '0.75rem',
+                              padding: '0.25rem 0',
+                              fontWeight: '500',
+                            }}
+                          >
+                            +{group.tags.length - 3}
+                          </span>
+                        )}
+                      </div>
+                    )}
+
+                  {/* Group Info */}
+                  <div
+                    style={{
+                      marginBottom: '1rem',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '0.5rem',
+                    }}
+                  >
+                    {/* Creator */}
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem',
+                      }}
+                    >
+                      <i
+                        className='ri-user-line'
+                        style={{
+                          color: darkMode ? '#9ca3af' : '#6b7280',
+                          fontSize: '0.875rem',
+                        }}
+                      ></i>
+                      <span
+                        style={{
+                          color: darkMode ? '#b3b3b3' : '#6b7280',
+                          fontSize: '0.813rem',
+                        }}
+                      >
+                        {group.leader?.name || 'Unknown'}
                       </span>
-                    ))}
-                </div>
+                    </div>
 
-                <div style={{ marginBottom: '1rem' }}>
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      marginBottom: '0.5rem',
-                    }}
-                  >
-                    <i
-                      className='ri-user-line'
-                      style={{ color: '#b3b3b3', marginRight: '0.5rem' }}
-                    ></i>
-                    <span style={{ color: '#b3b3b3', fontSize: '0.875rem' }}>
-                      Leader: {group.leader?.name || 'Unknown'}
-                    </span>
+                    {/* Members Count */}
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem',
+                      }}
+                    >
+                      <i
+                        className='ri-group-line'
+                        style={{
+                          color: darkMode ? '#9ca3af' : '#6b7280',
+                          fontSize: '0.875rem',
+                        }}
+                      ></i>
+                      <span
+                        style={{
+                          color: darkMode ? '#b3b3b3' : '#6b7280',
+                          fontSize: '0.813rem',
+                        }}
+                      >
+                        {group.member?.length || 0} member
+                        {(group.member?.length || 0) !== 1 ? 's' : ''}
+                      </span>
+                    </div>
                   </div>
 
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      marginBottom: '0.5rem',
-                    }}
-                  >
-                    <i
-                      className='ri-group-line'
-                      style={{ color: '#b3b3b3', marginRight: '0.5rem' }}
-                    ></i>
-                    <span style={{ color: '#b3b3b3', fontSize: '0.875rem' }}>
-                      Members: {group.member?.length || 0}/{group.capacity || 4}
-                    </span>
-                  </div>
-
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <i
-                      className='ri-calendar-line'
-                      style={{ color: '#b3b3b3', marginRight: '0.5rem' }}
-                    ></i>
-                    <span style={{ color: '#b3b3b3', fontSize: '0.875rem' }}>
-                      Created: {new Date(group.createdAT).toLocaleDateString()}
+                  {/* Status Badge */}
+                  <div style={{ marginTop: '0.5rem' }}>
+                    <span
+                      style={{
+                        backgroundColor:
+                          group.status === 'ACTIVE'
+                            ? '#52c41a33'
+                            : group.status === 'INACTIVE'
+                            ? '#faad1433'
+                            : group.status === 'DISBANNED'
+                            ? '#ff4d4f33'
+                            : '#1890ff33',
+                        color:
+                          group.status === 'ACTIVE'
+                            ? '#52c41a'
+                            : group.status === 'INACTIVE'
+                            ? '#faad14'
+                            : group.status === 'DISBANNED'
+                            ? '#ff4d4f'
+                            : '#1890ff',
+                        fontSize: '0.75rem',
+                        padding: '0.25rem 0.75rem',
+                        borderRadius: '0.375rem',
+                        textTransform: 'capitalize',
+                        display: 'inline-block',
+                      }}
+                    >
+                      {group.status.toLowerCase()}
                     </span>
                   </div>
                 </div>
-
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                  }}
-                >
-                  <span
-                    style={{
-                      backgroundColor:
-                        group.status === 'ACTIVE'
-                          ? '#52c41a33'
-                          : group.status === 'INACTIVE'
-                          ? '#faad1433'
-                          : group.status === 'DISBANNED'
-                          ? '#ff4d4f33'
-                          : '#1890ff33',
-                      color:
-                        group.status === 'ACTIVE'
-                          ? '#52c41a'
-                          : group.status === 'INACTIVE'
-                          ? '#faad14'
-                          : group.status === 'DISBANNED'
-                          ? '#ff4d4f'
-                          : '#1890ff',
-                      fontSize: '0.75rem',
-                      padding: '0.25rem 0.5rem',
-                      borderRadius: '0.25rem',
-                      textTransform: 'capitalize',
-                    }}
-                  >
-                    {group.status.toLowerCase()}
-                  </span>
-
-                  <span
-                    style={{
-                      backgroundColor: '#1890ff33',
-                      color: '#1890ff',
-                      fontSize: '0.75rem',
-                      padding: '0.25rem 0.5rem',
-                      borderRadius: '0.25rem',
-                    }}
-                  >
-                    {group.batchName}
-                  </span>
-                </div>
-                {/* View Group button */}
-                <button
-                  onClick={() =>
-                    navigate(`/batches/${batchId}/groups/${group.id}`)
-                  }
-                  style={{
-                    width: '100%',
-                    marginTop: '1rem',
-                    padding: '0.5rem',
-                    backgroundColor:
-                      userGroupId === group.id ? '#52c41a' : '#1890ff',
-                    border: 'none',
-                    borderRadius: '0.375rem',
-                    color: 'white',
-                    cursor: 'pointer',
-                    transition: 'background-color 0.2s',
-                  }}
-                >
-                  {userGroupId === group.id ? 'View Your Group' : 'View Group'}
-                </button>
               </div>
             ))
           ) : (
@@ -343,6 +485,16 @@ const Groups = ({ batchId, userGroupId }) => {
           )}
         </div>
       )}
+
+      {/* Group Modal */}
+      <GroupsPage
+        group={selectedGroup}
+        isOpen={isModalOpen}
+        onClose={closeGroupModal}
+        userGroupId={userGroupId}
+        onJoin={handleJoinGroup}
+        onLeave={handleLeaveGroup}
+      />
     </div>
   );
 };
