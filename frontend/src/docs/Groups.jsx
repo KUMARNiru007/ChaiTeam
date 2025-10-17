@@ -198,9 +198,9 @@ const Groups = ({ batchId, userGroupId }) => {
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-            gap: '1.5rem',
-            marginTop: '1.5rem',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', 
+            gap: '1.25rem', 
+            marginTop: '1.25rem',
           }}
         >
           {filteredGroups.length > 0 ? (
@@ -227,7 +227,7 @@ const Groups = ({ batchId, userGroupId }) => {
                 }}
               >
                 {/* Banner Image with Logo Overlay */}
-                <div style={{ position: 'relative', height: '140px' }}>
+                <div style={{ position: 'relative', height: '120px' }}> 
                   {/* Banner Image */}
                   <div
                     style={{
@@ -246,10 +246,10 @@ const Groups = ({ batchId, userGroupId }) => {
                   <div
                     style={{
                       position: 'absolute',
-                      bottom: '-30px',
+                      bottom: '-25px', 
                       left: '1rem',
-                      width: '70px',
-                      height: '70px',
+                      width: '60px', 
+                      height: '60px', 
                       backgroundColor: darkMode ? '#18181B' : '#ffffff',
                       border: `3px solid ${darkMode ? '#27272A' : '#ffffff'}`,
                       borderRadius: '0.75rem',
@@ -278,7 +278,7 @@ const Groups = ({ batchId, userGroupId }) => {
                           background:
                             'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                           color: '#ffffff',
-                          fontSize: '1.5rem',
+                          fontSize: '1.25rem', 
                           fontWeight: '700',
                         }}
                       >
@@ -289,14 +289,14 @@ const Groups = ({ batchId, userGroupId }) => {
                 </div>
 
                 {/* Card Content */}
-                <div style={{ padding: '2.5rem 1.5rem 1.5rem' }}>
+                <div style={{ padding: '2rem 1.25rem 1.25rem' }}> 
                   {/* Title */}
                   <h3
                     style={{
                       color: darkMode ? '#ffffff' : '#111827',
-                      fontSize: '1.125rem',
+                      fontSize: '1rem', 
                       fontWeight: '600',
-                      marginBottom: '0.5rem',
+                      marginBottom: '0.375rem', 
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
                       whiteSpace: 'nowrap',
@@ -306,11 +306,11 @@ const Groups = ({ batchId, userGroupId }) => {
                   </h3>
 
                   {/* Category/Batch Badge */}
-                  <div style={{ marginBottom: '0.75rem' }}>
+                  <div style={{ marginBottom: '0.5rem' }}>
                     <span
                       style={{
                         color: darkMode ? '#9ca3af' : '#6b7280',
-                        fontSize: '0.875rem',
+                        fontSize: '0.813rem', 
                         fontWeight: '500',
                       }}
                     >
@@ -322,14 +322,14 @@ const Groups = ({ batchId, userGroupId }) => {
                   <p
                     style={{
                       color: darkMode ? '#b3b3b3' : '#6b7280',
-                      fontSize: '0.875rem',
-                      lineHeight: '1.5',
-                      marginBottom: '1rem',
+                      fontSize: '0.813rem', 
+                      lineHeight: '1.4', 
+                      marginBottom: '0.875rem',
                       display: '-webkit-box',
                       WebkitLineClamp: 2,
                       WebkitBoxOrient: 'vertical',
                       overflow: 'hidden',
-                      minHeight: '2.5rem',
+                      minHeight: '2.25rem',
                     }}
                   >
                     {group.description || 'No description available'}
@@ -341,10 +341,10 @@ const Groups = ({ batchId, userGroupId }) => {
                     group.tags.length > 0 && (
                       <div
                         style={{
-                          marginBottom: '1rem',
+                          marginBottom: '0.875rem', 
                           display: 'flex',
                           flexWrap: 'wrap',
-                          gap: '0.5rem',
+                          gap: '0.375rem', 
                         }}
                       >
                         {group.tags.slice(0, 3).map((tag, index) => (
@@ -353,8 +353,8 @@ const Groups = ({ batchId, userGroupId }) => {
                             style={{
                               backgroundColor: darkMode ? '#404040' : '#f3f4f6',
                               color: darkMode ? '#e5e7eb' : '#4b5563',
-                              fontSize: '0.75rem',
-                              padding: '0.25rem 0.625rem',
+                              fontSize: '0.688rem', 
+                              padding: '0.188rem 0.5rem', 
                               borderRadius: '0.375rem',
                               fontWeight: '500',
                             }}
@@ -366,8 +366,8 @@ const Groups = ({ batchId, userGroupId }) => {
                           <span
                             style={{
                               color: darkMode ? '#9ca3af' : '#6b7280',
-                              fontSize: '0.75rem',
-                              padding: '0.25rem 0',
+                              fontSize: '0.688rem',
+                              padding: '0.188rem 0',
                               fontWeight: '500',
                             }}
                           >
@@ -380,10 +380,10 @@ const Groups = ({ batchId, userGroupId }) => {
                   {/* Group Info */}
                   <div
                     style={{
-                      marginBottom: '1rem',
+                      marginBottom: '0.875rem', 
                       display: 'flex',
                       flexDirection: 'column',
-                      gap: '0.5rem',
+                      gap: '0.375rem', 
                     }}
                   >
                     {/* Creator */}
@@ -391,20 +391,20 @@ const Groups = ({ batchId, userGroupId }) => {
                       style={{
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '0.5rem',
+                        gap: '0.375rem', 
                       }}
                     >
                       <i
                         className='ri-user-line'
                         style={{
                           color: darkMode ? '#9ca3af' : '#6b7280',
-                          fontSize: '0.875rem',
+                          fontSize: '0.813rem', 
                         }}
                       ></i>
                       <span
                         style={{
                           color: darkMode ? '#b3b3b3' : '#6b7280',
-                          fontSize: '0.813rem',
+                          fontSize: '0.75rem', 
                         }}
                       >
                         {group.leader?.name || 'Unknown'}
@@ -416,20 +416,20 @@ const Groups = ({ batchId, userGroupId }) => {
                       style={{
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '0.5rem',
+                        gap: '0.375rem', 
                       }}
                     >
                       <i
                         className='ri-group-line'
                         style={{
                           color: darkMode ? '#9ca3af' : '#6b7280',
-                          fontSize: '0.875rem',
+                          fontSize: '0.813rem', 
                         }}
                       ></i>
                       <span
                         style={{
                           color: darkMode ? '#b3b3b3' : '#6b7280',
-                          fontSize: '0.813rem',
+                          fontSize: '0.75rem', 
                         }}
                       >
                         {group.member?.length || 0} member
@@ -439,7 +439,7 @@ const Groups = ({ batchId, userGroupId }) => {
                   </div>
 
                   {/* Status Badge */}
-                  <div style={{ marginTop: '0.5rem' }}>
+                  <div style={{ marginTop: '0.375rem' }}>
                     <span
                       style={{
                         backgroundColor:
@@ -458,8 +458,8 @@ const Groups = ({ batchId, userGroupId }) => {
                             : group.status === 'DISBANNED'
                             ? '#ff4d4f'
                             : '#1890ff',
-                        fontSize: '0.75rem',
-                        padding: '0.25rem 0.75rem',
+                        fontSize: '0.688rem', 
+                        padding: '0.188rem 0.625rem',
                         borderRadius: '0.375rem',
                         textTransform: 'capitalize',
                         display: 'inline-block',
