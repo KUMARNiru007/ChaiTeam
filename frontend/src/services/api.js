@@ -154,3 +154,26 @@ export const authService = {
     window.location.href = `${axiosInstance.defaults.baseURL}/auth/github`;
   },
 };
+
+// User API services
+export const userService = {
+  getCurrentUser: async () => {
+    try {
+      const response = await axiosInstance.get('/auth/check');
+      return response.data.Data || response.data;
+    } catch (error) {
+      console.error('Error fetching current user:', error);
+      throw error;
+    }
+  },
+
+  getUserProfile: async () => {
+    try {
+      const response = await axiosInstance.get('/user/profile');
+      return response.data.Data || response.data;
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
+      throw error;
+    }
+  }
+};

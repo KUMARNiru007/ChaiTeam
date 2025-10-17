@@ -4,11 +4,14 @@ import { useSelector, useDispatch } from 'react-redux';
 import { motion } from 'motion/react';
 import { useTheme } from '../context/ThemeContext.jsx';
 import { toggleSidebar } from '../redux/sidebarSlice.js';
+import { userService } from '../services/api'; // Import the user service
 
 const Sidebar = () => {
   const isCollapsed = useSelector((state) => state.sidebar.isCollapsed);
   const dispatch = useDispatch();
   const [openProfileModal, setOpenProfileModal] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const { darkMode } = useTheme();
   const profileModalRef = useRef(null);
 
@@ -21,6 +24,25 @@ const Sidebar = () => {
       icon: 'ri-clapperboard-line',
     },
   ];
+
+  // Fetch current user data
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        setLoading(true);
+        const userData = await userService.getCurrentUser();
+        setCurrentUser(userData);
+      } catch (error) {
+        console.error('Failed to fetch user data:', error);
+        // Fallback to empty user object to prevent errors
+        setCurrentUser({ name: 'User', email: '' });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCurrentUser();
+  }, []);
 
   // Close modal when clicking outside
   useEffect(() => {
@@ -87,7 +109,7 @@ const Sidebar = () => {
               )}
             </div>
 
-            {/* Navlink */}
+            {/* Tooltip for collapsed state */}
             <div className='absolute top-3 left-[65px] transform opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none'>
               <div
                 className={` ${
@@ -121,11 +143,25 @@ const Sidebar = () => {
         >
           <div className='nav-item-content border border-[var(--chaiteam-border-primary)] rounded-lg'>
             <div className='nav-item-icon'>
-              <i className='ri-user-line'></i>
+              {loading ? (
+                <div className="w-6 h-6 flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                </div>
+              ) : currentUser?.image ? (
+                <img
+                  src={currentUser.image}
+                  alt={currentUser.name}
+                  className="w-6 h-6 rounded-full object-cover"
+                />
+              ) : (
+                <i className='ri-user-line'></i>
+              )}
             </div>
             {!isCollapsed && (
               <div className='profile-info'>
-                <span className='nav-item-label'>Kumar Nirupam</span>
+                <span className='nav-item-label'>
+                  {loading ? 'Loading...' : currentUser?.name || 'User'}
+                </span>
               </div>
             )}
           </div>
@@ -148,13 +184,13 @@ const Sidebar = () => {
           ></i>
         </button>
 
-        {/* Profile box open when click on the profile button */}
+        {/* Profile Modal */}
         {openProfileModal && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0, duration: 0.5, ease: 'easeInOut' }}
-            className={`absolute -top-[140px] border-[1px] p-3 text-sm rounded-xl w-[210px] ${
+            className={`absolute -top-[140px] border-[1px] p-3 text-sm rounded-xl w-[250px] ${
               darkMode
                 ? 'bg-[var(--chaiteam-bg-primary)] text-white border-white/30'
                 : 'bg-white'
@@ -162,22 +198,52 @@ const Sidebar = () => {
           >
             <div className='w-full mb-1'>
               <span>Signed in as </span>
-              <span className='font-semibold'>vt118452@gmail.com</span>
+              <span className='font-semibold'>
+                {loading ? 'loading...' : currentUser?.email || 'No email'}
+              </span>
             </div>
+            
+            {/* User Info Section */}
+            {currentUser && (
+              <div className="flex items-center gap-3 py-2 border-t border-gray-200 dark:border-gray-600 mt-2">
+                <div className="flex-shrink-0">
+                  {currentUser.image ? (
+                    <img
+                      src={currentUser.image}
+                      alt={currentUser.name}
+                      className="w-10 h-10 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
+                      <i className="ri-user-line text-gray-600 dark:text-gray-300"></i>
+                    </div>
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium truncate">
+                    {currentUser.name}
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                    {currentUser.role?.toLowerCase() || 'user'}
+                  </p>
+                </div>
+              </div>
+            )}
+            
             <div className='w-full mt-3 flex flex-col gap-2'>
               <NavLink
-                to='profile'
+                to='/profile'
                 onClick={() => setOpenProfileModal(!openProfileModal)}
                 className={`block w-full text-[15px] cursor-pointer px-1.5 py-1 rounded-md transition-all duration-200 ${
                   darkMode
-                    ? 'hover:bg-[var(--chaiteam-bg-secondary)]/50 text-white hover:text-whit'
+                    ? 'hover:bg-[var(--chaiteam-bg-secondary)]/50 text-white hover:text-white'
                     : 'hover:bg-gray-200'
                 } `}
               >
                 My profile
               </NavLink>
               <NavLink
-                to='profile'
+                to='/logout'
                 onClick={() => setOpenProfileModal(!openProfileModal)}
                 className='block w-full text-[15px] cursor-pointer px-1.5 py-1 rounded-md transition-all duration-200 hover:text-red-500 hover:bg-red-200'
               >
