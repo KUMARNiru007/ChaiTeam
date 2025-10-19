@@ -5,7 +5,7 @@ import CustomDropdown from '../components/CustomDropdown.jsx';
 import GroupsPage from './GroupPage.jsx';
 import { useTheme } from '../context/ThemeContext.jsx';
 
-const Groups = ({ batchId, userGroupId }) => {
+const Groups = ({ batchId }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('All Status');
   const [selectedTag, setSelectedTag] = useState('All Tags');
@@ -13,8 +13,8 @@ const Groups = ({ batchId, userGroupId }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('active');
-  const [selectedGroup, setSelectedGroup] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [selectedGroup, setSelectedGroup] = useState(null);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
 
   const navigate = useNavigate();
   const { darkMode } = useTheme();
@@ -88,10 +88,8 @@ const Groups = ({ batchId, userGroupId }) => {
     return matchesSearch && matchesStatus && matchesTag && matchesTab;
   });
 
-  const openGroupModal = (group) => {
-    setSelectedGroup(group);
-    setIsModalOpen(true);
-    document.body.style.overflow = 'hidden';
+  const openGroupPage = (group) => {
+    navigate(`/batches/${batchId}/groups/${group.id}`);
   };
 
   const closeGroupModal = () => {
@@ -198,8 +196,8 @@ const Groups = ({ batchId, userGroupId }) => {
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', 
-            gap: '1.25rem', 
+            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+            gap: '1.25rem',
             marginTop: '1.25rem',
           }}
         >
@@ -207,7 +205,7 @@ const Groups = ({ batchId, userGroupId }) => {
             filteredGroups.map((group) => (
               <div
                 key={group.id}
-                onClick={() => openGroupModal(group)}
+                onClick={() => openGroupPage(group)}
                 style={{
                   backgroundColor: darkMode ? '#27272A' : '#ffffff',
                   border: darkMode ? '1px solid #404040' : '1px solid #e5e7eb',
@@ -227,7 +225,7 @@ const Groups = ({ batchId, userGroupId }) => {
                 }}
               >
                 {/* Banner Image with Logo Overlay */}
-                <div style={{ position: 'relative', height: '120px' }}> 
+                <div style={{ position: 'relative', height: '120px' }}>
                   {/* Banner Image */}
                   <div
                     style={{
@@ -246,10 +244,10 @@ const Groups = ({ batchId, userGroupId }) => {
                   <div
                     style={{
                       position: 'absolute',
-                      bottom: '-25px', 
+                      bottom: '-25px',
                       left: '1rem',
-                      width: '60px', 
-                      height: '60px', 
+                      width: '60px',
+                      height: '60px',
                       backgroundColor: darkMode ? '#18181B' : '#ffffff',
                       border: `3px solid ${darkMode ? '#27272A' : '#ffffff'}`,
                       borderRadius: '0.75rem',
@@ -278,7 +276,7 @@ const Groups = ({ batchId, userGroupId }) => {
                           background:
                             'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                           color: '#ffffff',
-                          fontSize: '1.25rem', 
+                          fontSize: '1.25rem',
                           fontWeight: '700',
                         }}
                       >
@@ -289,14 +287,14 @@ const Groups = ({ batchId, userGroupId }) => {
                 </div>
 
                 {/* Card Content */}
-                <div style={{ padding: '2rem 1.25rem 1.25rem' }}> 
+                <div style={{ padding: '2rem 1.25rem 1.25rem' }}>
                   {/* Title */}
                   <h3
                     style={{
                       color: darkMode ? '#ffffff' : '#111827',
-                      fontSize: '1rem', 
+                      fontSize: '1rem',
                       fontWeight: '600',
-                      marginBottom: '0.375rem', 
+                      marginBottom: '0.375rem',
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
                       whiteSpace: 'nowrap',
@@ -310,7 +308,7 @@ const Groups = ({ batchId, userGroupId }) => {
                     <span
                       style={{
                         color: darkMode ? '#9ca3af' : '#6b7280',
-                        fontSize: '0.813rem', 
+                        fontSize: '0.813rem',
                         fontWeight: '500',
                       }}
                     >
@@ -322,8 +320,8 @@ const Groups = ({ batchId, userGroupId }) => {
                   <p
                     style={{
                       color: darkMode ? '#b3b3b3' : '#6b7280',
-                      fontSize: '0.813rem', 
-                      lineHeight: '1.4', 
+                      fontSize: '0.813rem',
+                      lineHeight: '1.4',
                       marginBottom: '0.875rem',
                       display: '-webkit-box',
                       WebkitLineClamp: 2,
@@ -341,10 +339,10 @@ const Groups = ({ batchId, userGroupId }) => {
                     group.tags.length > 0 && (
                       <div
                         style={{
-                          marginBottom: '0.875rem', 
+                          marginBottom: '0.875rem',
                           display: 'flex',
                           flexWrap: 'wrap',
-                          gap: '0.375rem', 
+                          gap: '0.375rem',
                         }}
                       >
                         {group.tags.slice(0, 3).map((tag, index) => (
@@ -353,8 +351,8 @@ const Groups = ({ batchId, userGroupId }) => {
                             style={{
                               backgroundColor: darkMode ? '#404040' : '#f3f4f6',
                               color: darkMode ? '#e5e7eb' : '#4b5563',
-                              fontSize: '0.688rem', 
-                              padding: '0.188rem 0.5rem', 
+                              fontSize: '0.688rem',
+                              padding: '0.188rem 0.5rem',
                               borderRadius: '0.375rem',
                               fontWeight: '500',
                             }}
@@ -380,10 +378,10 @@ const Groups = ({ batchId, userGroupId }) => {
                   {/* Group Info */}
                   <div
                     style={{
-                      marginBottom: '0.875rem', 
+                      marginBottom: '0.875rem',
                       display: 'flex',
                       flexDirection: 'column',
-                      gap: '0.375rem', 
+                      gap: '0.375rem',
                     }}
                   >
                     {/* Creator */}
@@ -391,20 +389,20 @@ const Groups = ({ batchId, userGroupId }) => {
                       style={{
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '0.375rem', 
+                        gap: '0.375rem',
                       }}
                     >
                       <i
                         className='ri-user-line'
                         style={{
                           color: darkMode ? '#9ca3af' : '#6b7280',
-                          fontSize: '0.813rem', 
+                          fontSize: '0.813rem',
                         }}
                       ></i>
                       <span
                         style={{
                           color: darkMode ? '#b3b3b3' : '#6b7280',
-                          fontSize: '0.75rem', 
+                          fontSize: '0.75rem',
                         }}
                       >
                         {group.leader?.name || 'Unknown'}
@@ -416,20 +414,20 @@ const Groups = ({ batchId, userGroupId }) => {
                       style={{
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '0.375rem', 
+                        gap: '0.375rem',
                       }}
                     >
                       <i
                         className='ri-group-line'
                         style={{
                           color: darkMode ? '#9ca3af' : '#6b7280',
-                          fontSize: '0.813rem', 
+                          fontSize: '0.813rem',
                         }}
                       ></i>
                       <span
                         style={{
                           color: darkMode ? '#b3b3b3' : '#6b7280',
-                          fontSize: '0.75rem', 
+                          fontSize: '0.75rem',
                         }}
                       >
                         {group.member?.length || 0} member
@@ -458,7 +456,7 @@ const Groups = ({ batchId, userGroupId }) => {
                             : group.status === 'DISBANNED'
                             ? '#ff4d4f'
                             : '#1890ff',
-                        fontSize: '0.688rem', 
+                        fontSize: '0.688rem',
                         padding: '0.188rem 0.625rem',
                         borderRadius: '0.375rem',
                         textTransform: 'capitalize',
@@ -487,14 +485,14 @@ const Groups = ({ batchId, userGroupId }) => {
       )}
 
       {/* Group Modal */}
-      <GroupsPage
+      {/* <GroupsPage
         group={selectedGroup}
         isOpen={isModalOpen}
         onClose={closeGroupModal}
         userGroupId={userGroupId}
         onJoin={handleJoinGroup}
         onLeave={handleLeaveGroup}
-      />
+      /> */}
     </div>
   );
 };

@@ -1,530 +1,256 @@
 import React, { useState } from 'react';
 import { useTheme } from '../context/ThemeContext.jsx';
 
-const GroupsPage = ({
-  group,
-  isOpen,
-  onClose,
-  userGroupId,
-  onJoin,
-  onLeave,
-}) => {
-  const [modalTab, setModalTab] = useState('overview');
+const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
+  const [activeTab, setActiveTab] = useState('overview');
   const { darkMode } = useTheme();
 
-  if (!isOpen || !group) return null;
+  if (!group) return null;
+
+  const isUserMember = userGroupId === group.id;
 
   return (
-    <>
-      {/* Backdrop */}
+    <div className={`min-h-screen ${darkMode ? 'bg-zinc-950' : 'bg-gray-50'}`}>
+      {/* Header */}
       <div
-        onClick={onClose}
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          zIndex: 999,
-          animation: 'fadeIn 0.3s ease-in-out',
-        }}
-      />
-
-      {/* Modal Content */}
-      <div
-        style={{
-          position: 'fixed',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          maxHeight: '93vh',
-          backgroundColor: darkMode ? '#18181B' : '#ffffff',
-          borderTopLeftRadius: '1.5rem',
-          borderTopRightRadius: '1.5rem',
-          boxShadow: '0 -4px 20px rgba(0, 0, 0, 0.3)',
-          zIndex: 1000,
-          overflow: 'hidden',
-          animation: 'slideUp 0.3s ease-out',
-          display: 'flex',
-          flexDirection: 'column',
-        }}
+        className={`sticky top-0 z-50 ${
+          darkMode ? 'bg-zinc-900' : 'bg-white'
+        } border-b ${
+          darkMode ? 'border-zinc-800' : 'border-gray-200'
+        } shadow-sm`}
       >
-        {/* Header with Handle Bar */}
-        <div
-          style={{
-            position: 'sticky',
-            top: 0,
-            backgroundColor: darkMode ? '#18181B' : '#ffffff',
-            zIndex: 10,
-            borderBottom: `1px solid ${darkMode ? '#27272A' : '#e5e7eb'}`,
-          }}
-        >
-          {/* Handle Bar */}
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              padding: '0.75rem',
-              cursor: 'pointer',
-            }}
-            onClick={onClose}
-          >
-            <div
-              style={{
-                width: '40px',
-                height: '4px',
-                backgroundColor: darkMode ? '#404040' : '#d1d5db',
-                borderRadius: '2px',
-              }}
-            />
-          </div>
-
-          {/* Close Button */}
-          <button
-            onClick={onClose}
-            style={{
-              position: 'absolute',
-              top: '1rem',
-              right: '1rem',
-              width: '36px',
-              height: '36px',
-              borderRadius: '50%',
-              backgroundColor: darkMode ? '#27272A' : '#f3f4f6',
-              border: 'none',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              transition: 'background-color 0.2s',
-              zIndex: 11,
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = darkMode
-                ? '#404040'
-                : '#e5e7eb';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = darkMode
-                ? '#27272A'
-                : '#f3f4f6';
-            }}
-          >
-            <i
-              className='ri-close-line'
-              style={{
-                fontSize: '1.25rem',
-                color: darkMode ? '#ffffff' : '#111827',
-              }}
-            ></i>
-          </button>
-        </div>
-
-        {/* Scrollable Content */}
-        <div
-          style={{
-            overflowY: 'auto',
-            flex: 1,
-          }}
-        >
-          {/* Banner with Logo Overlay */}
-          <div style={{ position: 'relative', marginBottom: '3rem' }}>
-            <div
-              style={{
-                width: '100%',
-                height: '200px',
-                backgroundColor: '#404040',
-                backgroundImage: group.groupImageUrl
-                  ? `url(${group.groupImageUrl})`
-                  : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-              }}
-            />
-
-            {/* Logo Overlay */}
-            <div
-              style={{
-                position: 'absolute',
-                bottom: '-50px',
-                left: '1.5rem',
-                width: '100px',
-                height: '100px',
-                backgroundColor: darkMode ? '#18181B' : '#ffffff',
-                border: `4px solid ${darkMode ? '#18181B' : '#ffffff'}`,
-                borderRadius: '1.25rem',
-                overflow: 'hidden',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-              }}
-            >
-              {group.logoImageUrl ? (
-                <img
-                  src={group.logoImageUrl}
-                  alt={group.name}
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
-                  }}
-                />
-              ) : (
-                <div
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    background:
-                      'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                    color: '#ffffff',
-                    fontSize: '2.5rem',
-                    fontWeight: '700',
-                  }}
-                >
-                  {group.name.charAt(0).toUpperCase()}
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Group Header Info */}
-          <div style={{ padding: '0 1.5rem 1.5rem' }}>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'flex-start',
-                marginBottom: '1rem',
-              }}
-            >
-              <div style={{ flex: 1 }}>
+        <div className='max-w-5xl mx-auto px-6 py-4'>
+          <div className='flex items-center justify-between'>
+            <div className='flex items-center gap-4'>
+              <button
+                onClick={onBack}
+                className={`w-10 h-10 rounded-lg flex items-center justify-center transition-colors ${
+                  darkMode
+                    ? 'bg-zinc-800 hover:bg-zinc-700 text-white'
+                    : 'bg-gray-100 hover:bg-gray-200 text-gray-900'
+                }`}
+              >
+                <i className='ri-arrow-left-line text-xl'></i>
+              </button>
+              <div>
                 <h1
-                  style={{
-                    color: darkMode ? '#ffffff' : '#111827',
-                    fontSize: '1.75rem',
-                    fontWeight: '700',
-                    marginBottom: '0.5rem',
-                  }}
+                  className={`text-lg font-bold ${
+                    darkMode ? 'text-white' : 'text-gray-900'
+                  }`}
                 >
-                  {group.name}
+                  Group Details
                 </h1>
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.75rem',
-                    flexWrap: 'wrap',
-                  }}
-                >
-                  <span
-                    style={{
-                      color: darkMode ? '#9ca3af' : '#6b7280',
-                      fontSize: '0.938rem',
-                      fontWeight: '500',
-                    }}
-                  >
-                    {group.batchName || 'Games'}
-                  </span>
-                  <span style={{ color: darkMode ? '#404040' : '#d1d5db' }}>
-                    •
-                  </span>
-                  <span
-                    style={{
-                      backgroundColor:
-                        group.status === 'ACTIVE'
-                          ? '#52c41a33'
-                          : group.status === 'INACTIVE'
-                          ? '#faad1433'
-                          : group.status === 'DISBANNED'
-                          ? '#ff4d4f33'
-                          : '#1890ff33',
-                      color:
-                        group.status === 'ACTIVE'
-                          ? '#52c41a'
-                          : group.status === 'INACTIVE'
-                          ? '#faad14'
-                          : group.status === 'DISBANNED'
-                          ? '#ff4d4f'
-                          : '#1890ff',
-                      fontSize: '0.813rem',
-                      padding: '0.25rem 0.75rem',
-                      borderRadius: '0.5rem',
-                      textTransform: 'capitalize',
-                      fontWeight: '600',
-                    }}
-                  >
-                    {group.status.toLowerCase()}
-                  </span>
-                </div>
               </div>
             </div>
-
-            {/* Action Buttons */}
-            <div
-              style={{
-                display: 'flex',
-                gap: '0.75rem',
-                marginBottom: '1.5rem',
-              }}
-            >
-              {userGroupId === group.id ? (
-                <button
-                  onClick={onLeave}
-                  style={{
-                    flex: 1,
-                    padding: '0.875rem',
-                    backgroundColor: 'transparent',
-                    border: `2px solid ${darkMode ? '#404040' : '#e5e7eb'}`,
-                    borderRadius: '0.75rem',
-                    color: darkMode ? '#ffffff' : '#111827',
-                    fontSize: '0.938rem',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = darkMode
-                      ? '#F03F1D'
-                      : '#F03F1D';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'transparent';
-                  }}
-                >
-                  Leave Group
-                </button>
-              ) : (
-                <button
-                  onClick={onJoin}
-                  style={{
-                    flex: 1,
-                    padding: '0.875rem',
-                    backgroundColor: '#1890ff',
-                    border: 'none',
-                    borderRadius: '0.75rem',
-                    color: 'white',
-                    fontSize: '0.938rem',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    transition: 'opacity 0.2s',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.opacity = '0.9';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.opacity = '1';
-                  }}
-                >
-                  Join Group
-                </button>
-              )}
+            <div className='flex items-center gap-2'>
               <button
-                style={{
-                  padding: '0.875rem 1rem',
-                  backgroundColor: 'transparent',
-                  border: `2px solid ${darkMode ? '#404040' : '#e5e7eb'}`,
-                  borderRadius: '0.75rem',
-                  color: darkMode ? '#ffffff' : '#111827',
-                  fontSize: '0.938rem',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = darkMode
-                    ? '#27272A'
-                    : '#f9fafb';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent';
-                }}
+                className={`w-10 h-10 rounded-lg flex items-center justify-center transition-colors ${
+                  darkMode
+                    ? 'bg-zinc-800 hover:bg-zinc-700'
+                    : 'bg-gray-100 hover:bg-gray-200'
+                }`}
               >
                 <i
-                  className='ri-share-line'
-                  style={{ fontSize: '1.125rem' }}
+                  className={`ri-share-line text-lg ${
+                    darkMode ? 'text-white' : 'text-gray-900'
+                  }`}
+                ></i>
+              </button>
+              <button
+                className={`w-10 h-10 rounded-lg flex items-center justify-center transition-colors ${
+                  darkMode
+                    ? 'bg-zinc-800 hover:bg-zinc-700'
+                    : 'bg-gray-100 hover:bg-gray-200'
+                }`}
+              >
+                <i
+                  className={`ri-more-2-fill text-lg ${
+                    darkMode ? 'text-white' : 'text-gray-900'
+                  }`}
                 ></i>
               </button>
             </div>
-
-            {/* Stats Row */}
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(3, 1fr)',
-                gap: '1rem',
-                marginBottom: '1.5rem',
-                padding: '1rem',
-                backgroundColor: darkMode ? '#27272A' : '#f9fafb',
-                borderRadius: '1rem',
-              }}
-            >
-              <div style={{ textAlign: 'center' }}>
-                <div
-                  style={{
-                    color: darkMode ? '#ffffff' : '#111827',
-                    fontSize: '1.5rem',
-                    fontWeight: '700',
-                    marginBottom: '0.25rem',
-                  }}
-                >
-                  {group.member?.length || 0}
-                </div>
-                <div
-                  style={{
-                    color: darkMode ? '#9ca3af' : '#6b7280',
-                    fontSize: '0.813rem',
-                  }}
-                >
-                  Members
-                </div>
-              </div>
-              <div style={{ textAlign: 'center' }}>
-                <div
-                  style={{
-                    color: darkMode ? '#ffffff' : '#111827',
-                    fontSize: '1.5rem',
-                    fontWeight: '700',
-                    marginBottom: '0.25rem',
-                  }}
-                >
-                  {group.capacity || 4}
-                </div>
-                <div
-                  style={{
-                    color: darkMode ? '#9ca3af' : '#6b7280',
-                    fontSize: '0.813rem',
-                  }}
-                >
-                  Capacity
-                </div>
-              </div>
-              <div style={{ textAlign: 'center' }}>
-                <div
-                  style={{
-                    color: darkMode ? '#ffffff' : '#111827',
-                    fontSize: '1.5rem',
-                    fontWeight: '700',
-                    marginBottom: '0.25rem',
-                  }}
-                >
-                  {group.tags?.length || 0}
-                </div>
-                <div
-                  style={{
-                    color: darkMode ? '#9ca3af' : '#6b7280',
-                    fontSize: '0.813rem',
-                  }}
-                >
-                  Tags
-                </div>
-              </div>
-            </div>
-
-            {/* Tabs */}
-            <div
-              style={{
-                display: 'flex',
-                gap: '0.5rem',
-                marginBottom: '1.5rem',
-                borderBottom: `2px solid ${darkMode ? '#27272A' : '#e5e7eb'}`,
-                overflowX: 'auto',
-              }}
-            >
-              {['overview', 'members', 'activity'].map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setModalTab(tab)}
-                  style={{
-                    padding: '0.75rem 1.25rem',
-                    backgroundColor: 'transparent',
-                    border: 'none',
-                    borderBottom: `3px solid ${
-                      modalTab === tab ? '#1890ff' : 'transparent'
-                    }`,
-                    color:
-                      modalTab === tab
-                        ? darkMode
-                          ? '#ffffff'
-                          : '#111827'
-                        : darkMode
-                        ? '#9ca3af'
-                        : '#6b7280',
-                    fontSize: '0.938rem',
-                    fontWeight: modalTab === tab ? '600' : '500',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s',
-                    textTransform: 'capitalize',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  {tab}
-                </button>
-              ))}
-            </div>
-
-            {/* Tab Content */}
-            {modalTab === 'overview' && (
-              <OverviewTab group={group} darkMode={darkMode} />
-            )}
-
-            {modalTab === 'members' && (
-              <MembersTab group={group} darkMode={darkMode} />
-            )}
-
-            {modalTab === 'activity' && (
-              <ActivityTab group={group} darkMode={darkMode} />
-            )}
           </div>
         </div>
       </div>
 
-      {/* CSS Animations */}
-      <style>
-        {`
-          @keyframes slideUp {
-            from {
-              transform: translateY(100%);
-            }
-            to {
-              transform: translateY(0);
-            }
-          }
-          
-          @keyframes fadeIn {
-            from {
-              opacity: 0;
-            }
-            to {
-              opacity: 1;
-            }
-          }
-        `}
-      </style>
-    </>
+      {/* Main Content */}
+      <div className='max-w-5xl mx-auto px-6 py-8'>
+        {/* Group Header Section */}
+        <div
+          className={`rounded-xl p-8 mb-6 ${
+            darkMode ? 'bg-zinc-900' : 'bg-white'
+          } border ${darkMode ? 'border-zinc-800' : 'border-gray-200'}`}
+        >
+          <div className='flex flex-col md:flex-row gap-6 items-start'>
+            {/* Group Info */}
+            <div className='flex-1'>
+              <h2
+                className={`text-3xl font-bold mb-3 ${
+                  darkMode ? 'text-white' : 'text-gray-900'
+                }`}
+              >
+                {group.name}
+              </h2>
+              <div className='flex items-center gap-3 flex-wrap mb-6'>
+                <span
+                  className={`text-sm font-medium ${
+                    darkMode ? 'text-gray-400' : 'text-gray-600'
+                  }`}
+                >
+                  {group.batchName || 'General'}
+                </span>
+                <span className={darkMode ? 'text-zinc-700' : 'text-gray-300'}>
+                  •
+                </span>
+                <span
+                  className={`text-xs font-semibold px-3 py-1.5 rounded-lg ${
+                    group.status === 'ACTIVE'
+                      ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                      : group.status === 'INACTIVE'
+                      ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
+                      : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+                  }`}
+                >
+                  {group.status.toLowerCase()}
+                </span>
+              </div>
+
+              {/* Action Buttons */}
+              <div className='flex gap-3'>
+                {isUserMember ? (
+                  <button
+                    onClick={onLeave}
+                    className={`px-6 py-3 rounded-lg font-semibold text-sm transition-colors ${
+                      darkMode
+                        ? 'bg-zinc-800 hover:bg-red-600 text-white border border-zinc-700'
+                        : 'bg-white hover:bg-red-500 hover:text-white text-gray-900 border-2 border-gray-300'
+                    }`}
+                  >
+                    <i className='ri-logout-box-r-line mr-2'></i>
+                    Leave Group
+                  </button>
+                ) : (
+                  <button
+                    onClick={onJoin}
+                    className='px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-semibold text-sm transition-colors'
+                  >
+                    <i className='ri-user-add-line mr-2'></i>
+                    Join Group
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Stats Grid */}
+            <div className='grid grid-cols-3 gap-4'>
+              {[
+                {
+                  label: 'Members',
+                  value: group.member?.length || 0,
+                  icon: 'ri-group-line',
+                },
+                {
+                  label: 'Capacity',
+                  value: group.capacity || 4,
+                  icon: 'ri-user-settings-line',
+                },
+                {
+                  label: 'Tags',
+                  value: group.tags?.length || 0,
+                  icon: 'ri-price-tag-3-line',
+                },
+              ].map((stat, idx) => (
+                <div
+                  key={idx}
+                  className={`p-4 rounded-lg text-center ${
+                    darkMode ? 'bg-zinc-800' : 'bg-gray-50'
+                  } border ${darkMode ? 'border-zinc-700' : 'border-gray-200'}`}
+                >
+                  <i
+                    className={`${stat.icon} text-2xl mb-2 ${
+                      darkMode ? 'text-gray-400' : 'text-gray-600'
+                    }`}
+                  ></i>
+                  <div
+                    className={`text-2xl font-bold mb-1 ${
+                      darkMode ? 'text-white' : 'text-gray-900'
+                    }`}
+                  >
+                    {stat.value}
+                  </div>
+                  <div
+                    className={`text-xs font-medium ${
+                      darkMode ? 'text-gray-400' : 'text-gray-600'
+                    }`}
+                  >
+                    {stat.label}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Tabs */}
+        <div
+          className={`mb-6 p-1.5 rounded-lg inline-flex gap-2 ${
+            darkMode ? 'bg-zinc-900' : 'bg-white'
+          } border ${darkMode ? 'border-zinc-800' : 'border-gray-200'}`}
+        >
+          {['overview', 'members', 'activity'].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`px-6 py-2.5 rounded-lg font-semibold text-sm capitalize transition-colors ${
+                activeTab === tab
+                  ? 'bg-orange-500 text-white'
+                  : darkMode
+                  ? 'text-gray-400 hover:text-white hover:bg-zinc-800'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+              }`}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
+
+        {/* Tab Content */}
+        <div
+          className={`rounded-lg p-6 ${
+            darkMode ? 'bg-zinc-900' : 'bg-white'
+          } border ${darkMode ? 'border-zinc-800' : 'border-gray-200'}`}
+        >
+          {activeTab === 'overview' && (
+            <OverviewTab group={group} darkMode={darkMode} />
+          )}
+          {activeTab === 'members' && (
+            <MembersTab group={group} darkMode={darkMode} />
+          )}
+          {activeTab === 'activity' && (
+            <ActivityTab group={group} darkMode={darkMode} />
+          )}
+        </div>
+      </div>
+    </div>
   );
 };
 
-// Overview Tab Component
 const OverviewTab = ({ group, darkMode }) => (
-  <div>
-    {/* Description Section */}
-    <div style={{ marginBottom: '2rem' }}>
+  <div className='space-y-6'>
+    {/* About Section */}
+    <div>
       <h3
-        style={{
-          color: darkMode ? '#ffffff' : '#111827',
-          fontSize: '1.125rem',
-          fontWeight: '600',
-          marginBottom: '0.75rem',
-        }}
+        className={`text-lg font-bold mb-3 ${
+          darkMode ? 'text-white' : 'text-gray-900'
+        }`}
       >
         About
       </h3>
       <p
-        style={{
-          color: darkMode ? '#b3b3b3' : '#6b7280',
-          fontSize: '0.938rem',
-          lineHeight: '1.6',
-        }}
+        className={`text-sm leading-relaxed ${
+          darkMode ? 'text-gray-300' : 'text-gray-700'
+        }`}
       >
         {group.description || 'No description available for this group.'}
       </p>
@@ -532,30 +258,23 @@ const OverviewTab = ({ group, darkMode }) => (
 
     {/* Tags Section */}
     {group.tags && Array.isArray(group.tags) && group.tags.length > 0 && (
-      <div style={{ marginBottom: '2rem' }}>
+      <div>
         <h3
-          style={{
-            color: darkMode ? '#ffffff' : '#111827',
-            fontSize: '1.125rem',
-            fontWeight: '600',
-            marginBottom: '0.75rem',
-          }}
+          className={`text-lg font-bold mb-3 ${
+            darkMode ? 'text-white' : 'text-gray-900'
+          }`}
         >
           Tags
         </h3>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+        <div className='flex flex-wrap gap-2'>
           {group.tags.map((tag, index) => (
             <span
               key={index}
-              style={{
-                backgroundColor: darkMode ? '#27272A' : '#f3f4f6',
-                color: darkMode ? '#e5e7eb' : '#4b5563',
-                fontSize: '0.875rem',
-                padding: '0.5rem 1rem',
-                borderRadius: '0.5rem',
-                fontWeight: '500',
-                border: `1px solid ${darkMode ? '#404040' : '#e5e7eb'}`,
-              }}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold ${
+                darkMode
+                  ? 'bg-zinc-800 text-gray-300 border border-zinc-700'
+                  : 'bg-gray-100 text-gray-700 border border-gray-200'
+              }`}
             >
               #{tag}
             </span>
@@ -564,76 +283,45 @@ const OverviewTab = ({ group, darkMode }) => (
       </div>
     )}
 
-    {/* Group Leader Section */}
-    <div style={{ marginBottom: '2rem' }}>
+    {/* Group Leader */}
+    <div>
       <h3
-        style={{
-          color: darkMode ? '#ffffff' : '#111827',
-          fontSize: '1.125rem',
-          fontWeight: '600',
-          marginBottom: '0.75rem',
-        }}
+        className={`text-lg font-bold mb-3 ${
+          darkMode ? 'text-white' : 'text-gray-900'
+        }`}
       >
         Group Leader
       </h3>
       <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '1rem',
-          padding: '1rem',
-          backgroundColor: darkMode ? '#27272A' : '#f9fafb',
-          borderRadius: '1rem',
-          border: `1px solid ${darkMode ? '#404040' : '#e5e7eb'}`,
-        }}
+        className={`flex items-center gap-4 p-4 rounded-lg ${
+          darkMode ? 'bg-zinc-800' : 'bg-gray-50'
+        } border ${darkMode ? 'border-zinc-700' : 'border-gray-200'}`}
       >
-        <div
-          style={{
-            width: '50px',
-            height: '50px',
-            borderRadius: '50%',
-            backgroundColor: darkMode ? '#404040' : '#e5e7eb',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '1.25rem',
-            fontWeight: '700',
-            color: darkMode ? '#ffffff' : '#111827',
-          }}
-        >
+        <div className='w-12 h-12 rounded-full bg-gray-400 flex items-center justify-center text-lg font-bold text-gray-900'>
           {(group.leader?.name || 'U').charAt(0).toUpperCase()}
         </div>
-        <div style={{ flex: 1 }}>
+        <div className='flex-1'>
           <div
-            style={{
-              color: darkMode ? '#ffffff' : '#111827',
-              fontSize: '1rem',
-              fontWeight: '600',
-              marginBottom: '0.25rem',
-            }}
+            className={`font-bold text-base mb-1 ${
+              darkMode ? 'text-white' : 'text-gray-900'
+            }`}
           >
             {group.leader?.name || 'Unknown'}
           </div>
           <div
-            style={{
-              color: darkMode ? '#9ca3af' : '#6b7280',
-              fontSize: '0.875rem',
-            }}
+            className={`text-sm ${
+              darkMode ? 'text-gray-400' : 'text-gray-600'
+            }`}
           >
             Group Leader
           </div>
         </div>
         <button
-          style={{
-            padding: '0.5rem 1rem',
-            backgroundColor: 'transparent',
-            border: `2px solid ${darkMode ? '#404040' : '#e5e7eb'}`,
-            borderRadius: '0.5rem',
-            color: darkMode ? '#ffffff' : '#111827',
-            fontSize: '0.875rem',
-            fontWeight: '500',
-            cursor: 'pointer',
-          }}
+          className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${
+            darkMode
+              ? 'bg-zinc-700 hover:bg-zinc-600 text-white'
+              : 'bg-white hover:bg-gray-100 text-gray-900 border border-gray-300'
+          }`}
         >
           View Profile
         </button>
@@ -641,187 +329,99 @@ const OverviewTab = ({ group, darkMode }) => (
     </div>
 
     {/* Group Info */}
-    <div style={{ marginBottom: '2rem' }}>
+    <div>
       <h3
-        style={{
-          color: darkMode ? '#ffffff' : '#111827',
-          fontSize: '1.125rem',
-          fontWeight: '600',
-          marginBottom: '0.75rem',
-        }}
+        className={`text-lg font-bold mb-3 ${
+          darkMode ? 'text-white' : 'text-gray-900'
+        }`}
       >
-        Group Information
+        Information
       </h3>
       <div
-        style={{
-          backgroundColor: darkMode ? '#27272A' : '#f9fafb',
-          borderRadius: '1rem',
-          padding: '1rem',
-          border: `1px solid ${darkMode ? '#404040' : '#e5e7eb'}`,
-        }}
+        className={`rounded-lg overflow-hidden ${
+          darkMode ? 'bg-zinc-800' : 'bg-gray-50'
+        } border ${darkMode ? 'border-zinc-700' : 'border-gray-200'}`}
       >
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            padding: '0.75rem 0',
-            borderBottom: `1px solid ${darkMode ? '#404040' : '#e5e7eb'}`,
-          }}
-        >
-          <span
-            style={{
-              color: darkMode ? '#9ca3af' : '#6b7280',
-              fontSize: '0.938rem',
-            }}
-          >
-            Created
-          </span>
-          <span
-            style={{
-              color: darkMode ? '#ffffff' : '#111827',
-              fontSize: '0.938rem',
-              fontWeight: '500',
-            }}
-          >
-            {new Date(group.createdAT).toLocaleDateString('en-US', {
+        {[
+          {
+            label: 'Created',
+            value: new Date(group.createdAT).toLocaleDateString('en-US', {
               year: 'numeric',
               month: 'short',
               day: 'numeric',
-            })}
-          </span>
-        </div>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            padding: '0.75rem 0',
-            borderBottom: `1px solid ${darkMode ? '#404040' : '#e5e7eb'}`,
-          }}
-        >
-          <span
-            style={{
-              color: darkMode ? '#9ca3af' : '#6b7280',
-              fontSize: '0.938rem',
-            }}
+            }),
+          },
+          { label: 'Batch', value: group.batchName || 'N/A' },
+          { label: 'Group ID', value: `#${group.id}`, mono: true },
+        ].map((info, idx, arr) => (
+          <div
+            key={idx}
+            className={`flex justify-between items-center p-4 ${
+              idx !== arr.length - 1
+                ? `border-b ${darkMode ? 'border-zinc-700' : 'border-gray-200'}`
+                : ''
+            }`}
           >
-            Batch
-          </span>
-          <span
-            style={{
-              color: darkMode ? '#ffffff' : '#111827',
-              fontSize: '0.938rem',
-              fontWeight: '500',
-            }}
-          >
-            {group.batchName || 'N/A'}
-          </span>
-        </div>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            padding: '0.75rem 0',
-          }}
-        >
-          <span
-            style={{
-              color: darkMode ? '#9ca3af' : '#6b7280',
-              fontSize: '0.938rem',
-            }}
-          >
-            Group ID
-          </span>
-          <span
-            style={{
-              color: darkMode ? '#ffffff' : '#111827',
-              fontSize: '0.938rem',
-              fontWeight: '500',
-              fontFamily: 'monospace',
-            }}
-          >
-            #{group.id}
-          </span>
-        </div>
+            <span
+              className={`text-sm font-medium ${
+                darkMode ? 'text-gray-400' : 'text-gray-600'
+              }`}
+            >
+              {info.label}
+            </span>
+            <span
+              className={`text-sm font-semibold ${
+                darkMode ? 'text-white' : 'text-gray-900'
+              } ${info.mono ? 'font-mono' : ''}`}
+            >
+              {info.value}
+            </span>
+          </div>
+        ))}
       </div>
     </div>
   </div>
 );
 
-// Members Tab Component
 const MembersTab = ({ group, darkMode }) => (
   <div>
     <h3
-      style={{
-        color: darkMode ? '#ffffff' : '#111827',
-        fontSize: '1.125rem',
-        fontWeight: '600',
-        marginBottom: '1rem',
-      }}
+      className={`text-lg font-bold mb-4 ${
+        darkMode ? 'text-white' : 'text-gray-900'
+      }`}
     >
       Members ({group.member?.length || 0}/{group.capacity || 4})
     </h3>
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+    <div className='grid grid-cols-1 md:grid-cols-2 gap-3'>
       {group.member && group.member.length > 0 ? (
         group.member.map((member, index) => (
           <div
             key={index}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '1rem',
-              padding: '1rem',
-              backgroundColor: darkMode ? '#27272A' : '#f9fafb',
-              borderRadius: '1rem',
-              border: `1px solid ${darkMode ? '#404040' : '#e5e7eb'}`,
-            }}
+            className={`flex items-center gap-4 p-4 rounded-lg ${
+              darkMode ? 'bg-zinc-800' : 'bg-gray-50'
+            } border ${darkMode ? 'border-zinc-700' : 'border-gray-200'}`}
           >
-            <div
-              style={{
-                width: '45px',
-                height: '45px',
-                borderRadius: '50%',
-                backgroundColor: darkMode ? '#404040' : '#e5e7eb',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '1.125rem',
-                fontWeight: '700',
-                color: darkMode ? '#ffffff' : '#111827',
-              }}
-            >
+            <div className='w-12 h-12 rounded-full bg-gray-400 flex items-center justify-center text-lg font-bold text-gray-900 shrink-0'>
               {(member.name || member.email || 'U').charAt(0).toUpperCase()}
             </div>
-            <div style={{ flex: 1 }}>
+            <div className='flex-1 min-w-0'>
               <div
-                style={{
-                  color: darkMode ? '#ffffff' : '#111827',
-                  fontSize: '0.938rem',
-                  fontWeight: '600',
-                  marginBottom: '0.25rem',
-                }}
+                className={`font-semibold text-sm mb-1 truncate ${
+                  darkMode ? 'text-white' : 'text-gray-900'
+                }`}
               >
-                {member.name || 'Member ' + (index + 1)}
+                {member.name || `Member ${index + 1}`}
               </div>
               <div
-                style={{
-                  color: darkMode ? '#9ca3af' : '#6b7280',
-                  fontSize: '0.813rem',
-                }}
+                className={`text-xs truncate ${
+                  darkMode ? 'text-gray-400' : 'text-gray-600'
+                }`}
               >
                 {member.email || 'member@example.com'}
               </div>
             </div>
             {member.id === group.leader?.id && (
-              <span
-                style={{
-                  backgroundColor: '#1890ff33',
-                  color: '#1890ff',
-                  fontSize: '0.75rem',
-                  padding: '0.25rem 0.625rem',
-                  borderRadius: '0.375rem',
-                  fontWeight: '600',
-                }}
-              >
+              <span className='bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400 text-xs font-bold px-3 py-1 rounded-lg shrink-0'>
                 Leader
               </span>
             )}
@@ -829,244 +429,124 @@ const MembersTab = ({ group, darkMode }) => (
         ))
       ) : (
         <div
-          style={{
-            textAlign: 'center',
-            padding: '3rem 1rem',
-            color: darkMode ? '#9ca3af' : '#6b7280',
-          }}
+          className={`col-span-full text-center py-12 rounded-lg ${
+            darkMode ? 'bg-zinc-800' : 'bg-gray-50'
+          }`}
         >
           <i
-            className='ri-group-line'
-            style={{ fontSize: '3rem', marginBottom: '1rem', display: 'block' }}
+            className={`ri-group-line text-5xl mb-3 ${
+              darkMode ? 'text-gray-600' : 'text-gray-300'
+            }`}
           ></i>
-          <p style={{ fontSize: '0.938rem' }}>No members yet</p>
+          <p
+            className={`text-sm ${
+              darkMode ? 'text-gray-400' : 'text-gray-600'
+            }`}
+          >
+            No members yet
+          </p>
         </div>
       )}
     </div>
   </div>
 );
 
-// Activity Tab Component
-const ActivityTab = ({ group, darkMode }) => (
-  <div>
-    <h3
-      style={{
-        color: darkMode ? '#ffffff' : '#111827',
-        fontSize: '1.125rem',
-        fontWeight: '600',
-        marginBottom: '1rem',
-      }}
-    >
-      Recent Activity
-    </h3>
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-      {/* Group Created Activity */}
-      <div
-        style={{
-          display: 'flex',
-          gap: '1rem',
-          padding: '1rem',
-          backgroundColor: darkMode ? '#27272A' : '#f9fafb',
-          borderRadius: '1rem',
-          border: `1px solid ${darkMode ? '#404040' : '#e5e7eb'}`,
-        }}
+const ActivityTab = ({ group, darkMode }) => {
+  // Generate activities based on group data
+  const activities = [];
+
+  // Group creation activity
+  activities.push({
+    icon: 'ri-user-add-line',
+    title: `${group.leader?.name || 'Leader'} created the group`,
+    time: new Date(group.createdAT).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    }),
+  });
+
+  // Individual member join activities
+  if (group.member && group.member.length > 0) {
+    group.member.forEach((member) => {
+      // Skip the leader as they created the group
+      if (member.id !== group.leader?.id) {
+        activities.push({
+          icon: 'ri-user-follow-line',
+          title: `${member.name || 'A member'} joined the group`,
+          time: 'Recently',
+        });
+      }
+    });
+  }
+
+  // Tags configuration activity
+  if (group.tags && group.tags.length > 0) {
+    activities.push({
+      icon: 'ri-price-tag-3-line',
+      title: 'Tags added to group',
+      time: `${group.tags.slice(0, 3).join(', ')}${
+        group.tags.length > 3 ? ` and ${group.tags.length - 3} more` : ''
+      }`,
+    });
+  }
+
+  // Group settings activity
+  activities.push({
+    icon: 'ri-settings-3-line',
+    title: 'Group settings configured',
+    time: `Capacity set to ${group.capacity || 4} members`,
+  });
+
+  return (
+    <div>
+      <h3
+        className={`text-lg font-bold mb-4 ${
+          darkMode ? 'text-white' : 'text-gray-900'
+        }`}
       >
-        <div
-          style={{
-            width: '40px',
-            height: '40px',
-            borderRadius: '50%',
-            backgroundColor: '#52c41a33',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexShrink: 0,
-          }}
-        >
-          <i
-            className='ri-user-add-line'
-            style={{ color: '#52c41a', fontSize: '1.125rem' }}
-          ></i>
-        </div>
-        <div style={{ flex: 1 }}>
+        Recent Activity
+      </h3>
+      <div className='space-y-3'>
+        {activities.map((activity, idx) => (
           <div
-            style={{
-              color: darkMode ? '#ffffff' : '#111827',
-              fontSize: '0.938rem',
-              marginBottom: '0.25rem',
-            }}
+            key={idx}
+            className={`flex gap-4 p-4 rounded-lg ${
+              darkMode ? 'bg-zinc-800' : 'bg-gray-50'
+            } border ${darkMode ? 'border-zinc-700' : 'border-gray-200'}`}
           >
-            <strong>{group.leader?.name || 'Leader'}</strong> created the group
-          </div>
-          <div
-            style={{
-              color: darkMode ? '#9ca3af' : '#6b7280',
-              fontSize: '0.813rem',
-            }}
-          >
-            {new Date(group.createdAT).toLocaleDateString('en-US', {
-              year: 'numeric',
-              month: 'short',
-              day: 'numeric',
-            })}
-          </div>
-        </div>
-      </div>
-
-      {/* Members Joined Activity */}
-      {group.member && group.member.length > 0 && (
-        <div
-          style={{
-            display: 'flex',
-            gap: '1rem',
-            padding: '1rem',
-            backgroundColor: darkMode ? '#27272A' : '#f9fafb',
-            borderRadius: '1rem',
-            border: `1px solid ${darkMode ? '#404040' : '#e5e7eb'}`,
-          }}
-        >
-          <div
-            style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: '50%',
-              backgroundColor: '#1890ff33',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexShrink: 0,
-            }}
-          >
-            <i
-              className='ri-team-line'
-              style={{ color: '#1890ff', fontSize: '1.125rem' }}
-            ></i>
-          </div>
-          <div style={{ flex: 1 }}>
             <div
-              style={{
-                color: darkMode ? '#ffffff' : '#111827',
-                fontSize: '0.938rem',
-                marginBottom: '0.25rem',
-              }}
+              className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${
+                darkMode ? 'bg-zinc-700' : 'bg-gray-200'
+              }`}
             >
-              <strong>{group.member.length}</strong> member
-              {group.member.length !== 1 ? 's' : ''} joined
+              <i
+                className={`${activity.icon} text-lg ${
+                  darkMode ? 'text-gray-400' : 'text-gray-600'
+                }`}
+              ></i>
             </div>
-            <div
-              style={{
-                color: darkMode ? '#9ca3af' : '#6b7280',
-                fontSize: '0.813rem',
-              }}
-            >
-              Group is growing
+            <div className='flex-1 min-w-0'>
+              <div
+                className={`text-sm mb-1 font-medium ${
+                  darkMode ? 'text-white' : 'text-gray-900'
+                }`}
+              >
+                {activity.title}
+              </div>
+              <div
+                className={`text-xs ${
+                  darkMode ? 'text-gray-400' : 'text-gray-600'
+                }`}
+              >
+                {activity.time}
+              </div>
             </div>
           </div>
-        </div>
-      )}
-
-      {/* Tags Added Activity */}
-      {group.tags && group.tags.length > 0 && (
-        <div
-          style={{
-            display: 'flex',
-            gap: '1rem',
-            padding: '1rem',
-            backgroundColor: darkMode ? '#27272A' : '#f9fafb',
-            borderRadius: '1rem',
-            border: `1px solid ${darkMode ? '#404040' : '#e5e7eb'}`,
-          }}
-        >
-          <div
-            style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: '50%',
-              backgroundColor: '#faad1433',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexShrink: 0,
-            }}
-          >
-            <i
-              className='ri-price-tag-3-line'
-              style={{ color: '#faad14', fontSize: '1.125rem' }}
-            ></i>
-          </div>
-          <div style={{ flex: 1 }}>
-            <div
-              style={{
-                color: darkMode ? '#ffffff' : '#111827',
-                fontSize: '0.938rem',
-                marginBottom: '0.25rem',
-              }}
-            >
-              Tags added to group
-            </div>
-            <div
-              style={{
-                color: darkMode ? '#9ca3af' : '#6b7280',
-                fontSize: '0.813rem',
-              }}
-            >
-              {group.tags.slice(0, 3).join(', ')}
-              {group.tags.length > 3 && ` and ${group.tags.length - 3} more`}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Settings Configured Activity */}
-      <div
-        style={{
-          display: 'flex',
-          gap: '1rem',
-          padding: '1rem',
-          backgroundColor: darkMode ? '#27272A' : '#f9fafb',
-          borderRadius: '1rem',
-          border: `1px solid ${darkMode ? '#404040' : '#e5e7eb'}`,
-        }}
-      >
-        <div
-          style={{
-            width: '40px',
-            height: '40px',
-            borderRadius: '50%',
-            backgroundColor: '#722ed133',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexShrink: 0,
-          }}
-        >
-          <i
-            className='ri-settings-3-line'
-            style={{ color: '#722ed1', fontSize: '1.125rem' }}
-          ></i>
-        </div>
-        <div style={{ flex: 1 }}>
-          <div
-            style={{
-              color: darkMode ? '#ffffff' : '#111827',
-              fontSize: '0.938rem',
-              marginBottom: '0.25rem',
-            }}
-          >
-            Group settings configured
-          </div>
-          <div
-            style={{
-              color: darkMode ? '#9ca3af' : '#6b7280',
-              fontSize: '0.813rem',
-            }}
-          >
-            Capacity set to {group.capacity || 4} members
-          </div>
-        </div>
+        ))}
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default GroupsPage;

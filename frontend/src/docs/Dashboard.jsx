@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useTheme } from '../context/ThemeContext.jsx';
 import NoticeBoard from './NoticeBoard.jsx';
 import { batchService, groupService } from '../services/api.js';
+import { useAuthStore } from '../store/useAuthStore.js';
 
 function Dashboard() {
   const { darkMode, toggleTheme } = useTheme();
+  const { checkAuth } = useAuthStore();
   const [stats, setStats] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -14,17 +16,18 @@ function Dashboard() {
     const fetchDashboardData = async () => {
       try {
         setLoading(true);
-        
+        checkAuth();
+
         // Get user's batches (this endpoint returns batches the user is enrolled in)
         const userBatches = await batchService.getAllBatches();
-        
+
         // Get all batches to show total count (using the same endpoint)
         const allBatches = await batchService.getAllBatches();
-        
+
         // Get user's groups across all batches
         let userGroupsCount = 0;
         let totalGroupsInBatches = 0;
-        
+
         // Get groups for each batch the user is enrolled in
         for (const batch of userBatches) {
           try {
@@ -33,7 +36,7 @@ function Dashboard() {
             if (userGroup) {
               userGroupsCount++;
             }
-            
+
             // Get all groups in this batch
             const batchGroups = await groupService.getBatchGroups(batch.id);
             totalGroupsInBatches += batchGroups ? batchGroups.length : 0;
@@ -82,7 +85,7 @@ function Dashboard() {
       } catch (err) {
         console.error('Error fetching dashboard data:', err);
         setError('Failed to load dashboard data. Please try again later.');
-        
+
         // Fallback to empty stats
         setStats([
           {
@@ -162,11 +165,13 @@ function Dashboard() {
 
   if (loading) {
     return (
-      <div className={`min-h-screen flex items-center justify-center ${
-        darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'
-      }`}>
-        <div className="text-center">
-          <i className="ri-loader-4-line animate-spin text-2xl mb-2"></i>
+      <div
+        className={`min-h-screen flex items-center justify-center ${
+          darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'
+        }`}
+      >
+        <div className='text-center'>
+          <i className='ri-loader-4-line animate-spin text-2xl mb-2'></i>
           <p>Loading dashboard...</p>
         </div>
       </div>
@@ -247,13 +252,15 @@ function Dashboard() {
         </div>
 
         {error && (
-          <div className={`mb-4 p-3 rounded-lg ${
-            darkMode 
-              ? 'bg-red-900/30 border border-red-700 text-red-300' 
-              : 'bg-red-100 border border-red-400 text-red-700'
-          }`}>
-            <div className="flex items-center gap-2">
-              <i className="ri-error-warning-line"></i>
+          <div
+            className={`mb-4 p-3 rounded-lg ${
+              darkMode
+                ? 'bg-red-900/30 border border-red-700 text-red-300'
+                : 'bg-red-100 border border-red-400 text-red-700'
+            }`}
+          >
+            <div className='flex items-center gap-2'>
+              <i className='ri-error-warning-line'></i>
               <span>{error}</span>
             </div>
           </div>
@@ -338,8 +345,11 @@ function Dashboard() {
                       height: '6px',
                       borderRadius: '50%',
                       backgroundColor:
-                        stat.totalStatus === 'success' ? '#00b8a3' : 
-                        stat.totalStatus === 'info' ? '#1890ff' : '#ff4d4f',
+                        stat.totalStatus === 'success'
+                          ? '#00b8a3'
+                          : stat.totalStatus === 'info'
+                          ? '#1890ff'
+                          : '#ff4d4f',
                     }}
                   ></span>
                   {stat.total}
@@ -359,8 +369,11 @@ function Dashboard() {
                       height: '6px',
                       borderRadius: '50%',
                       backgroundColor:
-                        stat.pendingStatus === 'success' ? '#00b8a3' :
-                        stat.pendingStatus === 'info' ? '#1890ff' : '#ff4d4f',
+                        stat.pendingStatus === 'success'
+                          ? '#00b8a3'
+                          : stat.pendingStatus === 'info'
+                          ? '#1890ff'
+                          : '#ff4d4f',
                     }}
                   ></span>
                   {stat.pending}
@@ -383,8 +396,11 @@ function Dashboard() {
             <div
               key={index}
               className={`rounded-lg flex justify-center items-center px-3 py-2 ${
-                darkMode 
-                  ? `bg-${badge.backgroundColor.replace('200', '900')} text-${badge.color.replace('600', '300')}`
+                darkMode
+                  ? `bg-${badge.backgroundColor.replace(
+                      '200',
+                      '900',
+                    )} text-${badge.color.replace('600', '300')}`
                   : `bg-${badge.backgroundColor} text-${badge.color}`
               }`}
               style={{
@@ -404,8 +420,8 @@ function Dashboard() {
         <div style={{ marginBottom: '2rem' }}>
           <h2
             className={`text-2xl underline underline-offset-4 ${
-              darkMode 
-                ? 'decoration-[var(--chaiteam-organe-dark)]' 
+              darkMode
+                ? 'decoration-[var(--chaiteam-organe-dark)]'
                 : 'decoration-[var(--chaiteam-orange)]'
             }`}
             style={{
