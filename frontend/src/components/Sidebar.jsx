@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { motion } from 'motion/react';
 import { useTheme } from '../context/ThemeContext.jsx';
 import { toggleSidebar } from '../redux/sidebarSlice.js';
-import { userService } from '../services/api'; // Import the user service
+import { userService } from '../services/api'; 
 
 const Sidebar = () => {
   const isCollapsed = useSelector((state) => state.sidebar.isCollapsed);
