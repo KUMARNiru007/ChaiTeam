@@ -24,6 +24,13 @@ const Sidebar = () => {
       icon: 'ri-clapperboard-line',
     },
   ];
+  const adminNavItems = [
+    { path: '/create-batch', label: 'Create Batch', icon: 'ri-add-box-line' },
+    { path: '/dashboard', label: 'Add Member', icon: 'ri-user-add-line' },
+    { path: '/dashboard', label: 'All Batches', icon: 'ri-stack-line' },
+    { path: '/dashboard', label: 'All Batch Groups', icon: 'ri-group-line' },
+    { path: '/dashboard', label: 'All Users', icon: 'ri-team-line' },
+  ];
 
   // Fetch current user data
   useEffect(() => {
@@ -85,8 +92,8 @@ const Sidebar = () => {
         </div>
       </NavLink>
 
-      {/* Navigation */}
-      <nav className='sidebar-nav'>
+      {/* General Navigation */}
+      <nav className='sidebar-nav h-screen'>
         {navItems.map(({ path, label, icon, badge }) => (
           <NavLink
             key={path}
@@ -108,29 +115,39 @@ const Sidebar = () => {
                 </>
               )}
             </div>
-
-            {/* Tooltip for collapsed state */}
-            <div className='absolute top-3 left-[65px] transform opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none'>
-              <div
-                className={` ${
-                  darkMode
-                    ? 'bg-[var(--chaiteam-bg-secondary)] text-white'
-                    : 'text-[var(--chaiteam-bg-primary)] bg-white'
-                } text-sm py-1 px-2 rounded-lg shadow-xl border border-[var(--chaiteam-border-secondary)] whitespace-nowrap`}
-              >
-                <div className='text-center text-xs'>
-                  <span>{label}</span>
-                </div>
-                <div
-                  className='absolute top-1/2 -left-2 transform -translate-y-1/2 
-                w-0 h-0 
-                border-t-4 border-b-4 border-r-4 
-                border-t-transparent border-b-transparent border-r-[var(--chaiteam-bg-secondary)]'
-                ></div>
-              </div>
-            </div>
           </NavLink>
         ))}
+
+        {/* Admin Navigation Section */}
+        {currentUser?.role === 'ADMIN' && (
+          <div className='mt-4 border-t border-gray-200 dark:border-gray-700 pt-3'>
+            {!isCollapsed && (
+              <h4 className='text-xs font-semibold uppercase opacity-70 px-4 mb-2'>
+                Admin Panel
+              </h4>
+            )}
+            {adminNavItems.map(({ path, label, icon }) => (
+              <NavLink
+                key={path}
+                to={path}
+                className={({ isActive }) =>
+                  `sidebar-nav-item ${isCollapsed ? 'group' : ''} ${
+                    isActive ? 'active' : ''
+                  }`
+                }
+              >
+                <div className='nav-item-content'>
+                  <div className='nav-item-icon'>
+                    <i className={icon}></i>
+                  </div>
+                  {!isCollapsed && (
+                    <span className='nav-item-label'>{label}</span>
+                  )}
+                </div>
+              </NavLink>
+            ))}
+          </div>
+        )}
       </nav>
 
       {/* Profile Section at Bottom */}
@@ -144,14 +161,14 @@ const Sidebar = () => {
           <div className='nav-item-content border border-[var(--chaiteam-border-primary)] rounded-lg'>
             <div className='nav-item-icon'>
               {loading ? (
-                <div className="w-6 h-6 flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                <div className='w-6 h-6 flex items-center justify-center'>
+                  <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-white'></div>
                 </div>
               ) : currentUser?.image ? (
                 <img
                   src={currentUser.image}
                   alt={currentUser.name}
-                  className="w-6 h-6 rounded-full object-cover"
+                  className='w-6 h-6 rounded-full object-cover'
                 />
               ) : (
                 <i className='ri-user-line'></i>
@@ -202,34 +219,34 @@ const Sidebar = () => {
                 {loading ? 'loading...' : currentUser?.email || 'No email'}
               </span>
             </div>
-            
+
             {/* User Info Section */}
             {currentUser && (
-              <div className="flex items-center gap-3 py-2 border-t border-gray-200 dark:border-gray-600 mt-2">
-                <div className="flex-shrink-0">
+              <div className='flex items-center gap-3 py-2 border-t border-gray-200 dark:border-gray-600 mt-2'>
+                <div className='flex-shrink-0'>
                   {currentUser.image ? (
                     <img
                       src={currentUser.image}
                       alt={currentUser.name}
-                      className="w-10 h-10 rounded-full object-cover"
+                      className='w-10 h-10 rounded-full object-cover'
                     />
                   ) : (
-                    <div className="w-10 h-10 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
-                      <i className="ri-user-line text-gray-600 dark:text-gray-300"></i>
+                    <div className='w-10 h-10 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center'>
+                      <i className='ri-user-line text-gray-600 dark:text-gray-300'></i>
                     </div>
                   )}
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate">
+                <div className='flex-1 min-w-0'>
+                  <p className='text-sm font-medium truncate'>
                     {currentUser.name}
                   </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                  <p className='text-xs text-gray-500 dark:text-gray-400 truncate'>
                     {currentUser.role?.toLowerCase() || 'user'}
                   </p>
                 </div>
               </div>
             )}
-            
+
             <div className='w-full mt-3 flex flex-col gap-2'>
               <NavLink
                 to='/profile'

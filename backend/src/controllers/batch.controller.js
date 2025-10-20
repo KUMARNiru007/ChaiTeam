@@ -9,7 +9,7 @@ import { ApiResponse } from '../utils/ApiResponse.js';
 export const createBatch = async (req, res) => {
   console.log('Request Body: ', req.body);
   try {
-    const { name, description } = req.body;
+    const { name, description, bannerImageUrl, logoImageUrl } = req.body;
     const adminId = req.user?.id;
 
     if (!name || !description) {
@@ -20,6 +20,8 @@ export const createBatch = async (req, res) => {
       data: {
         name,
         description: description || '',
+        bannerImageUrl: bannerImageUrl || undefined,
+        logoImageUrl: logoImageUrl || undefined,
       },
     });
 

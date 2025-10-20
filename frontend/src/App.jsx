@@ -13,6 +13,7 @@ import NotFound from './pages/NotFound';
 import NoticeBoard from './docs/NoticeBoard';
 import Dashboard from './docs/Dashboard';
 import GroupPageWrapper from './components/GroupPageWrapper.jsx';
+import AdminBatchPage from './docs/AdminBatchesPage.jsx';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           path='/batches/:batchId/groups/:groupId'
           element={<GroupPageWrapper />}
         />
+        <Route path='/create-batch' element={<AdminBatchPage />} />
         <Route path='/noticeboard' element={<NoticeBoard />} />
         <Route path='/profile' element={<Profile />} />
       </Route>

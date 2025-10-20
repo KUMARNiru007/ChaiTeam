@@ -4,7 +4,7 @@ import { axiosInstance } from '../lib/axios';
 export const batchService = {
   getAllBatches: async () => {
     try {
-      const response = await axiosInstance.get('/batch/my-batches');
+      const response = await axiosInstance.get('/batch/all');
       if (!response.data || !response.data.Data) {
         throw new Error('Invalid response format');
       }
@@ -27,6 +27,15 @@ export const batchService = {
       return response.data.Data;
     } catch (error) {
       console.error('Error fetching batch details:', error);
+      throw error;
+    }
+  },
+  createBatch: async (payload) => {
+    try {
+      const response = axiosInstance.post('/batch/create', payload);
+      // console.log('Batch Create Data: ', response);
+    } catch (error) {
+      console.error('Error while creating the Batch: ', error);
       throw error;
     }
   },
@@ -175,5 +184,5 @@ export const userService = {
       console.error('Error fetching user profile:', error);
       throw error;
     }
-  }
+  },
 };

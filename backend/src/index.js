@@ -9,6 +9,7 @@ import groupRoutes from './routes/groups.routes.js';
 import noticeboardRoutes from './routes/noticeboard.routes.js';
 import activityRoutes from './routes/Activity.routes.js';
 import userRoutes from './routes/user.routes.js';
+import CloudinaryRoutes from './routes/cloudinaryRoutes.js';
 
 dotenv.config();
 
@@ -39,6 +40,7 @@ app.use('/api/v1/batch', batchRoutes);
 app.use('/api/v1/groups', groupRoutes);
 app.use('/api/v1/noticeboard', noticeboardRoutes);
 app.use('/api/v1/activity', activityRoutes);
+app.use('/api/v1/cloudinary', CloudinaryRoutes);
 
 app.listen(PORT, () => {
   console.log(`App is listning on PORT: ${PORT}`);
