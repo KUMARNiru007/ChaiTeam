@@ -211,7 +211,7 @@ export const uploadBatchCSV = async (req, res) => {
           skipDuplicates: true,
         });
 
-        res
+        return res
           .status(201)
           .json(
             new ApiResponse(

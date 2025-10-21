@@ -39,6 +39,19 @@ export const batchService = {
       throw error;
     }
   },
+
+  uploadBatchCSV: async (batchId, payload) => {
+    try {
+      const response = await axiosInstance.post(
+        `/batch/upload-csv/${batchId}`,
+        payload,
+      );
+      console.log('Upload Result: ', response);
+    } catch (error) {
+      console.error('error while uploading students Data: ', error);
+      throw error;
+    }
+  },
 };
 
 // Groups API services

@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { motion } from 'motion/react';
 import { useTheme } from '../context/ThemeContext.jsx';
 import { toggleSidebar } from '../redux/sidebarSlice.js';
-import { userService } from '../services/api'; 
+import { userService } from '../services/api';
 
 const Sidebar = () => {
   const isCollapsed = useSelector((state) => state.sidebar.isCollapsed);
@@ -26,7 +26,7 @@ const Sidebar = () => {
   ];
   const adminNavItems = [
     { path: '/create-batch', label: 'Create Batch', icon: 'ri-add-box-line' },
-    { path: '/dashboard', label: 'Add Member', icon: 'ri-user-add-line' },
+    { path: '/add-students', label: 'Add Member', icon: 'ri-user-add-line' },
     { path: '/dashboard', label: 'All Batches', icon: 'ri-stack-line' },
     { path: '/dashboard', label: 'All Batch Groups', icon: 'ri-group-line' },
     { path: '/dashboard', label: 'All Users', icon: 'ri-team-line' },
