@@ -15,6 +15,7 @@ import Dashboard from './docs/Dashboard';
 import GroupPageWrapper from './components/GroupPageWrapper.jsx';
 import AdminBatchPage from './docs/AdminBatchesPage.jsx';
 import AddStudents from './components/AddStudents.jsx';
+import AdminAllUsersPage from './docs/AdminAllUsersPage.jsx';
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
         />
         <Route path='/create-batch' element={<AdminBatchPage />} />
         <Route path='/add-students' element={<AddStudents />} />
+        <Route path='/allUsers' element={<AdminAllUsersPage />} />
         <Route path='/noticeboard' element={<NoticeBoard />} />
         <Route path='/profile' element={<Profile />} />
       </Route>

@@ -4,7 +4,7 @@ import { axiosInstance } from '../lib/axios';
 export const batchService = {
   getAllBatches: async () => {
     try {
-      const response = await axiosInstance.get('/batch/all');
+      const response = await axiosInstance.get('/batch/my-batches');
       if (!response.data || !response.data.Data) {
         throw new Error('Invalid response format');
       }
@@ -195,6 +195,30 @@ export const userService = {
       return response.data.Data || response.data;
     } catch (error) {
       console.error('Error fetching user profile:', error);
+      throw error;
+    }
+  },
+
+  getAllUsers: async () => {
+    try {
+      const response = await axiosInstance.get('/user/allUsers');
+      // console.log('Usesr Reposne: ', response.data.Data);
+      return response.data.Data;
+    } catch (error) {
+      console.error('Error while fetching all Users: ', error);
+      throw error;
+    }
+  },
+
+  updateRole: async (payload) => {
+    try {
+      const response = await axiosInstance.post('/user/updateRole', {
+        userId: payload,
+      });
+      // console.log('Update Response: ', response);
+      return response.data;
+    } catch (error) {
+      console.error('Error while updating the User Role: ', error);
       throw error;
     }
   },

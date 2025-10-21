@@ -103,3 +103,58 @@ export const getUserGroup = async (req, res) => {
       .json(new ApiError(500, 'Error while fetching user group', error));
   }
 };
+
+export const getAllUsers = async (req, res) => {
+  try {
+    const allUsers = await db.user.findMany();
+
+    if (!allUsers) {
+      return res.status(404).json(new ApiError(404, 'No user Found!'));
+    }
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, allUsers, 'All user Fetched Successfullly'));
+  } catch (error) {
+    console.log('Error while fething All Users: ', error);
+    return res
+      .status(500)
+      .json(new ApiError(500, 'Error while fetching All Users: ', error));
+  }
+};
+
+export const updateRole = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    if (!userId) {
+      return res
+        .status(404)
+        .json(
+          new ApiError(404, 'User Id Not Found. Please give valid user Id'),
+        );
+    }
+
+    const updatedUser = await db.user.update({
+      where: { id: userId },
+      data: {
+        role: 'ADMIN',
+      },
+    });
+
+    if (!updatedUser) {
+      return res
+        .status(400)
+        .json(new ApiError(400, "User Role can't be upadted"));
+    }
+
+    res
+      .status(200)
+      .json(new ApiResponse(200, updateRole, 'User Role Updated Successfully'));
+  } catch (error) {
+    console.error('Error while updating the User Role: ', error);
+    return res
+      .status(500)
+      .json(new ApiError(500, 'Error while updating the User Role: ', error));
+  }
+};

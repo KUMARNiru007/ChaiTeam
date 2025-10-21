@@ -29,7 +29,7 @@ const Sidebar = () => {
     { path: '/add-students', label: 'Add Member', icon: 'ri-user-add-line' },
     { path: '/dashboard', label: 'All Batches', icon: 'ri-stack-line' },
     { path: '/dashboard', label: 'All Batch Groups', icon: 'ri-group-line' },
-    { path: '/dashboard', label: 'All Users', icon: 'ri-team-line' },
+    { path: '/allUsers', label: 'All Users', icon: 'ri-team-line' },
   ];
 
   // Fetch current user data
