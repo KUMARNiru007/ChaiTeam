@@ -5,22 +5,17 @@ import { useTheme } from '../context/ThemeContext.jsx';
 
 import CustomDropdown from '../components/CustomDropdown.jsx';
 
-const batchOptions = [
-  { id: 1, label: 'All Batches', value: 'all' },
-  { id: 2, label: 'Batch A', value: 'batch-a' },
-  { id: 3, label: 'Batch B', value: 'batch-b' },
-];
-
-const categoryOptions = [
-  { id: 1, label: 'All Categories', value: 'all' },
-  { id: 2, label: 'Frontend', value: 'frontend' },
-  { id: 3, label: 'Backend', value: 'backend' },
-];
-
 const Batches = () => {
+  const [batchOptions, setBatchOptions] = useState([
+    { id: 1, label: 'All Batches', value: 'all' },
+  ]);
+  
+  const [statusOptions, setStatusOptions] = useState([
+    { id: 1, label: 'All Status', value: 'all' },
+  ]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedBatch, setSelectedBatch] = useState('all');
-  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedStatus, setSelectedStatus] = useState('all');
   const [activeTab, setActiveTab] = useState('live');
   const [batchesData, setBatchesData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -34,7 +29,28 @@ const Batches = () => {
         setLoading(true);
         const data = await batchService.getUserBatches();
         console.log('DATA: ', data);
-        setBatchesData(Array.isArray(data) ? data : []);
+        const batches = Array.isArray(data) ? data : [];
+        setBatchesData(batches);
+
+        // Update batch options
+        const uniqueBatches = batches.map((batch, index) => ({
+          id: index + 2, // Start from 2 since 1 is "All Batches"
+          label: batch.name,
+          value: batch.id
+        }));
+        setBatchOptions([
+          { id: 1, label: 'All Batches', value: 'all' },
+          ...uniqueBatches
+        ]);
+
+        // status options
+        setStatusOptions([
+          { id: 1, label: 'All Status', value: 'all' },
+          { id: 2, label: 'Active', value: 'ACTIVE' },
+          { id: 3, label: 'Completed', value: 'COMPLETED' },
+          { id: 4, label: 'Inactive', value: 'INACTIVE' }
+        ]);
+
         setError(null);
       } catch (err) {
         console.error('Failed to fetch batches:', err);
@@ -51,7 +67,9 @@ const Batches = () => {
     live: Array.isArray(batchesData)
       ? batchesData.filter((b) => b.status === 'ACTIVE').length
       : 0,
-    upcoming: 0,
+    upcoming: Array.isArray(batchesData)
+      ? batchesData.filter((b) => b.status === 'PENDING').length
+      : 0,
     past: Array.isArray(batchesData)
       ? batchesData.filter((b) => b.status === 'COMPLETED').length
       : 0,
@@ -78,15 +96,10 @@ const Batches = () => {
       batch.name.toLowerCase().includes(selectedBatch.toLowerCase()) ||
       batch.id === selectedBatch;
 
-    // Category filter (you can customize this based on your batch data structure)
+    // Status filter
     const matchesCategory =
-      selectedCategory === 'all' ||
-      (batch.category &&
-        batch.category.toLowerCase() === selectedCategory.toLowerCase()) ||
-      (batch.tags &&
-        batch.tags.some(
-          (tag) => tag.toLowerCase() === selectedCategory.toLowerCase(),
-        ));
+      selectedStatus === 'all' ||
+      batch.status === selectedStatus;
 
     return matchesSearch && matchesTab && matchesBatch && matchesCategory;
   });
@@ -94,9 +107,19 @@ const Batches = () => {
   const navigate = useNavigate();
 
   const BatchCard = ({ batch }) => {
-    const onlineStudents = Math.floor(Math.random() * 500) + 100;
-    const totalStudents =
-      batch.batchMembers?.length || Math.floor(Math.random() * 2000) + 1000;
+    const [totalStudents, setTotalStudents] = useState(0);
+
+    useEffect(() => {
+      const fetchBatchMembers = async () => {
+        try {
+          const response = await batchService.getBatchById(batch.id);
+          setTotalStudents(response.batchMembers?.length || 0);
+        } catch (error) {
+          console.error('Error fetching batch members:', error);
+        }
+      };
+      fetchBatchMembers();
+    }, [batch.id]);
 
     return (
       <div
@@ -168,8 +191,17 @@ const Batches = () => {
             }`}
           >
             <div className='flex items-center gap-1.5'>
-              <div className='w-2 h-2 rounded-full bg-green-500'></div>
-              <span className='font-medium'>{batch.status}</span>
+              <div className={`w-2 h-2 rounded-full ${
+                batch.status === 'ACTIVE' ? 'bg-green-500' :
+                batch.status === 'COMPLETED' ? 'bg-blue-500' :
+                batch.status === 'INACTIVE' ? 'bg-red-500' : 'bg-gray-500'
+              }`}></div>
+              <span className='font-medium'>{
+                batch.status === 'ACTIVE' ? 'Active' :
+                batch.status === 'COMPLETED' ? 'Completed' :
+                batch.status === 'INACTIVE' ? 'Inactive' :
+                batch.status
+              }</span>
             </div>
             <div className='flex items-center gap-1.5'>
               <div
@@ -277,20 +309,18 @@ const Batches = () => {
             options={batchOptions}
             placeholder='All Batches'
             onSelect={(option) => {
-              console.log('Selected batch:', option.value);
               setSelectedBatch(option.value);
             }}
           />
         </div>
 
-        {/* Category Dropdown */}
+        {/* Status Dropdown */}
         <div className='relative w-full md:w-1/4'>
           <CustomDropdown
-            options={categoryOptions}
-            placeholder='All Categories'
+            options={statusOptions}
+            placeholder='Status'
             onSelect={(option) => {
-              console.log('Selected category:', option.value);
-              setSelectedCategory(option.value);
+              setSelectedStatus(option.value);
             }}
           />
         </div>

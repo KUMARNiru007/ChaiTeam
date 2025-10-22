@@ -12,6 +12,9 @@ export const validateBatchId = async (req, res, next) => {
 
     const batch = await db.batch.findUnique({
       where: { id: batchId },
+      include: {
+        batchMembers: true
+      }
     });
 
     if (!batch) {
