@@ -30,13 +30,18 @@ const AdminBatchPage = () => {
   const [batchesData, setBatchesData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deletingBatch, setDeletingBatch] = useState(null);
+  const [updating, setUpdating] = useState(false);
+  const [successModal, setSuccessModal] = useState(false);
+  const [errorModal, setErrorModal] = useState(false);
   // Fetch all batches
   useEffect(() => {
     const fetchBatches = async () => {
       try {
         setLoading(true);
         const data = await batchService.getAllBatches();
+        console.log('ALL Batches: ', data);
         setBatchesData(Array.isArray(data) ? data : []);
         setError(null);
       } catch (err) {
@@ -85,6 +90,34 @@ const AdminBatchPage = () => {
     }
   };
 
+  const handleOpenModal = (batch) => {
+    setDeletingBatch(batch);
+    setShowDeleteModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setDeletingBatch(null);
+    setShowDeleteModal(false);
+  };
+
+  const handleDeleteBatch = async (batchId) => {
+    setUpdating(true);
+    try {
+      const response = await batchService.deleteBatch(batchId);
+      setBatchesData((prevBatches) =>
+        prevBatches.filter((batch) => batch.id !== batchId),
+      );
+
+      setSuccessModal(true);
+    } catch (error) {
+      console.error('Error while Deleting Batch: ', error);
+      setErrorModal(true);
+    } finally {
+      setUpdating(false);
+      setShowDeleteModal(false);
+    }
+  };
+
   const BatchCard = ({ batch }) => {
     const onlineStudents = Math.floor(Math.random() * 500) + 100;
     const totalStudents =
@@ -92,6 +125,7 @@ const AdminBatchPage = () => {
 
     return (
       <div
+        onClick={() => handleOpenModal(batch)}
         className={`relative rounded-2xl overflow-hidden transition-all duration-200 group ${
           darkMode
             ? 'bg-[#2b2d31] hover:bg-[#313338]'
@@ -257,6 +291,88 @@ const AdminBatchPage = () => {
           </div>
         )}
       </div>
+
+      {/* rendring Delete batch Modal */}
+      {showDeleteModal && deletingBatch && (
+        <div className='fixed inset-0 bg-black/30 bg-opacity-50 flex justify-center items-center z-50'>
+          <div
+            className={`rounded-xl p-6 w-96 ${
+              darkMode ? 'bg-[#18181B] text-white' : 'bg-white text-black'
+            }`}
+          >
+            <h3 className='text-xl font-semibold text-center'>
+              Wanted to Delete Batch?
+            </h3>
+
+            <div className='flex flex-col items-center mb-4 mt-4'>
+              <img
+                src={deletingBatch.logoImageUrl || '/default-avatar.png'}
+                alt={deletingBatch.name}
+                className='w-20 h-20 rounded-full mb-1 object-cover border-2 border-gray-300'
+              />
+              <p className='text-lg font-medium'>{deletingBatch.name}</p>
+            </div>
+
+            <button
+              onClick={() => handleDeleteBatch(deletingBatch.id)}
+              disabled={updating}
+              className='w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition cursor-pointer'
+            >
+              {updating ? 'Deleting...' : 'Delete Batch'}
+            </button>
+
+            <button
+              onClick={handleCloseModal}
+              className='w-full mt-3 border border-gray-400 py-2 rounded-lg hover:bg-gray-100 transition cursor-pointer'
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
+      {successModal && (
+        <div className='fixed inset-0 bg-black/30 bg-opacity-50 flex justify-center items-center z-50'>
+          <div
+            className={`rounded-xl p-6 w-96 ${
+              darkMode ? 'bg-[#18181B] text-white' : 'bg-white text-black'
+            }`}
+          >
+            <h2 className='text-lg font-semibold mb-3 text-center'>
+              Batch Deleted Successfully!
+            </h2>
+            <button
+              onClick={() => setSuccessModal(false)}
+              className='w-full mt-3 border border-gray-400 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition cursor-pointer'
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
+      {errorModal && (
+        <div className='fixed inset-0 bg-black/30 bg-opacity-50 flex justify-center items-center z-50'>
+          <div
+            className={`rounded-xl p-6 w-96 ${
+              darkMode ? 'bg-[#18181B] text-white' : 'bg-white text-black'
+            }`}
+          >
+            <h2 className='text-lg font-semibold mb-3 text-center text-red-500'>
+              Failed to Delete Batch
+            </h2>
+            <p className='text-sm mb-1 mt-3 text-center text-red-500'>
+              *Maybe the Batch has some active Groups
+            </p>
+            <button
+              onClick={() => setErrorModal(false)}
+              className='w-full mt-3 border border-gray-400 py-2 rounded-lg hover:bg-gray-100 transition cursor-pointer'
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

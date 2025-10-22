@@ -18,7 +18,7 @@ import {
   getBatchUsers,
   getAllUserBatches,
 } from '../controllers/batch.controller.js';
-import { authMiddleWare } from '../middleware/auth.middleware.js';
+import { authMiddleWare, CheckRole } from '../middleware/auth.middleware.js';
 
 const batchRouter = express.Router();
 const upload = multer({ dest: 'uploads/' });
@@ -39,7 +39,12 @@ batchRouter.put(
   validateBatchStatus,
   updateBatch,
 );
-batchRouter.delete('/deleteBatch/:batchId', validateBatchId, deleteBatch);
+batchRouter.delete(
+  '/deleteBatch/:batchId',
+  CheckRole,
+  validateBatchId,
+  deleteBatch,
+);
 
 // Batch member management routes
 batchRouter.post('/upload-csv/:batchId', upload.single('file'), uploadBatchCSV);

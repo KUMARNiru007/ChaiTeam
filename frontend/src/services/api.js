@@ -2,9 +2,26 @@ import { axiosInstance } from '../lib/axios';
 
 // Batch API services
 export const batchService = {
-  getAllBatches: async () => {
+  getUserBatches: async () => {
     try {
       const response = await axiosInstance.get('/batch/my-batches');
+      if (!response.data || !response.data.Data) {
+        throw new Error('Invalid response format');
+      }
+      return response.data.Data;
+    } catch (error) {
+      console.error('Error fetching batches:', {
+        message: error.message,
+        status: error.response?.status,
+        data: error.response?.data,
+      });
+      throw error;
+    }
+  },
+
+  getAllBatches: async () => {
+    try {
+      const response = await axiosInstance.get('/batch/all');
       if (!response.data || !response.data.Data) {
         throw new Error('Invalid response format');
       }
@@ -46,9 +63,21 @@ export const batchService = {
         `/batch/upload-csv/${batchId}`,
         payload,
       );
-      console.log('Upload Result: ', response);
+      // console.log('Upload Result: ', response);
     } catch (error) {
       console.error('error while uploading students Data: ', error);
+      throw error;
+    }
+  },
+
+  deleteBatch: async (batchId) => {
+    try {
+      const response = await axiosInstance.delete(
+        `/batch/deleteBatch/${batchId}`,
+      );
+      return response.data.Data;
+    } catch (error) {
+      console.error('error while deleting the Batch: ', error);
       throw error;
     }
   },

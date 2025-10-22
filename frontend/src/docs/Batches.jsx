@@ -32,7 +32,7 @@ const Batches = () => {
     const fetchBatches = async () => {
       try {
         setLoading(true);
-        const data = await batchService.getAllBatches();
+        const data = await batchService.getUserBatches();
         console.log('DATA: ', data);
         setBatchesData(Array.isArray(data) ? data : []);
         setError(null);
