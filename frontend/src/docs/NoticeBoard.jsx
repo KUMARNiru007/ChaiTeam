@@ -47,10 +47,6 @@ const NoticeBoard = () => {
     return matchesSearch && matchesScope && matchesType;
   });
 
-  // Rest of the component remains the same, but we'll update the notice rendering
-  // to use the data from the API
-
-  // Add loading and error states to the render
   return (
     <div className="notice-board">
       {/* Add loading and error states */}
@@ -96,7 +92,7 @@ const NoticeBoard = () => {
                   </h3>
 
                   <span className={`notice-type ${notice.type.toLowerCase()}`}>
-                  >
+                  
                     {notice.type.toLowerCase()}
                   </span>
                 </div>
