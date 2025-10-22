@@ -25,11 +25,14 @@ const Sidebar = () => {
     },
   ];
   const adminNavItems = [
-    { path: '/create-batch', label: 'Create Batch', icon: 'ri-add-box-line' },
+    {
+      path: '/create-batch',
+      label: 'Create & All Batches',
+      icon: 'ri-add-box-line',
+    },
     { path: '/add-students', label: 'Add Member', icon: 'ri-user-add-line' },
-    { path: '/dashboard', label: 'All Batches', icon: 'ri-stack-line' },
-    { path: '/dashboard', label: 'All Batch Groups', icon: 'ri-group-line' },
     { path: '/allUsers', label: 'All Users', icon: 'ri-team-line' },
+    { path: '/allGroups', label: 'All Groups', icon: 'ri-parent-line' },
   ];
 
   // Fetch current user data

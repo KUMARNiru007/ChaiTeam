@@ -1,52 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { groupService } from '../services/api';
+import { groupService } from '../services/api.js';
 import CustomDropdown from '../components/CustomDropdown.jsx';
-import GroupsPage from './GroupPage.jsx';
 import { useTheme } from '../context/ThemeContext.jsx';
 
-const Groups = ({ batchId }) => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedStatus, setSelectedStatus] = useState('All Status');
-  const [selectedTag, setSelectedTag] = useState('All Tags');
+const AdminAllGroups = () => {
   const [groupsData, setGroupsData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [activeTab, setActiveTab] = useState('active');
-  // const [selectedGroup, setSelectedGroup] = useState(null);
-  // const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedTag, setSelectedTag] = useState('All Tags');
+  const [selectedBatchName, setSelectedBatchName] = useState('All Batches');
 
-  const navigate = useNavigate();
   const { darkMode } = useTheme();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchGroups = async () => {
       try {
         setLoading(true);
-        const data = await groupService.getBatchGroups(batchId);
+        const data = await groupService.getAllGroups();
+        console.log('GRoups Data: ', data);
         setGroupsData(data);
         setError(null);
-      } catch (err) {
-        console.error('Failed to fetch groups:', err);
-        setError('Failed to load groups. Please try again later.');
+      } catch (error) {
+        console.error('Failed to fetch Groups Data: ', error);
+        setError(error);
       } finally {
         setLoading(false);
       }
     };
 
-    if (batchId) {
-      fetchGroups();
-    }
-  }, [batchId]);
+    fetchGroups();
+  }, []);
 
-  const tabCounts = {
-    active: groupsData.filter((group) => group.status === 'ACTIVE').length,
-    inactive: groupsData.filter((group) => group.status === 'INACTIVE').length,
-    disbanded: groupsData.filter((group) => group.status === 'DISBANNED')
-      .length,
-  };
-
-  // Get all unique tags from groups
   const allTags = [
     ...new Set(
       groupsData
@@ -55,7 +42,14 @@ const Groups = ({ batchId }) => {
     ),
   ].sort();
 
-  // Create options array for the dropdown
+  //   console.log('All Tags: ', allTags);
+
+  const allBatches = [
+    ...new Set(groupsData.map((group) => group.batchName)),
+  ].sort();
+
+  //   console.log('All Batch Names:', allBatches);
+
   const tagOptions = [
     { id: 'all-tags', label: 'All Tags' },
     ...allTags.map((tag, index) => ({
@@ -64,58 +58,50 @@ const Groups = ({ batchId }) => {
     })),
   ];
 
+  const batchOptions = [
+    { id: 'all-batches', label: 'All Batches' },
+    ...allBatches.map((batch, index) => ({
+      id: `batch-${index}`,
+      label: batch,
+    })),
+  ];
+
+  const openGroupPage = (group) => {
+    navigate(`/groups/${group.id}`);
+  };
+
   const filteredGroups = groupsData.filter((group) => {
     const matchesSearch =
       group.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (group.description &&
         group.description.toLowerCase().includes(searchTerm.toLowerCase()));
-    const matchesStatus =
-      selectedStatus === 'All Status' ? true : group.status === selectedStatus;
     const matchesTag =
       selectedTag === 'All Tags'
         ? true
         : group.tags &&
           Array.isArray(group.tags) &&
           group.tags.includes(selectedTag);
-    const matchesTab =
-      activeTab === 'active'
-        ? group.status === 'ACTIVE'
-        : activeTab === 'inactive'
-        ? group.status === 'INACTIVE'
-        : activeTab === 'disbanded'
-        ? group.status === 'DISBANNED'
-        : false;
-    return matchesSearch && matchesStatus && matchesTag && matchesTab;
+    const matchesGroup =
+      selectedBatchName === 'All Batches'
+        ? true
+        : group.batchName === selectedBatchName;
+
+    return matchesSearch && matchesTag && matchesGroup;
   });
 
-  const openGroupPage = (group) => {
-    navigate(`/groups/${group.id}`);
-  };
-
-  const closeGroupModal = () => {
-    setIsModalOpen(false);
-    document.body.style.overflow = 'unset';
-    setTimeout(() => setSelectedGroup(null), 300);
-  };
-
-  const handleJoinGroup = () => {
-    console.log('Join group:', selectedGroup.id);
-    // Add your join group API call here
-    // Example: await groupService.joinGroup(selectedGroup.id);
-    closeGroupModal();
-  };
-
-  const handleLeaveGroup = () => {
-    console.log('Leave group:', selectedGroup.id);
-    // Add your leave group API call here
-    // Example: await groupService.leaveGroup(selectedGroup.id);
-    closeGroupModal();
-  };
-
   return (
-    <div className='parkinsans-light'>
-      {/* Search Filters */}
-      <div className='flex flex-col gap-4 md:flex-row md:items-center'>
+    <div className='parkinsans-light text-center p-6'>
+      <div>
+        <h2 className='text-3xl font-semibold text-gray-800 mb-2'>
+          All Groups
+        </h2>
+        <p className='text-sm font-semibold text-gray-600 mt-2'>
+          Here, you can See and Manage all the groups on the Platform
+        </p>
+      </div>
+
+      {/* Serach Filters */}
+      <div className='flex flex-col gap-4 md:flex-row md:items-center mt-8'>
         {/* Search Input */}
         <div className='flex-1 w-full md:w-2/4'>
           <div className='relative'>
@@ -141,13 +127,25 @@ const Groups = ({ batchId }) => {
         </div>
 
         {/* Tag Filter Dropdown */}
-        <div className='relative w-full md:w-1/4'>
+        <div className='relative w-full md:w-1/4 text-left'>
           <CustomDropdown
             options={tagOptions}
             placeholder='All Tags'
             onSelect={(option) => {
               console.log('Selected tag:', option.label);
               setSelectedTag(option.label || 'All Tags');
+            }}
+          />
+        </div>
+
+        {/* Batchname Filter Dropdown */}
+        <div className='relative w-full md:w-1/4 text-left'>
+          <CustomDropdown
+            options={batchOptions}
+            placeholder='All Batches'
+            onSelect={(option) => {
+              console.log('Selected Batch:', option.label);
+              setSelectedBatchName(option.label || 'All Batch');
             }}
           />
         </div>
@@ -175,7 +173,10 @@ const Groups = ({ batchId }) => {
       ) : error ? (
         <div style={{ textAlign: 'center', padding: '2rem', color: '#ff4d4f' }}>
           <i className='ri-error-warning-line' style={{ fontSize: '2rem' }}></i>
-          <p style={{ marginTop: '1rem' }}>{error}</p>
+          <p style={{ marginTop: '1rem' }}>
+            {error?.message ||
+              'An unexpected error occurred while fetching groups.'}
+          </p>
           <button
             onClick={() => window.location.reload()}
             style={{
@@ -287,7 +288,10 @@ const Groups = ({ batchId }) => {
                 </div>
 
                 {/* Card Content */}
-                <div style={{ padding: '2rem 1.25rem 1.25rem' }}>
+                <div
+                  className='text-left'
+                  style={{ padding: '2rem 1.25rem 1.25rem' }}
+                >
                   {/* Title */}
                   <h3
                     style={{
@@ -483,18 +487,8 @@ const Groups = ({ batchId }) => {
           )}
         </div>
       )}
-
-      {/* Group Modal */}
-      {/* <GroupsPage
-        group={selectedGroup}
-        isOpen={isModalOpen}
-        onClose={closeGroupModal}
-        userGroupId={userGroupId}
-        onJoin={handleJoinGroup}
-        onLeave={handleLeaveGroup}
-      /> */}
     </div>
   );
 };
 
-export default Groups;
+export default AdminAllGroups;
