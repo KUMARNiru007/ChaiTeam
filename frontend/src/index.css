@@ -422,10 +422,25 @@ code {
   font-size: var(--font-size-sm);
 }
 
-.info-value {
-  color: var(--chaiteam-text-primary);
+[data-theme="dark"] .info-value {
+  color: var(--chaiteam-text-secondary);
   font-size: var(--font-size-sm);
   margin-left: 0.25rem;
+}
+
+[data-theme="light"] .info-value {
+  color: #4b5563;
+  font-size: var(--font-size-sm);
+  margin-left: 0.25rem;
+}
+
+/* Info icon colors for both themes */
+[data-theme="dark"] .info-icon {
+  color: var(--chaiteam-text-muted);
+}
+
+[data-theme="light"] .info-icon {
+  color: #6b7280;
 }
 
 .status-badge {
@@ -509,19 +524,89 @@ code {
   font-size: var(--font-size-sm);
 }
 
+.notice-type {
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: var(--font-size-xs);
+  text-transform: capitalize;
+  font-weight: var(--font-weight-medium);
+}
+
+/* Dark mode styles */
+[data-theme="dark"] .notice-type.urgent {
+  background-color: rgba(255, 77, 79, 0.15);
+  color: #ff7875;
+}
+
+[data-theme="dark"] .notice-type.normal {
+  background-color: rgba(24, 144, 255, 0.15);
+  color: #69c0ff;
+}
+
+[data-theme="dark"] .notice-type.announcement {
+  background-color: rgba(250, 173, 20, 0.15);
+  color: #ffd666;
+}
+
+[data-theme="dark"] .tag.group {
+  background-color: rgba(0, 184, 163, 0.15);
+  color: #5cdbd3;
+}
+
+[data-theme="dark"] .tag.batch {
+  background-color: rgba(24, 144, 255, 0.15);
+  color: #69c0ff;
+}
+
+[data-theme="dark"] .tag.global {
+  background-color: rgba(250, 173, 20, 0.15);
+  color: #ffd666;
+}
+
+/* Light mode styles */
 .notice-type.urgent {
-  background-color: rgba(255, 77, 79, 0.1);
-  color: var(--chaiteam-error);
+  background-color: #fff1f0;
+  color: #cf1322;
+  border: 1px solid #ffa39e;
 }
 
 .notice-type.normal {
-  background-color: rgba(24, 144, 255, 0.1);
-  color: var(--chaiteam-info);
+  background-color: #e6f7ff;
+  color: #0050b3;
+  border: 1px solid #91d5ff;
 }
 
 .notice-type.announcement {
-  background-color: rgba(250, 173, 20, 0.1);
-  color: var(--chaiteam-warning);
+  background-color: #fff7e6;
+  color: #d46b08;
+  border: 1px solid #ffd591;
+}
+
+.tag.group {
+  background-color: #f6ffed;
+  color: #389e0d;
+  border: 1px solid #b7eb8f;
+}
+
+.tag.batch {
+  background-color: #e6f7ff;
+  color: #0050b3;
+  border: 1px solid #91d5ff;
+}
+
+.tag.global {
+  background-color: #fff7e6;
+  color: #d46b08;
+  border: 1px solid #ffd591;
+}
+
+/* Common tag styles */
+.tag {
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  text-transform: capitalize;
 }
 
 /* Group Page Styles */
