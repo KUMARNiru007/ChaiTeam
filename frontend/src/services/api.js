@@ -267,7 +267,7 @@ export const userService = {
 
   getUserActivity: async (userId) => {
     try {
-      const response = await axiosInstance.post('/user/activity', { userId });
+      const response = await axiosInstance.post('/activity/UserActivity', { userId });
       return response.data.Data;
     } catch (error) {
       console.error('Error fetching user activity:', error);
