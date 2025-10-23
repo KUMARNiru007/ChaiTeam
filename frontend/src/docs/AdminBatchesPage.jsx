@@ -6,35 +6,32 @@ import { useTheme } from '../context/ThemeContext.jsx';
 import CustomDropdown from '../components/CustomDropdown.jsx';
 import { useNavigate } from 'react-router-dom';
 
-const batchOptions = [
-  { id: 1, label: 'All Batches', value: 'all' },
-  { id: 2, label: 'Batch A', value: 'batch-a' },
-  { id: 3, label: 'Batch B', value: 'batch-b' },
-];
-
-const categoryOptions = [
-  { id: 1, label: 'All Categories', value: 'all' },
-  { id: 2, label: 'Frontend', value: 'frontend' },
-  { id: 3, label: 'Backend', value: 'backend' },
-];
-
 const AdminBatchPage = () => {
   const { name, description, logoUrl, bannerUrl } = useBatchStore();
   const { darkMode, toggleTheme } = useTheme();
   const navigate = useNavigate();
 
-  const [showModal, setShowModal] = useState(false);
+  const [batchOptions, setBatchOptions] = useState([
+    { id: 1, label: 'All Batches', value: 'all' },
+  ]);
+  
+  const [statusOptions, setStatusOptions] = useState([
+    { id: 1, label: 'All Status', value: 'all' },
+  ]);
+  
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedBatch, setSelectedBatch] = useState('all');
-  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedStatus, setSelectedStatus] = useState('all');
   const [batchesData, setBatchesData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deletingBatch, setDeletingBatch] = useState(null);
   const [updating, setUpdating] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
   const [errorModal, setErrorModal] = useState(false);
+
   // Fetch all batches
   useEffect(() => {
     const fetchBatches = async () => {
@@ -42,7 +39,28 @@ const AdminBatchPage = () => {
         setLoading(true);
         const data = await batchService.getAllBatches();
         console.log('ALL Batches: ', data);
-        setBatchesData(Array.isArray(data) ? data : []);
+        const batches = Array.isArray(data) ? data : [];
+        setBatchesData(batches);
+
+        // Update batch options dynamically
+        const uniqueBatches = batches.map((batch, index) => ({
+          id: index + 2,
+          label: batch.name,
+          value: batch.id
+        }));
+        setBatchOptions([
+          { id: 1, label: 'All Batches', value: 'all' },
+          ...uniqueBatches
+        ]);
+
+        // Update status options
+        setStatusOptions([
+          { id: 1, label: 'All Status', value: 'all' },
+          { id: 2, label: 'Active', value: 'ACTIVE' },
+          { id: 3, label: 'Completed', value: 'COMPLETED' },
+          { id: 4, label: 'Inactive', value: 'INACTIVE' }
+        ]);
+
         setError(null);
       } catch (err) {
         console.error('Failed to fetch batches:', err);
@@ -54,28 +72,26 @@ const AdminBatchPage = () => {
     fetchBatches();
   }, []);
 
-  // Filtered batches based on search, batch, category
+  // Filtered batches based on search, batch, and status
   const filteredBatches = batchesData.filter((batch) => {
+    // Search filter
     const matchesSearch =
       batch.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (batch.description &&
         batch.description.toLowerCase().includes(searchTerm.toLowerCase()));
 
+    // Batch dropdown filter
     const matchesBatch =
       selectedBatch === 'all' ||
       batch.name.toLowerCase().includes(selectedBatch.toLowerCase()) ||
       batch.id === selectedBatch;
 
-    const matchesCategory =
-      selectedCategory === 'all' ||
-      (batch.category &&
-        batch.category.toLowerCase() === selectedCategory.toLowerCase()) ||
-      (batch.tags &&
-        batch.tags.some(
-          (tag) => tag.toLowerCase() === selectedCategory.toLowerCase(),
-        ));
+    // Status filter
+    const matchesStatus =
+      selectedStatus === 'all' ||
+      batch.status === selectedStatus;
 
-    return matchesSearch && matchesBatch && matchesCategory;
+    return matchesSearch && matchesBatch && matchesStatus;
   });
 
   const handleSave = async (payload) => {
@@ -107,7 +123,6 @@ const AdminBatchPage = () => {
       setBatchesData((prevBatches) =>
         prevBatches.filter((batch) => batch.id !== batchId),
       );
-
       setSuccessModal(true);
     } catch (error) {
       console.error('Error while Deleting Batch: ', error);
@@ -119,9 +134,19 @@ const AdminBatchPage = () => {
   };
 
   const BatchCard = ({ batch }) => {
-    const onlineStudents = Math.floor(Math.random() * 500) + 100;
-    const totalStudents =
-      batch.batchMembers?.length || Math.floor(Math.random() * 2000) + 1000;
+    const [totalStudents, setTotalStudents] = useState(0);
+
+    useEffect(() => {
+      const fetchBatchMembers = async () => {
+        try {
+          const response = await batchService.getBatchById(batch.id);
+          setTotalStudents(response.batchMembers?.length || 0);
+        } catch (error) {
+          console.error('Error fetching batch members:', error);
+        }
+      };
+      fetchBatchMembers();
+    }, [batch.id]);
 
     return (
       <div
@@ -193,8 +218,17 @@ const AdminBatchPage = () => {
             }`}
           >
             <div className='flex items-center gap-1.5'>
-              <div className='w-2 h-2 rounded-full bg-green-500'></div>
-              <span className='font-medium'>{batch.status}</span>
+              <div className={`w-2 h-2 rounded-full ${
+                batch.status === 'ACTIVE' ? 'bg-green-500' :
+                batch.status === 'COMPLETED' ? 'bg-blue-500' :
+                batch.status === 'INACTIVE' ? 'bg-red-500' : 'bg-gray-500'
+              }`}></div>
+              <span className='font-medium'>{
+                batch.status === 'ACTIVE' ? 'Active' :
+                batch.status === 'COMPLETED' ? 'Completed' :
+                batch.status === 'INACTIVE' ? 'Inactive' :
+                batch.status
+              }</span>
             </div>
             <div className='flex items-center gap-1.5'>
               <div
@@ -237,62 +271,114 @@ const AdminBatchPage = () => {
         onSave={handleSave}
       />
 
-      {/* ===== Render All Batches with Filters ===== */}
-      <div className='mt-8'>
-        {/* Filters */}
-        <div className='flex flex-col gap-4 md:flex-row md:items-center mb-6'>
-          <div className='flex-1 w-full md:w-2/4 relative'>
+      {/* Search Filters */}
+      <div className='mt-6 flex flex-col gap-4 md:flex-row md:items-center mb-6'>
+        {/* Search Input */}
+        <div className='flex-1 w-full md:w-2/4'>
+          <div className='relative'>
+            <span className='absolute inset-y-0 left-0 flex items-center pl-3'>
+              <i
+                className={`ri-search-line ${
+                  darkMode ? 'text-gray-50' : 'text-black'
+                }`}
+              ></i>
+            </span>
             <input
               type='text'
               placeholder='Search Batches'
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className={`w-full rounded-xl border px-3 py-2 ${
+              className={`w-full rounded-xl border ${
                 darkMode
                   ? 'bg-[#27272A] text-white placeholder-gray-50 border-white/30'
-                  : 'border-gray-300 bg-gray-50 text-gray-600 placeholder-gray-400'
-              }`}
-            />
-          </div>
-
-          <div className='md:w-1/4 relative'>
-            <CustomDropdown
-              options={batchOptions}
-              placeholder='All Batches'
-              onSelect={(option) => setSelectedBatch(option.value)}
-            />
-          </div>
-
-          <div className='md:w-1/4 relative'>
-            <CustomDropdown
-              options={categoryOptions}
-              placeholder='All Categories'
-              onSelect={(option) => setSelectedCategory(option.value)}
+                  : 'border-gray-300 bg-gray-50 text-gray-600 placeholder-gray-400 focus:bg-gray-100'
+              } py-2 pl-9 pr-2 focus:outline-none md:w-4/4`}
             />
           </div>
         </div>
 
-        {/* Batch Cards */}
-        {loading ? (
-          <div className='text-center py-8'>Loading batches...</div>
-        ) : error ? (
-          <div className='text-center text-red-500 py-8'>{error}</div>
-        ) : (
-          <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6'>
-            {filteredBatches.length > 0 ? (
-              filteredBatches.map((batch) => (
-                <BatchCard key={batch.id} batch={batch} />
-              ))
-            ) : (
-              <div className='col-span-full text-center text-gray-500 py-8'>
-                No batches found matching your criteria.
-              </div>
-            )}
-          </div>
-        )}
+        {/* Batch Dropdown */}
+        <div className='relative w-full md:w-1/4'>
+          <CustomDropdown
+            options={batchOptions}
+            placeholder='All Batches'
+            onSelect={(option) => setSelectedBatch(option.value)}
+          />
+        </div>
+
+        {/* Status Dropdown */}
+        <div className='relative w-full md:w-1/4'>
+          <CustomDropdown
+            options={statusOptions}
+            placeholder='Status'
+            onSelect={(option) => setSelectedStatus(option.value)}
+          />
+        </div>
       </div>
 
-      {/* rendring Delete batch Modal */}
+      {/* Batch Cards */}
+      {loading ? (
+        <div style={{ textAlign: 'center', padding: '2rem' }}>
+          <div
+            className='spinner'
+            style={{
+              border: '4px solid rgba(255, 161, 22, 0.8)',
+              borderLeft: '4px solid #ffffff',
+              borderRadius: '50%',
+              width: '40px',
+              height: '40px',
+              animation: 'spin 1s linear infinite',
+              margin: '1rem auto',
+            }}
+          ></div>
+          <style jsx>{`
+            @keyframes spin {
+              0% {
+                transform: rotate(0deg);
+              }
+              100% {
+                transform: rotate(360deg);
+              }
+            }
+          `}</style>
+          <p style={{ marginTop: '1rem', color: '#b3b3b3' }}>
+            Loading batches...
+          </p>
+        </div>
+      ) : error ? (
+        <div style={{ textAlign: 'center', padding: '2rem', color: '#ff4d4f' }}>
+          <i className='ri-error-warning-line' style={{ fontSize: '2rem' }}></i>
+          <p style={{ marginTop: '1rem' }}>{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            style={{
+              backgroundColor: '#1890ff',
+              color: 'white',
+              border: 'none',
+              padding: '0.5rem 1rem',
+              borderRadius: '0.25rem',
+              marginTop: '1rem',
+              cursor: 'pointer',
+            }}
+          >
+            Try Again
+          </button>
+        </div>
+      ) : (
+        <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6'>
+          {filteredBatches.length > 0 ? (
+            filteredBatches.map((batch) => (
+              <BatchCard key={batch.id} batch={batch} />
+            ))
+          ) : (
+            <div className='col-span-full text-center text-gray-500 py-8'>
+              No batches found matching your criteria.
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Delete Batch Modal */}
       {showDeleteModal && deletingBatch && (
         <div className='fixed inset-0 bg-black/30 bg-opacity-50 flex justify-center items-center z-50'>
           <div

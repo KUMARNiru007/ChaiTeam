@@ -27,7 +27,7 @@ const Sidebar = () => {
   const adminNavItems = [
     {
       path: '/create-batch',
-      label: 'Create & All Batches',
+      label: 'Manage Batches',
       icon: 'ri-add-box-line',
     },
     { path: '/add-students', label: 'Add Member', icon: 'ri-user-add-line' },
