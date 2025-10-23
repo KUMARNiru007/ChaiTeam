@@ -6,6 +6,8 @@ function Profile() {
   const { darkMode, toggleTheme } = useTheme();
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [activities, setActivities] = useState([]);
+  const [activityLoading, setActivityLoading] = useState(true);
 
   // Fetch current user data - same logic as Sidebar.jsx
   useEffect(() => {
@@ -25,6 +27,24 @@ function Profile() {
 
     fetchCurrentUser();
   }, []);
+
+  // Fetch user activities
+  useEffect(() => {
+    const fetchUserActivities = async () => {
+      if (!currentUser?.id) return;
+      try {
+        setActivityLoading(true);
+        const activityData = await userService.getUserActivity(currentUser.id);
+        setActivities(activityData);
+      } catch (error) {
+        console.error('Failed to fetch user activities:', error);
+      } finally {
+        setActivityLoading(false);
+      }
+    };
+
+    fetchUserActivities();
+  }, [currentUser?.id]);
 
   return (
     <div className={`w-full max-w-4xl mx-auto p-6 ${darkMode ? 'text-white' : 'text-black'}`}>
@@ -125,6 +145,54 @@ function Profile() {
               </p>
             </div>
           </div>
+        </div>
+
+        {/* User Activity Section */}
+        <div className={`rounded-lg p-6 ${darkMode ? 'bg-[#18181b] border border-[#333]' : 'bg-white border border-gray-200'}`}>
+          <h2 className="text-lg font-semibold mb-4">Activity History</h2>
+          
+          {activityLoading ? (
+            <div className="flex justify-center py-4">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-500"></div>
+            </div>
+          ) : activities.length === 0 ? (
+            <p className="text-gray-400 text-center py-4">No activities found.</p>
+          ) : (
+            <div className="space-y-4">
+              {activities.map((activity, index) => (
+                <div
+                  key={activity.id || index}
+                  className={`p-4 rounded-lg ${
+                    darkMode ? 'bg-[#222] hover:bg-[#2a2a2a]' : 'bg-gray-50 hover:bg-gray-100'
+                  } transition-colors`}
+                >
+                  <div className="flex items-start gap-3">
+                    <div className={`mt-1 w-2 h-2 rounded-full ${
+                      activity.type === 'JOIN_BATCH' ? 'bg-green-500' :
+                      activity.type === 'LEAVE_BATCH' ? 'bg-red-500' :
+                      activity.type === 'JOIN_GROUP' ? 'bg-blue-500' :
+                      activity.type === 'LEAVE_GROUP' ? 'bg-yellow-500' :
+                      'bg-gray-500'
+                    }`} />
+                    <div className="flex-1">
+                      <p className="text-sm">
+                        {activity.type === 'JOIN_BATCH' && 'Joined batch'}
+                        {activity.type === 'LEAVE_BATCH' && 'Left batch'}
+                        {activity.type === 'JOIN_GROUP' && 'Joined group'}
+                        {activity.type === 'LEAVE_GROUP' && 'Left group'}
+                        {activity.type === 'OTHER' && activity.description}
+                        {' '}
+                        <span className="font-medium">{activity.description}</span>
+                      </p>
+                      <p className="text-xs text-gray-400 mt-1">
+                        {new Date(activity.createdAt).toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
