@@ -9,17 +9,61 @@ const CreateBatchModal = ({ isOpen, onClose, onSave }) => {
   const [previewLogo, setPreviewLogo] = useState(null);
   const [previewBanner, setPreviewBanner] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [dragOverLogo, setDragOverLogo] = useState(false);
+  const [dragOverBanner, setDragOverBanner] = useState(false);
 
   // Handle file selection (show preview only)
-  const handleFileChange = (e, field) => {
-    const file = e.target.files[0];
+  const handleFileChange = (file, field) => {
     if (!file) return;
+    
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      alert('Please select a valid image file');
+      return;
+    }
+
     const previewUrl = URL.createObjectURL(file);
 
     if (field === 'logoImage') setPreviewLogo(previewUrl);
     else if (field === 'bannerImage') setPreviewBanner(previewUrl);
 
     setField(field, file);
+  };
+
+  // Drag and drop handlers for logo
+  const handleLogoDragOver = (e) => {
+    e.preventDefault();
+    setDragOverLogo(true);
+  };
+
+  const handleLogoDragLeave = (e) => {
+    e.preventDefault();
+    setDragOverLogo(false);
+  };
+
+  const handleLogoDrop = (e) => {
+    e.preventDefault();
+    setDragOverLogo(false);
+    const file = e.dataTransfer.files[0];
+    handleFileChange(file, 'logoImage');
+  };
+
+  // Drag and drop handlers for banner
+  const handleBannerDragOver = (e) => {
+    e.preventDefault();
+    setDragOverBanner(true);
+  };
+
+  const handleBannerDragLeave = (e) => {
+    e.preventDefault();
+    setDragOverBanner(false);
+  };
+
+  const handleBannerDrop = (e) => {
+    e.preventDefault();
+    setDragOverBanner(false);
+    const file = e.dataTransfer.files[0];
+    handleFileChange(file, 'bannerImage');
   };
 
   // Upload both images when submitting
@@ -38,9 +82,6 @@ const CreateBatchModal = ({ isOpen, onClose, onSave }) => {
         uploadToCloudinary(logoImage),
         uploadToCloudinary(bannerImage),
       ]);
-
-      // console.log('Uploaded Image: ', uploadedLogo);
-      // console.log('uploaded Image 1: ', uploadedBanner);
 
       const payload = {
         name,
@@ -65,94 +106,191 @@ const CreateBatchModal = ({ isOpen, onClose, onSave }) => {
     }
   };
 
+  const handleCancel = () => {
+    resetForm();
+    setPreviewLogo(null);
+    setPreviewBanner(null);
+    onClose();
+  };
+
   if (!isOpen) return null;
 
   return (
     <div className='fixed inset-0 flex items-center justify-center bg-black/40 z-50'>
-      <div className='bg-white p-6 rounded-xl w-[420px] relative shadow-lg'>
-        <button
-          className='absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-xl'
-          onClick={onClose}
-        >
-          <i className='ri-close-large-line cursor-pointer'></i>
-        </button>
-
-        <h2 className='text-xl font-semibold mb-4 text-center'>
+      <div className='bg-white p-6 rounded-xl w-[700px] relative shadow-lg'>
+        <h2 className='text-xl font-semibold mb-6 text-center'>
           Create New Batch
         </h2>
 
         <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
-          {/* Name */}
-          <input
-            type='text'
-            placeholder='Batch Name *'
-            value={name}
-            onChange={(e) => setField('name', e.target.value)}
-            className='border border-gray-300 p-2 rounded focus:outline-none '
-            required
-          />
+          {/* Main content in two columns */}
+          <div className='grid grid-cols-2 gap-6'>
+            {/* Left Column - Text Fields */}
+            <div className='space-y-4'>
+              {/* Name */}
+              <div>
+                <label className='block text-sm font-medium text-gray-700 mb-2'>
+                  Batch Name <span className='text-red-500'>*</span>
+                </label>
+                <input
+                  type='text'
+                  placeholder='Enter batch name'
+                  value={name}
+                  onChange={(e) => setField('name', e.target.value)}
+                  className='w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'
+                  required
+                />
+              </div>
 
-          {/* Description */}
+              {/* Description */}
+              <div>
+                <label className='block text-sm font-medium text-gray-700 mb-2'>
+                  Batch Description <span className='text-red-500'>*</span>
+                </label>
+                <textarea
+                  placeholder='Enter batch description'
+                  value={description}
+                  onChange={(e) => setField('description', e.target.value)}
+                  className='w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 h-32 resize-none'
+                  rows={4}
+                  required
+                />
+              </div>
+            </div>
 
-          <textarea
-            placeholder='Batch Description *'
-            value={description}
-            onChange={(e) => setField('description', e.target.value)}
-            className='border border-gray-300 p-2 rounded focus:outline-none'
-            rows={3}
-            required
-          />
+            {/* Right Column - Image Uploads */}
+            <div className='space-y-4'>
+              {/* Logo */}
+              <div>
+                <label className='block text-sm font-medium text-gray-700 mb-2'>
+                  Logo Image <span className='text-red-500'>*</span>
+                </label>
+                
+                {/* Drag and Drop Area for Logo */}
+                <div
+                  onDragOver={handleLogoDragOver}
+                  onDragLeave={handleLogoDragLeave}
+                  onDrop={handleLogoDrop}
+                  onClick={() => document.getElementById('logoInput').click()}
+                  className={`border-2 border-dashed rounded-lg p-4 text-center cursor-pointer transition-all h-40 flex items-center justify-center ${
+                    dragOverLogo 
+                      ? 'border-blue-500 bg-blue-50' 
+                      : 'border-gray-300 hover:bg-gray-50'
+                  } ${
+                    previewLogo ? 'border-green-500' : ''
+                  }`}
+                >
+                  {previewLogo ? (
+                    <div className="text-green-600">
+                      <img
+                        src={previewLogo}
+                        alt='Logo Preview'
+                        className='h-24 w-24 object-cover rounded-lg border mx-auto'
+                      />
+                      <p className="text-sm mt-2 font-semibold">{logoImage?.name || 'Logo Image Selected'}</p>
+                      <p className="text-xs mt-1 text-gray-600">Click or drag to change</p>
+                    </div>
+                  ) : (
+                    <div>
+                      <i className={`ri-upload-cloud-2-line text-3xl mb-2 block ${
+                        dragOverLogo ? 'text-blue-500' : 'text-gray-400'
+                      }`}></i>
+                      <p className="text-gray-600 font-medium">
+                        Upload Logo
+                      </p>
+                      <p className="text-xs mt-1 text-gray-500">
+                        Drag & drop or click to upload
+                      </p>
+                    </div>
+                  )}
+                </div>
 
-          {/* Logo */}
-          <div>
-            <label className='block text-sm font-medium text-gray-700 mb-1'>
-              Logo Image <span className='text-red-500'>*</span>
-            </label>
-            <input
-              type='file'
-              accept='image/*'
-              onChange={(e) => handleFileChange(e, 'logoImage')}
-              className='w-full'
-              required
-            />
-            {previewLogo && (
-              <img
-                src={previewLogo}
-                alt='Logo Preview'
-                className='mt-2 h-24 w-24 object-cover rounded border'
-              />
-            )}
+                {/* Hidden file input */}
+                <input
+                  type='file'
+                  id='logoInput'
+                  accept='image/*'
+                  onChange={(e) => handleFileChange(e.target.files[0], 'logoImage')}
+                  className='hidden'
+                  required
+                />
+              </div>
+
+              {/* Banner */}
+              <div>
+                <label className='block text-sm font-medium text-gray-700 mb-2'>
+                  Banner Image <span className='text-red-500'>*</span>
+                </label>
+                
+                {/* Drag and Drop Area for Banner */}
+                <div
+                  onDragOver={handleBannerDragOver}
+                  onDragLeave={handleBannerDragLeave}
+                  onDrop={handleBannerDrop}
+                  onClick={() => document.getElementById('bannerInput').click()}
+                  className={`border-2 border-dashed rounded-lg p-4 text-center cursor-pointer transition-all h-40 flex items-center justify-center ${
+                    dragOverBanner 
+                      ? 'border-blue-500 bg-blue-50' 
+                      : 'border-gray-300 hover:bg-gray-50'
+                  } ${
+                    previewBanner ? 'border-green-500' : ''
+                  }`}
+                >
+                  {previewBanner ? (
+                    <div className="text-green-600">
+                      <img
+                        src={previewBanner}
+                        alt='Banner Preview'
+                        className='h-20 w-full object-cover rounded-lg border'
+                      />
+                      <p className="text-sm mt-2 font-semibold">{bannerImage?.name || 'Banner Image Selected'}</p>
+                      <p className="text-xs mt-1 text-gray-600">Click or drag to change</p>
+                    </div>
+                  ) : (
+                    <div>
+                      <i className={`ri-upload-cloud-2-line text-3xl mb-2 block ${
+                        dragOverBanner ? 'text-blue-500' : 'text-gray-400'
+                      }`}></i>
+                      <p className="text-gray-600 font-medium">
+                        Upload Banner
+                      </p>
+                      <p className="text-xs mt-1 text-gray-500">
+                        Drag & drop or click to upload
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Hidden file input */}
+                <input
+                  type='file'
+                  id='bannerInput'
+                  accept='image/*'
+                  onChange={(e) => handleFileChange(e.target.files[0], 'bannerImage')}
+                  className='hidden'
+                  required
+                />
+              </div>
+            </div>
           </div>
 
-          {/* Banner */}
-          <div>
-            <label className='block text-sm font-medium text-gray-700 mb-1'>
-              Banner Image <span className='text-red-500'>*</span>
-            </label>
-            <input
-              type='file'
-              accept='image/*'
-              onChange={(e) => handleFileChange(e, 'bannerImage')}
-              className='w-full'
-              required
-            />
-            {previewBanner && (
-              <img
-                src={previewBanner}
-                alt='Banner Preview'
-                className='mt-2 h-24 w-full object-cover rounded border'
-              />
-            )}
+          {/* Buttons - Aligned to the right with same style as UploadCSV */}
+          <div className='mt-4 pt-4 border-t border-gray-200 flex justify-end gap-3'>
+            <button
+              type='button'
+              onClick={handleCancel}
+              className='px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 transition-all font-medium'
+            >
+              Cancel
+            </button>
+            <button
+              type='submit'
+              disabled={loading}
+              className='px-4 py-2 rounded-lg bg-[var(--chaiteam-btn-start)] hover:bg-[var(--chaiteam-btn-primary-hover)] text-white transition-all disabled:bg-gray-400 cursor-pointer font-medium'
+            >
+              {loading ? 'Uploading & Creating...' : 'Create Batch'}
+            </button>
           </div>
-
-          {/* Submit Button */}
-          <button
-            type='submit'
-            disabled={loading}
-            className='bg-[var(--chaiteam-btn-start)] hover:bg--[var(--chaiteam-btn-primary-hover)]  text-white py-2 rounded mt-3 transition-all disabled:bg-gray-400 cursor-pointer'
-          >
-            {loading ? 'Uploading & Creating...' : 'Create Batch'}
-          </button>
         </form>
       </div>
     </div>
