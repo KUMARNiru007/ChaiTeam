@@ -30,7 +30,6 @@ const Sidebar = () => {
       label: 'Manage Batches',
       icon: 'ri-add-box-line',
     },
-    { path: '/add-students', label: 'Add Member', icon: 'ri-user-add-line' },
     { path: '/allUsers', label: 'All Users', icon: 'ri-team-line' },
     { path: '/allGroups', label: 'All Groups', icon: 'ri-parent-line' },
   ];

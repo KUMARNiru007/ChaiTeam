@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import CreateBatchModal from '../components/CreateBatchModel.jsx';
+import UploadCSVModal from '../components/UploadCSV.jsx';
 import { useBatchStore } from '../store/useBatchStore.js';
 import { batchService } from '../services/api.js';
 import { useTheme } from '../context/ThemeContext.jsx';
@@ -31,6 +32,27 @@ const AdminBatchPage = () => {
   const [updating, setUpdating] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
   const [errorModal, setErrorModal] = useState(false);
+  const [showCSVModal, setShowCSVModal] = useState(false);
+
+  const handleCSVUpload = async (batchId, file) => {
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      await batchService.uploadBatchCSV(batchId, formData);
+      alert('CSV uploaded successfully!');
+      // Refresh the batch members count
+      const updatedBatch = await batchService.getBatchById(batchId);
+      setBatchesData(prevBatches => 
+        prevBatches.map(batch => 
+          batch.id === batchId ? updatedBatch : batch
+        )
+      );
+    } catch (error) {
+      console.error('Error uploading CSV:', error);
+      throw error;
+    }
+  };
 
   // Fetch all batches
   useEffect(() => {
@@ -252,12 +274,20 @@ const AdminBatchPage = () => {
       <div className='mx-auto bg-white shadow-md rounded-2xl p-8 mb-8'>
         <div className='flex justify-between items-center mb-1'>
           <h1 className='text-3xl font-bold text-gray-800'>Manage Batches</h1>
-          <button
-            onClick={() => setShowModal(true)}
-            className='bg-[var(--chaiteam-btn-start)] hover:bg--[var(--chaiteam-btn-primary-hover)] text-white px-5 py-2 rounded-lg transition-all cursor-pointer'
-          >
-            + Create New Batch
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={() => setShowCSVModal(true)}
+              className='bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg transition-all cursor-pointer flex items-center'
+            >
+              <i className="ri-file-upload-line mr-2"></i> Upload CSV
+            </button>
+            <button
+              onClick={() => setShowModal(true)}
+              className='bg-[var(--chaiteam-btn-start)] hover:bg-[var(--chaiteam-btn-primary-hover)] text-white px-5 py-2 rounded-lg transition-all cursor-pointer'
+            >
+              + Create New Batch
+            </button>
+          </div>
         </div>
 
         <p className='text-gray-500'>
@@ -269,6 +299,13 @@ const AdminBatchPage = () => {
         isOpen={showModal}
         onClose={() => setShowModal(false)}
         onSave={handleSave}
+      />
+
+      <UploadCSVModal
+        isOpen={showCSVModal}
+        onClose={() => setShowCSVModal(false)}
+        batches={batchesData}
+        onUpload={handleCSVUpload}
       />
 
       {/* Search Filters */}
