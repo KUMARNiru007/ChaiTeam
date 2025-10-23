@@ -185,7 +185,14 @@ function Profile() {
                         <span className="font-medium">{activity.description}</span>
                       </p>
                       <p className="text-xs text-gray-400 mt-1">
-                        {new Date(activity.createdAt).toLocaleString()}
+                        {activity.createdAt ? new Date(activity.createdAt).toLocaleString('en-IN', {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          hour12: true
+                        }) : 'Date not available'}
                       </p>
                     </div>
                   </div>
