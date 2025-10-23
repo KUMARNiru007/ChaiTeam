@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import CreateBatchModal from '../components/CreateBatchModel.jsx';
+import EditBatchModal from '../components/EditBatchModal.jsx';
 import UploadCSVModal from '../components/UploadCSV.jsx';
 import { useBatchStore } from '../store/useBatchStore.js';
 import { batchService } from '../services/api.js';
@@ -27,12 +28,32 @@ const AdminBatchPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [deletingBatch, setDeletingBatch] = useState(null);
-  const [updating, setUpdating] = useState(false);
-  const [successModal, setSuccessModal] = useState(false);
-  const [errorModal, setErrorModal] = useState(false);
   const [showCSVModal, setShowCSVModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingBatch, setEditingBatch] = useState(null);
+
+  const handleUpdateBatch = async (batchId, payload) => {
+    try {
+      if (!payload) {
+        // If payload is null, this is a delete operation
+        await handleDeleteBatch(batchId);
+        return;
+      }
+
+      await batchService.updateBatch(batchId, payload);
+      // Update the batch in the list
+      setBatchesData(prevBatches =>
+        prevBatches.map(batch =>
+          batch.id === batchId ? { ...batch, ...payload } : batch
+        )
+      );
+      setShowEditModal(false);
+      alert('Batch updated successfully!');
+    } catch (err) {
+      console.error('Update batch error:', err);
+      alert('Failed to update batch');
+    }
+  };
 
   const handleCSVUpload = async (batchId, file) => {
     try {
@@ -128,35 +149,22 @@ const AdminBatchPage = () => {
     }
   };
 
-  const handleOpenModal = (batch) => {
-    setDeletingBatch(batch);
-    setShowDeleteModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setDeletingBatch(null);
-    setShowDeleteModal(false);
-  };
-
   const handleDeleteBatch = async (batchId) => {
-    setUpdating(true);
     try {
-      const response = await batchService.deleteBatch(batchId);
+      await batchService.deleteBatch(batchId);
       setBatchesData((prevBatches) =>
         prevBatches.filter((batch) => batch.id !== batchId),
       );
-      setSuccessModal(true);
+      alert('Batch deleted successfully!');
     } catch (error) {
       console.error('Error while Deleting Batch: ', error);
-      setErrorModal(true);
-    } finally {
-      setUpdating(false);
-      setShowDeleteModal(false);
+      alert('Failed to delete batch. Maybe the batch has some active groups.');
     }
   };
 
   const BatchCard = ({ batch }) => {
     const [totalStudents, setTotalStudents] = useState(0);
+    const [showEditButton, setShowEditButton] = useState(false);
 
     useEffect(() => {
       const fetchBatchMembers = async () => {
@@ -170,15 +178,28 @@ const AdminBatchPage = () => {
       fetchBatchMembers();
     }, [batch.id]);
 
+    const handleEditClick = (e) => {
+      e.stopPropagation();
+      setShowEditModal(true);
+      setEditingBatch(batch);
+    };
+
     return (
       <div
-        onClick={() => handleOpenModal(batch)}
+        onClick={handleEditClick}
+        onMouseEnter={() => setShowEditButton(true)}
+        onMouseLeave={() => setShowEditButton(false)}
         className={`relative rounded-2xl overflow-hidden transition-all duration-200 group ${
           darkMode
             ? 'bg-[#2b2d31] hover:bg-[#313338]'
             : 'bg-white hover:bg-gray-100 border-[1px] border-gray-300'
-        }`}
+        } cursor-pointer`}
       >
+        {showEditButton && (
+          <div className="absolute top-2 right-2 z-10 bg-white/80 hover:bg-white p-2 rounded-full shadow-md transition-all duration-200">
+            <i className="ri-edit-line text-gray-700"></i>
+          </div>
+        )}
         <div className='h-28 w-full overflow-hidden'>
           <img
             src={
@@ -415,86 +436,17 @@ const AdminBatchPage = () => {
         </div>
       )}
 
-      {/* Delete Batch Modal */}
-      {showDeleteModal && deletingBatch && (
-        <div className='fixed inset-0 bg-black/30 bg-opacity-50 flex justify-center items-center z-50'>
-          <div
-            className={`rounded-xl p-6 w-96 ${
-              darkMode ? 'bg-[#18181B] text-white' : 'bg-white text-black'
-            }`}
-          >
-            <h3 className='text-xl font-semibold text-center'>
-              Wanted to Delete Batch?
-            </h3>
-
-            <div className='flex flex-col items-center mb-4 mt-4'>
-              <img
-                src={deletingBatch.logoImageUrl || '/default-avatar.png'}
-                alt={deletingBatch.name}
-                className='w-20 h-20 rounded-full mb-1 object-cover border-2 border-gray-300'
-              />
-              <p className='text-lg font-medium'>{deletingBatch.name}</p>
-            </div>
-
-            <button
-              onClick={() => handleDeleteBatch(deletingBatch.id)}
-              disabled={updating}
-              className='w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition cursor-pointer'
-            >
-              {updating ? 'Deleting...' : 'Delete Batch'}
-            </button>
-
-            <button
-              onClick={handleCloseModal}
-              className='w-full mt-3 border border-gray-400 py-2 rounded-lg hover:bg-gray-100 transition cursor-pointer'
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
-
-      {successModal && (
-        <div className='fixed inset-0 bg-black/30 bg-opacity-50 flex justify-center items-center z-50'>
-          <div
-            className={`rounded-xl p-6 w-96 ${
-              darkMode ? 'bg-[#18181B] text-white' : 'bg-white text-black'
-            }`}
-          >
-            <h2 className='text-lg font-semibold mb-3 text-center'>
-              Batch Deleted Successfully!
-            </h2>
-            <button
-              onClick={() => setSuccessModal(false)}
-              className='w-full mt-3 border border-gray-400 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition cursor-pointer'
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
-
-      {errorModal && (
-        <div className='fixed inset-0 bg-black/30 bg-opacity-50 flex justify-center items-center z-50'>
-          <div
-            className={`rounded-xl p-6 w-96 ${
-              darkMode ? 'bg-[#18181B] text-white' : 'bg-white text-black'
-            }`}
-          >
-            <h2 className='text-lg font-semibold mb-3 text-center text-red-500'>
-              Failed to Delete Batch
-            </h2>
-            <p className='text-sm mb-1 mt-3 text-center text-red-500'>
-              *Maybe the Batch has some active Groups
-            </p>
-            <button
-              onClick={() => setErrorModal(false)}
-              className='w-full mt-3 border border-gray-400 py-2 rounded-lg hover:bg-gray-100 transition cursor-pointer'
-            >
-              Close
-            </button>
-          </div>
-        </div>
+      {/* Edit Batch Modal */}
+      {showEditModal && editingBatch && (
+        <EditBatchModal
+          isOpen={showEditModal}
+          onClose={() => {
+            setShowEditModal(false);
+            setEditingBatch(null);
+          }}
+          onSave={handleUpdateBatch}
+          batch={editingBatch}
+        />
       )}
     </div>
   );

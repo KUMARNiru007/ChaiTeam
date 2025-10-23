@@ -81,6 +81,19 @@ export const batchService = {
       throw error;
     }
   },
+
+  updateBatch: async (batchId, payload) => {
+    try {
+      const response = await axiosInstance.put(
+        `/batch/updateBatch/${batchId}`,
+        payload
+      );
+      return response.data.Data;
+    } catch (error) {
+      console.error('Error updating batch:', error);
+      throw error;
+    }
+  },
 };
 
 // Groups API services
