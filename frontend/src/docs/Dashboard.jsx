@@ -24,20 +24,13 @@ function Dashboard() {
         // Get all batches to show total count (using the same endpoint)
         const allBatches = await batchService.getAllBatches();
 
-        // Get user's groups across all batches
+        // Get user's groups and total groups across all batches
         let userGroupsCount = 0;
         let totalGroupsInBatches = 0;
 
-        // Get groups for each batch the user is enrolled in
-        for (const batch of userBatches) {
+        // Get groups for all batches to get total count
+        for (const batch of allBatches) {
           try {
-            // Get user's group in this batch
-            const userGroup = await groupService.getUserGroup(batch.id);
-            if (userGroup) {
-              userGroupsCount++;
-            }
-
-            // Get all groups in this batch
             const batchGroups = await groupService.getBatchGroups(batch.id);
             totalGroupsInBatches += batchGroups ? batchGroups.length : 0;
           } catch (err) {
@@ -45,10 +38,22 @@ function Dashboard() {
           }
         }
 
+        // Get user's groups from enrolled batches
+        for (const batch of userBatches) {
+          try {
+            const userGroup = await groupService.getUserGroup(batch.id);
+            if (userGroup) {
+              userGroupsCount++;
+            }
+          } catch (err) {
+            console.log(`No user group found for batch ${batch.id}:`, err.message);
+          }
+        }
+
         // Calculate statistics
         const totalBatches = allBatches.length;
         const enrolledBatches = userBatches.length;
-        const availableGroups = totalGroupsInBatches - userGroupsCount;
+        const availableGroups = totalGroupsInBatches;
 
         // Update stats with real data
         const updatedStats = [
@@ -122,7 +127,7 @@ function Dashboard() {
     };
 
     fetchDashboardData();
-  }, []);
+  }, [checkAuth]);
 
   const badges = [
     {
