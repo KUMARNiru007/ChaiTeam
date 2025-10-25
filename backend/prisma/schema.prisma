@@ -134,7 +134,7 @@ model UserActivity {
   userId      String
   action      userActivityType
   description String?
-  createdAT    DateTime         @default(now())
+  createdAT   DateTime         @default(now())
   user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
@@ -143,7 +143,7 @@ model GroupActivity {
   groupId     String
   action      gropActivityType
   description String?
-  createdAT    DateTime         @default(now())
+  createdAT   DateTime         @default(now())
   group       Groups           @relation(fields: [groupId], references: [id], onDelete: Cascade)
 }
 

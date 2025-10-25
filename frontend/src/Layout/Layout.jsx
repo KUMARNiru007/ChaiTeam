@@ -23,9 +23,7 @@ function Layout() {
       </div>
 
       <div
-        className={`flex-1 ${
-          isCollapsed ? 'md:ml-[10px]' : 'md:ml-[260px]'
-        } p-4`}
+        className={`flex-1 ${isCollapsed ? 'md:ml-[10px]' : 'md:ml-[260px]'}`}
       >
         <main className='parkinsans-light max-w-7xl mx-auto'>
           <Outlet />
