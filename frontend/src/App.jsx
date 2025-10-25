@@ -1,3 +1,4 @@
+import react, { useState, useEffect } from 'react';
 import './App.css';
 import { Routes, Route } from 'react-router-dom';
 import Layout from './Layout/Layout';
@@ -17,7 +18,30 @@ import AdminBatchPage from './docs/AdminBatchesPage.jsx';
 import AdminAllUsersPage from './docs/AdminAllUsersPage.jsx';
 import AdminAllGroups from './docs/AdminAllGroups.jsx';
 
+import { useAuthStore } from './store/useAuthStore.js';
+
 function App() {
+  const { authUser, checkAuth, refreshToken } = useAuthStore();
+  const [authError, setAuthError] = useState(false);
+  useEffect(() => {
+    const runAuthCheck = async () => {
+      try {
+        await checkAuth();
+      } catch (err) {
+        console.error('Auth check failed:', err);
+        setAuthError(true);
+      }
+    };
+
+    runAuthCheck();
+
+    const interval = setInterval(() => {
+      refreshToken().catch(() => setAuthError(true));
+    }, 1000 * 60 * 3);
+
+    return () => clearInterval(interval);
+  }, [checkAuth, refreshToken]);
+
   return (
     <Routes>
       <Route path='/' element={<Home />} />

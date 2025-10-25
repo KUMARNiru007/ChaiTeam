@@ -25,8 +25,8 @@ export const useAuthStore = create((set) => ({
 
     try {
       const response = await axiosInstance.get('/auth/check');
-      console.log('Auth User: ', response.data.user);
-      set({ authUser: response.data.user });
+      console.log('Auth User: ', response.data.Data);
+      set({ authUser: response.data.Data });
       set({ isLoggedOut: false });
       localStorage.removeItem('isLoggedOut'); // Clear persisted logout state
       console.log('Auth user: ', response.data);
@@ -110,10 +110,10 @@ export const useAuthStore = create((set) => ({
     }
 
     try {
-      const response = await axiosInstance.get('/auth/refreshTokens', {
+      const response = await axiosInstance.get('/auth/refreshToken', {
         withCredentials: true,
       });
-      set({ authUser: response.data.user });
+      set({ authUser: response.data.Data });
       console.log('Tokens refreshed successfully');
     } catch (error) {
       console.error('Error refreshing tokens: ', error);

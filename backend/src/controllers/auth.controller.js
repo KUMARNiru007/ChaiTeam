@@ -338,11 +338,21 @@ const tokenRefresh = async (req, res) => {
     };
 
     res.cookie('accessToken', newAccessToken, accessCookieOptions);
-    res.cookie('refreshToken', refreshToken, refreshCookieOptions);
+    res.cookie('refreshToken', newRefreshToken, refreshCookieOptions);
+
+    const refreshedUser = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      image: user.image,
+      role: user.role,
+    };
 
     return res
       .status(200)
-      .json(new ApiResponse(200, null, 'Token Refreshed Successfully'));
+      .json(
+        new ApiResponse(200, refreshedUser, 'Token Refreshed Successfully'),
+      );
   } catch (error) {
     console.log(error);
     return res.status(400).json(new ApiError(400, error.message));
