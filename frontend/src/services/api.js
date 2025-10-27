@@ -86,7 +86,7 @@ export const batchService = {
     try {
       const response = await axiosInstance.put(
         `/batch/updateBatch/${batchId}`,
-        payload
+        payload,
       );
       return response.data.Data;
     } catch (error) {
@@ -141,6 +141,45 @@ export const groupService = {
       return response.data.Data;
     } catch (error) {
       console.error('Error fetching group details:', error);
+      throw error;
+    }
+  },
+
+  getGroupActivity: async (groupId) => {
+    try {
+      const response = await axiosInstance.post('/activity/GroupActivity', {
+        groupId,
+      });
+      // console.log('Group Activity: ', response.data);
+      return response.data.Data;
+    } catch (error) {
+      console.error('Error while fetching the Group Activity: ', error);
+      throw error;
+    }
+  },
+
+  getGroupNotices: async (groupId) => {
+    try {
+      const response = await axiosInstance.get(
+        `/noticeboard/getGroupNotices/${groupId}`,
+      );
+      // console.log('Group Noticeboard: ', response.data);
+      return response.data.Data;
+    } catch (error) {
+      console.error('error while fethcing the Group Notices: ', error);
+      throw error;
+    }
+  },
+
+  applyToJoinGroup: async (groupId, reason) => {
+    try {
+      const response = await axiosInstance.post(
+        `/groups/applyToJoinGroup/${groupId}`,
+        { reason },
+      );
+      console.log('Application Data: ', response.data.Data);
+    } catch (error) {
+      console.error('Error while send application to join the group: ', error);
       throw error;
     }
   },
@@ -267,7 +306,9 @@ export const userService = {
 
   getUserActivity: async (userId) => {
     try {
-      const response = await axiosInstance.post('/activity/UserActivity', { userId });
+      const response = await axiosInstance.post('/activity/UserActivity', {
+        userId,
+      });
       return response.data.Data;
     } catch (error) {
       console.error('Error fetching user activity:', error);
