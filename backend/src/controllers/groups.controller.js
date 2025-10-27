@@ -367,6 +367,34 @@ export const addMemberToGroup = async (req, res) => {
   }
 };
 
+export const rejectJoinApplication = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    const { groupId } = req.params;
+
+    if (!groupId || !userId) {
+      return res
+        .status(400)
+        .json(new ApiError(400, 'Both userId and groupId are required'));
+    }
+
+    await db.joinApplication.deleteMany({
+      where: { userId, groupId },
+    });
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, null, 'Application Rejected Successfully'));
+  } catch (error) {
+    console.error('error while rejecting the application: ', error);
+    return res
+      .status(500)
+      .json(
+        new ApiError(500, 'error while rejecting the application: ', error),
+      );
+  }
+};
+
 export const leaveGroup = async (req, res) => {
   const { userId, reason } = req.body;
   const { groupId } = req.params;

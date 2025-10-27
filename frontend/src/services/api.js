@@ -183,6 +183,44 @@ export const groupService = {
       throw error;
     }
   },
+
+  getAllJoinApplications: async (groupId) => {
+    try {
+      const response = await axiosInstance.get(
+        `/groups/allApplications/${groupId}`,
+      );
+      // console.log('All Applications: ', response.data.Data);
+      return response.data.Data;
+    } catch (error) {
+      console.error('Error while fetching group join Applications: ', error);
+      throw error;
+    }
+  },
+
+  rejectApplication: async (groupId, userId) => {
+    try {
+      const response = await axiosInstance.post(
+        `/groups/rejectApplication/${groupId}`,
+        { userId },
+      );
+    } catch (error) {
+      console.error('error while rejecting the Application: ', error);
+      throw error;
+    }
+  },
+
+  addMemberToGroup: async (groupId, userId, name, email) => {
+    try {
+      const response = await axiosInstance.post(
+        `/groups/addMemberToGroup/${groupId}`,
+        { userId, name, email },
+      );
+      console.log('Added Member: ', response.data.Data);
+    } catch (error) {
+      console.error('Error while adding user to the group: ', error);
+      throw error;
+    }
+  },
 };
 
 // Notice API services
@@ -199,7 +237,9 @@ export const noticeService = {
 
   getBatchNotices: async (batchId) => {
     try {
-      const response = await axiosInstance.get(`/noticeboard/getBatchNotices/${batchId}`);
+      const response = await axiosInstance.get(
+        `/noticeboard/getBatchNotices/${batchId}`,
+      );
       return response.data.Data || response.data;
     } catch (error) {
       console.error('Error fetching batch notices:', error);

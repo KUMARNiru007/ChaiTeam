@@ -14,7 +14,10 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
   const [noticesError, setNoticeserror] = useState(null);
   const [joinGroupModal, setJoinGroupModal] = useState(false);
   const [reasonToJoin, setReasonToJoin] = useState('');
+  const [joinApplications, setJoinApplications] = useState([]);
+  const [joinApplicationsError, setJoinApplicationsError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [applicationLoading, setApplicationLoading] = useState(false);
 
   const { darkMode, toggleTheme } = useTheme();
   const navigate = useNavigate();
@@ -63,8 +66,21 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
       }
     };
 
+    const fetchGroupJoinApplications = async () => {
+      if (!group.id) return;
+      try {
+        const response = await groupService.getAllJoinApplications(group.id);
+        // console.log('Applications: ', response);
+        setJoinApplications(response || []);
+      } catch (error) {
+        console.error('error while fethcing group applications: ', error);
+        setJoinApplicationsError(error);
+      }
+    };
+
     fetchGroupActivity();
     fetchGroupNotices();
+    fetchGroupJoinApplications();
   }, [group.id]);
 
   const handleSubmit = async (e) => {
@@ -98,6 +114,39 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
   const handleOnClose = () => {
     setJoinGroupModal(false);
     setReasonToJoin('');
+  };
+
+  const handleAcceptApplication = async (userId, name, email) => {
+    if (!group.id) return;
+    try {
+      setApplicationLoading(true);
+      const response = await groupService.addMemberToGroup(
+        group.id,
+        userId,
+        name,
+        email,
+      );
+      alert('Member added to the Group Successfully');
+    } catch (error) {
+      console.error('Error while adding member to group: ', error);
+      alert('Failed to add memebr to group');
+    } finally {
+      setApplicationLoading(false);
+    }
+  };
+
+  const handleRejectApplication = async (userId) => {
+    if (!group.id) return;
+    try {
+      setLoading(true);
+      await groupService.rejectApplication(group.id, userId);
+      alert('Application Rejected Successfully');
+    } catch (error) {
+      console.error('Error while rejecting the join application: ', error);
+      alert('Error: ', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -193,7 +242,7 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
             </button>
           )}
 
-          {leader && groupMember ? (
+          {groupMember === leader && groupMember ? (
             <button className='p-2 px-4 rounded-md text-sm bg-[var(--chaiteam-orange)] hover:bg-[var(--chaiteam-orange-hover)] cursor-pointer'>
               Edit Group
             </button>
@@ -237,7 +286,7 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
             </button>
           ))}
         {groupMember &&
-          leader &&
+          groupMember === leader &&
           adminTabs.map((tab) => (
             <button
               key={tab.id}
@@ -562,7 +611,7 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
                           >
                             {title}
                           </h3>
-                          <span className='text-xs text-red-500'>
+                          <span className='text-xs'>
                             {activity.createdAT
                               ? new Date(activity.createdAT).toLocaleString(
                                   'en-IN',
@@ -646,6 +695,119 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
                   </div>
                 </div>
               ))}
+          </div>
+        )}
+        {activeTab === 'Join Appications' && (
+          <div className='flex flex-col gap-4'>
+            <h2 className='text-lg font-semibold mb-2'>Join Applications</h2>
+
+            {/* Loading / Error / Empty States */}
+            {joinApplicationsError ? (
+              <p className='text-red-500 text-sm'>
+                {joinApplicationsError.message || 'Failed to load applications'}
+              </p>
+            ) : joinApplications.length === 0 ? (
+              <div
+                className={`flex flex-col items-center justify-center p-12 rounded-xl ${
+                  darkMode ? 'bg-[#2b2d31]' : 'bg-gray-50'
+                } border ${
+                  darkMode ? 'border-[#3a3b40]' : 'border-gray-200'
+                } text-gray-500`}
+              >
+                <i className='ri-mail-close-line text-5xl mb-3'></i>
+                No join applications yet.
+              </div>
+            ) : (
+              joinApplications.map((app, index) => (
+                <div
+                  key={app.id || index}
+                  className={`border rounded-xl p-4 flex flex-col gap-2 transition-all duration-200 ${
+                    darkMode
+                      ? 'bg-[#18181B] border-[#343434] hover:bg-[#9e9e9e]/20 hover:border-[#9e9e9e]/20'
+                      : 'bg-white border-slate-300 hover:bg-[#ff9335]/10 hover:border-[#ff9335]/20'
+                  }`}
+                >
+                  <div className='flex justify-between items-center'>
+                    <div className='flex items-center gap-3'>
+                      <div className='w-10 h-10 rounded-full bg-gray-400 flex items-center justify-center text-lg font-bold text-white'>
+                        {app.name?.charAt(0).toUpperCase() || 'U'}
+                      </div>
+                      <div>
+                        <p className='font-semibold text-sm'>
+                          {app.name || 'Unknown User'}
+                        </p>
+                        <p
+                          className={`text-xs ${
+                            darkMode ? 'text-gray-400' : 'text-gray-500'
+                          }`}
+                        >
+                          {app.email || 'No email provided'}
+                        </p>
+                      </div>
+                    </div>
+
+                    <span
+                      className={`text-xs px-3 py-2 rounded-md font-semibold ${
+                        app.status === 'PENDING'
+                          ? 'bg-yellow-100 text-yellow-700'
+                          : app.status === 'APPROVED'
+                          ? 'bg-green-100 text-green-700'
+                          : 'bg-red-100 text-red-700'
+                      }`}
+                    >
+                      {app.status}
+                    </span>
+                  </div>
+
+                  <div className='mt-1 text-sm'>
+                    <p>
+                      <span className='font-semibold'>Reason:</span>{' '}
+                      {app.reason || 'No reason provided'}
+                    </p>
+                  </div>
+
+                  <div className='mt-1 text-xs text-gray-500'>
+                    Applied on:{' '}
+                    {app.createdAT
+                      ? new Date(app.createdAT).toLocaleString('en-IN', {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          hour12: true,
+                        })
+                      : 'Date not available'}
+                  </div>
+
+                  {/* Action Buttons */}
+                  {app.status === 'PENDING' && (
+                    <div className='mt-3 flex gap-3'>
+                      <button
+                        disabled={applicationLoading}
+                        onClick={() =>
+                          handleAcceptApplication(
+                            app.userId,
+                            app.name,
+                            app.email,
+                          )
+                        }
+                        className='px-3 py-1 rounded-md text-sm bg-green-500 hover:bg-green-400 text-white cursor-pointer'
+                      >
+                        {applicationLoading ? 'Approving...' : 'Approve'}
+                      </button>
+                      <button
+                        onClick={() => handleRejectApplication(app.userId)}
+                        disabled={loading}
+                        className='px-3 py-1 rounded-md text-sm bg-red-500 hover:bg-red-400 text-white cursor-pointer'
+                      >
+                        {loading ? 'Rejecting...' : 'Reject'}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
           </div>
         )}
       </div>
