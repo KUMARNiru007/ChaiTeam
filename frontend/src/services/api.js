@@ -158,6 +158,16 @@ export const noticeService = {
     }
   },
 
+  getBatchNotices: async (batchId) => {
+    try {
+      const response = await axiosInstance.get(`/noticeboard/getBatchNotices/${batchId}`);
+      return response.data.Data || response.data;
+    } catch (error) {
+      console.error('Error fetching batch notices:', error);
+      throw error;
+    }
+  },
+
   getNoticesByScope: async (scope) => {
     try {
       const response = await axiosInstance.get(`/notices?scope=${scope}`);

@@ -121,7 +121,10 @@ export const getBatchNotices = async (req, res) => {
         group: { select: { id: true, name: true } },
         batch: { select: { id: true, name: true } },
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: [
+        { type: 'desc' }, 
+        { createdAt: 'desc' }  
+      ],
     });
 
     return res
