@@ -9,7 +9,7 @@ import groupRoutes from './routes/groups.routes.js';
 import noticeboardRoutes from './routes/noticeboard.routes.js';
 import activityRoutes from './routes/Activity.routes.js';
 import userRoutes from './routes/user.routes.js';
-import CloudinaryRoutes from './routes/cloudinaryRoutes.js';
+import CloudinaryRoutes from './routes/cloudinary.routes.js';
 
 dotenv.config();
 
