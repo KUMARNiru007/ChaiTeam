@@ -121,10 +121,7 @@ export const getBatchNotices = async (req, res) => {
         group: { select: { id: true, name: true } },
         batch: { select: { id: true, name: true } },
       },
-      orderBy: [
-        { type: 'desc' }, 
-        { createdAt: 'desc' }  
-      ],
+      orderBy: { createdAt: 'desc' },
     });
 
     return res
@@ -376,7 +373,6 @@ export const unpinNotice = async (req, res) => {
     const unpinnedNotice = await db.notices.update({
       where: { id: noticeId },
       data: { type: 'NORMAL' },
-
     });
 
     return res

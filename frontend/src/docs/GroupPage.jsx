@@ -1,11 +1,24 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext.jsx';
+import { groupService } from '../services/api.js';
+import { useAuthStore } from '../store/useAuthStore.js';
 
 const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
   const [activeTab, setActiveTab] = useState('overview');
+  const [groupActivity, setGroupActivity] = useState([]);
+  const [activityLoading, setActivityLoading] = useState(false);
+  const [acitvityError, setActivityError] = useState(null);
+  const [notices, setNotices] = useState([]);
+  const [noticesLoading, setNoticesLoading] = useState(false);
+  const [noticesError, setNoticeserror] = useState(null);
+  const [joinGroupModal, setJoinGroupModal] = useState(false);
+  const [reasonToJoin, setReasonToJoin] = useState('');
+  const [loading, setLoading] = useState(false);
+
   const { darkMode, toggleTheme } = useTheme();
   const navigate = useNavigate();
+  const { authUser } = useAuthStore();
 
   if (!group) return null;
 
@@ -13,13 +26,85 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
     { id: 'overview', label: 'Overview' },
     { id: 'members', label: 'Members' },
     { id: 'activity', label: 'Group Activity' },
-    { id: 'notifications', label: 'Notifications' },
   ];
+  const groupMemberTabs = [{ id: 'Notice Board', label: 'Notice Board' }];
+  const adminTabs = [{ id: 'Join Appications', label: 'Join Applications' }];
 
   const leader = group.member.find((mem) => mem.role === 'LEADER');
+  const groupMember = group.member.find((mem) => mem.userId === authUser.id);
+
+  useEffect(() => {
+    const fetchGroupActivity = async () => {
+      if (!group.id) return;
+      try {
+        setActivityLoading(true);
+        const response = await groupService.getGroupActivity(group.id);
+        setGroupActivity(response);
+      } catch (error) {
+        console.error('Error while fethcing the Group Activity: ', error);
+        setActivityError(error);
+      } finally {
+        setActivityLoading(false);
+      }
+    };
+
+    const fetchGroupNotices = async () => {
+      if (!group.id) return;
+      try {
+        setNoticesLoading(true);
+        const response = await groupService.getGroupNotices(group.id);
+        // console.log('GROUP NOTICES: ', response);
+        setNotices(response);
+      } catch (error) {
+        console.error('Error while fetching the Group Notices: ', error);
+        setNoticeserror(error);
+      } finally {
+        setNoticesLoading(false);
+      }
+    };
+
+    fetchGroupActivity();
+    fetchGroupNotices();
+  }, [group.id]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!reasonToJoin) {
+      alert('Reason to join group is Required');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await groupService.applyToJoinGroup(
+        group.id,
+        reasonToJoin,
+      );
+      console.log('Application response: ', response);
+      alert('Application sent Successfully');
+      handleOnClose();
+    } catch (error) {
+      console.error(
+        'erro while send the join Application: ',
+        error.response.data.errors[0],
+      );
+      alert(error.response.data.errors[0]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleOnClose = () => {
+    setJoinGroupModal(false);
+    setReasonToJoin('');
+  };
 
   return (
-    <div style={{ padding: '1.5rem' }} className='parkinsans-light'>
+    <div
+      style={{ padding: '0rem 1.5rem 1.5rem 1.5rem' }}
+      className='parkinsans-light'
+    >
       {/* Nav/Header */}
       <nav className='sticky top-0 w-full bg-white text-black p-2 flex items-center justify-between shadow-sm z-50'>
         <div>
@@ -42,7 +127,7 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
             darkMode ? 'bg-[#2b2d31]' : 'bg-white border border-gray-200'
           }`}
         >
-          <div className='h-48 w-full overflow-hidden relative'>
+          <div className='h-52 w-full overflow-hidden relative'>
             <img
               src={
                 group.groupImageUrl ||
@@ -79,8 +164,8 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
             onClick={toggleTheme}
             className={`absolute top-4 right-4 w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200 backdrop-blur-sm ${
               darkMode
-                ? 'bg-white/10 hover:bg-white/20 text-white'
-                : 'bg-black/10 hover:bg-black/20 text-white'
+                ? 'bg-black/30 hover:bg-black/40 text-white'
+                : 'bg-black/30 hover:bg-black/20 text-white'
             }`}
           >
             <i className={`ri-${darkMode ? 'sun' : 'moon'}-fill text-lg`}></i>
@@ -95,12 +180,26 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
           <span className='text-xs'>{group.member.length} Members</span>
         </div>
         <div className='flex gap-3'>
-          <button className='p-2 px-4 rounded-md text-sm bg-[var(--chaiteam-orange)] hover:bg-[var(--chaiteam-orange-hover)] cursor-pointer'>
-            Join Group
-          </button>
-          <button className='p-2 px-4 rounded-md text-sm bg-[var(--chaiteam-orange)] hover:bg-[var(--chaiteam-orange-hover)] cursor-pointer'>
-            Edit Group
-          </button>
+          {groupMember ? (
+            <button className='p-2 px-4 rounded-md text-sm bg-green-500 hover:bg-green-400 cursor-pointer'>
+              Create Notice
+            </button>
+          ) : (
+            <button
+              onClick={() => setJoinGroupModal(true)}
+              className='p-2 px-4 rounded-md text-sm bg-green-500 hover:bg-green-400 cursor-pointer'
+            >
+              Apply to Join
+            </button>
+          )}
+
+          {leader && groupMember ? (
+            <button className='p-2 px-4 rounded-md text-sm bg-[var(--chaiteam-orange)] hover:bg-[var(--chaiteam-orange-hover)] cursor-pointer'>
+              Edit Group
+            </button>
+          ) : (
+            ''
+          )}
         </div>
       </div>
 
@@ -121,13 +220,48 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
             {tab.label}
           </button>
         ))}
+        {groupMember &&
+          groupMemberTabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`px-4 py-2 font-semibold transition rounded-t-lg ${
+                activeTab === tab.id
+                  ? 'border-b-2 border-[var(--chaiteam-orange)] text-[var(--chaiteam-orange)]'
+                  : darkMode
+                  ? 'text-gray-400 hover:text-gray-200'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        {groupMember &&
+          leader &&
+          adminTabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`px-4 py-2 font-semibold transition rounded-t-lg ${
+                activeTab === tab.id
+                  ? 'border-b-2 border-[var(--chaiteam-orange)] text-[var(--chaiteam-orange)]'
+                  : darkMode
+                  ? 'text-gray-400 hover:text-gray-200'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
       </div>
 
       {/* Tab Content */}
       <div
-        className={`p-4 rounded-lg ${
-          darkMode ? 'bg-[#2b2d31]' : 'bg-white'
-        } border border-gray-200`}
+        className={`p-4 rounded-lg border ${
+          darkMode
+            ? 'bg-[#111111] text-white border-white/60'
+            : 'bg-white text-black border-gray-400'
+        }`}
       >
         {activeTab === 'overview' && (
           <div className='flex flex-col gap-8'>
@@ -142,7 +276,11 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
                 {group.tags.map((tag) => (
                   <div
                     kay={tag}
-                    className='py-1 px-2 rounded-lg border border-black w-auto hover:bg-gray-300'
+                    className={`py-1 px-2 rounded-lg border w-auto ${
+                      darkMode
+                        ? 'bg-[#18181B] border-[#545454] hover:bg-[#9e9e9e]/20 hover:border-[#9e9e9e]/20'
+                        : 'bg-white border-slate-300 hover:bg-[#ff9335]/10 hover:border-[#ff9335]/20'
+                    }`}
                   >
                     {tag}
                   </div>
@@ -153,15 +291,33 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
             <div>
               <span className='text-xl font-semibold'>Details</span>
               <div className='mt-1'>
-                <div className='flex justify-between border border-b-0 rounded-t-lg border-black p-2 px-2'>
+                <div
+                  className={`flex justify-between border border-b-0 rounded-t-lg p-2 px-2 ${
+                    darkMode
+                      ? 'bg-[#18181B] border-[#545454] hover:bg-[#9e9e9e]/20 hover:border-[#9e9e9e]/20'
+                      : 'bg-white border-slate-300 hover:bg-[#ff9335]/10 hover:border-[#ff9335]/20'
+                  }`}
+                >
                   <span>Group Leader</span>
                   <span>{leader.name}</span>
                 </div>
-                <div className='flex justify-between border border-b-0 border-black p-2 px-2'>
+                <div
+                  className={`flex justify-between border border-b-0 p-2 px-2 ${
+                    darkMode
+                      ? 'bg-[#18181B] border-[#545454] hover:bg-[#9e9e9e]/20 hover:border-[#9e9e9e]/20'
+                      : 'bg-white border-slate-300 hover:bg-[#ff9335]/10 hover:border-[#ff9335]/20'
+                  }`}
+                >
                   <span>Total Members</span>
                   <span>{group.member.length} Members</span>
                 </div>
-                <div className='flex justify-between border border-b-0 border-black p-2 px-2'>
+                <div
+                  className={`flex justify-between border border-b-0 p-2 px-2 ${
+                    darkMode
+                      ? 'bg-[#18181B] border-[#545454] hover:bg-[#9e9e9e]/20 hover:border-[#9e9e9e]/20'
+                      : 'bg-white border-slate-300 hover:bg-[#ff9335]/10 hover:border-[#ff9335]/20'
+                  }`}
+                >
                   <span>Last Updated</span>
                   <span>
                     {new Date(group.updatedAT).toLocaleDateString('en-IN', {
@@ -171,7 +327,13 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
                     })}
                   </span>
                 </div>
-                <div className='flex justify-between border rounded-b-lg border-black p-2 px-2'>
+                <div
+                  className={`flex justify-between border rounded-b-lg p-2 px-2 ${
+                    darkMode
+                      ? 'bg-[#18181B] border-[#545454] hover:bg-[#9e9e9e]/20 hover:border-[#9e9e9e]/20'
+                      : 'bg-white border-slate-300 hover:bg-[#ff9335]/10 hover:border-[#ff9335]/20'
+                  }`}
+                >
                   <span>Group ID</span>
                   <span>{group.id}</span>
                 </div>
@@ -194,9 +356,9 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
                 <div
                   className={`flex items-center gap-4 p-4 rounded-xl border ${
                     darkMode
-                      ? 'bg-[#2b2d31] border-[#3a3b40]'
-                      : 'bg-white border-gray-200'
-                  } shadow-sm`}
+                      ? 'bg-[#18181B] border-[#343434] hover:bg-[#9e9e9e]/20 hover:border-[#9e9e9e]/20'
+                      : 'bg-white border-slate-300 hover:bg-[#ff9335]/10 hover:border-[#ff9335]/20'
+                  } shadow-sm mt-2`}
                 >
                   <div className='w-14 h-14 rounded-full bg-gray-400 flex items-center justify-center text-xl font-bold text-white'>
                     {leader.name?.charAt(0).toUpperCase() || 'L'}
@@ -256,14 +418,14 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
                   </p>
                 </div>
               ) : (
-                <div className='flex flex-col gap-3'>
+                <div className='flex flex-col gap-3 mt-2'>
                   {group.member.map((member, index) => (
                     <div
                       key={member.id}
                       className={`flex items-center gap-3 p-4 rounded-xl border shadow-sm ${
                         darkMode
-                          ? 'bg-[#2b2d31] border-[#3a3b40]'
-                          : 'bg-white border-gray-200'
+                          ? 'bg-[#18181B] border-[#343434] hover:bg-[#9e9e9e]/20 hover:border-[#9e9e9e]/20'
+                          : 'bg-white border-slate-300 hover:bg-[#ff9335]/10 hover:border-[#ff9335]/20'
                       }`}
                     >
                       <div className='w-12 h-12 rounded-full bg-gray-400 flex items-center justify-center text-lg font-bold text-white'>
@@ -293,12 +455,247 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
           </div>
         )}
         {activeTab === 'activity' && (
-          <div>Group Activity content goes here...</div>
+          <div className='w-full px-4 py-6'>
+            {activityLoading ? (
+              <div className='flex justify-center py-4'>
+                <div className='animate-spin rounded-full h-6 w-6 border-b-2 border-gray-500'></div>
+              </div>
+            ) : groupActivity.length === 0 ? (
+              <p className='text-gray-400 text-center py-4'>{acitvityError}</p>
+            ) : (
+              <div className='flex flex-col gap-4'>
+                {groupActivity.map((activity, index) => {
+                  const actionMap = {
+                    GROUP_CREATED: {
+                      color: 'bg-green-500',
+                      title: 'Group Created',
+                      desc: `${
+                        activity.description ||
+                        'The group was successfully created.'
+                      }`,
+                    },
+                    GROUP_UPDATED: {
+                      color: 'bg-blue-500',
+                      title: 'Group Updated',
+                      desc: `${
+                        activity.description || 'Group details were updated.'
+                      }`,
+                    },
+                    GROUP_DISBANDED: {
+                      color: 'bg-red-500',
+                      title: 'Group Disbanded',
+                      desc: `${
+                        activity.description ||
+                        'The group was permanently deleted.'
+                      }`,
+                    },
+                    MEMBER_JOINED: {
+                      color: 'bg-emerald-500',
+                      title: 'New Member Joined',
+                      desc: `${
+                        activity.description || 'A new member joined the group.'
+                      }`,
+                    },
+                    MEMBER_LEFT: {
+                      color: 'bg-orange-500',
+                      title: 'Member Left',
+                      desc: `${
+                        activity.description || 'A member left the group.'
+                      }`,
+                    },
+                    NOTICE_CREATED: {
+                      color: 'bg-purple-500',
+                      title: 'Notice Created',
+                      desc: `${
+                        activity.description || 'A new notice was created.'
+                      }`,
+                    },
+                    NOTICE_UPDATED: {
+                      color: 'bg-cyan-500',
+                      title: 'Notice Updated',
+                      desc: `${
+                        activity.description || 'A notice was updated.'
+                      }`,
+                    },
+                    NOTICE_DELETED: {
+                      color: 'bg-pink-500',
+                      title: 'Notice Deleted',
+                      desc: `${
+                        activity.description || 'A notice was deleted.'
+                      }`,
+                    },
+                    MEMBER_KICKED: {
+                      color: 'bg-red-600',
+                      title: 'Member Removed',
+                      desc: `${
+                        activity.description ||
+                        'A member was removed from the group.'
+                      }`,
+                    },
+                  };
+
+                  const { color, title, desc } = actionMap[activity.action] || {
+                    color: 'bg-gray-400',
+                    title: 'Unknown Activity',
+                    desc: activity.description || 'An action was performed.',
+                  };
+
+                  return (
+                    <div
+                      key={activity.id || index}
+                      className={`flex items-start gap-3 rounded-xl p-4 border transition-all duration-200 shadow-sm ${
+                        darkMode
+                          ? 'bg-[#1f1f1f] border-[#2b2b2b] hover:bg-[#2a2a2a]'
+                          : 'bg-white border-gray-200 hover:shadow-md'
+                      }`}
+                    >
+                      <div
+                        className={`w-3 h-3 rounded-full mt-1.5 ${color}`}
+                      ></div>
+
+                      <div className='flex-1'>
+                        <div className='flex justify-between items-center'>
+                          <h3
+                            className={`text-sm font-semibold ${
+                              darkMode ? 'text-gray-100' : 'text-gray-800'
+                            }`}
+                          >
+                            {title}
+                          </h3>
+                          <span className='text-xs text-red-500'>
+                            {activity.createdAT
+                              ? new Date(activity.createdAT).toLocaleString(
+                                  'en-IN',
+                                  {
+                                    year: 'numeric',
+                                    month: 'short',
+                                    day: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                    hour12: true,
+                                  },
+                                )
+                              : 'Date not available'}
+                          </span>
+                        </div>
+                        <p
+                          className={`text-sm mt-1 ${
+                            darkMode ? 'text-gray-400' : 'text-gray-600'
+                          }`}
+                        >
+                          {desc}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         )}
-        {activeTab === 'notifications' && (
-          <div>Notifications content goes here...</div>
+        {groupMember && activeTab === 'Notice Board' && (
+          <div
+            className={`p-2 ${
+              darkMode ? 'bg-[#111111] text-white' : 'bg-white text-black'
+            }`}
+          >
+            {notices
+              .sort((a, b) =>
+                a.type === 'PINNED' && b.type !== 'PINNED' ? -1 : 1,
+              ) // sort once
+              .map((notice, index) => (
+                <div
+                  key={notice.id || index}
+                  className={`relative border rounded-xl p-4 flex flex-col gap-2 mb-3  ${
+                    darkMode
+                      ? 'bg-[#18181B] border-[#343434] hover:bg-[#9e9e9e]/20 hover:border-[#9e9e9e]/20'
+                      : 'bg-white border-slate-300 hover:bg-[#ff9335]/10 hover:border-[#ff9335]/20'
+                  } transition-all duration-200`}
+                >
+                  <span className='text-lg font-semibold'>{notice.title}</span>
+                  <span className='text-sm'>{notice.content}</span>
+                  <span className='text-sm font-semibold'>
+                    Creator & Date:{' '}
+                    <span className='font-normal text-red-500'>
+                      {notice.createdBy?.name},{' '}
+                      {notice.updateAt
+                        ? new Date(notice.updateAt).toLocaleDateString(
+                            'en-IN',
+                            {
+                              year: 'numeric',
+                              month: 'short',
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              hour12: true,
+                            },
+                          )
+                        : 'Date not available'}
+                    </span>
+                  </span>
+
+                  {/* Type Badge */}
+                  <div
+                    className={`absolute top-2 right-6 rounded-md p-2 text-xs font-semibold ${
+                      notice.type === 'PINNED'
+                        ? 'bg-green-200 text-green-700'
+                        : ''
+                    }`}
+                  >
+                    {notice.type === 'PINNED' ? `PINNED` : null}
+                  </div>
+                </div>
+              ))}
+          </div>
         )}
       </div>
+
+      {/* Join group Modal */}
+      {joinGroupModal && (
+        <div className='fixed inset-0 flex items-center justify-center bg-black/40 z-50'>
+          <div className='bg-white p-6 rounded-xl relative shadow-lg w-[500px]'>
+            <h2 className='text-xl font-semibold mb-6 text-center'>
+              Wanted to Join?
+            </h2>
+
+            <form onSubmit={handleSubmit} className='flex flex-col mt-3'>
+              <div>
+                <label className='block text-sm font-medium text-gray-700 mb-2'>
+                  Why should we Add You? <span className='text-red-500'>*</span>
+                </label>
+                <textarea
+                  type='text'
+                  placeholder='Give us Reason'
+                  value={reasonToJoin}
+                  onChange={(e) => setReasonToJoin(e.target.value)}
+                  className='w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-blue-500'
+                  rows={4}
+                  required
+                />
+              </div>
+
+              <div className='mt-4 text-right'>
+                <div className='flex gap-3 justify-end'>
+                  <button
+                    type='button'
+                    onClick={handleOnClose}
+                    className='px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 transition-all font-medium'
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type='submit'
+                    disabled={loading}
+                    className='px-4 py-2 rounded-lg bg-[var(--chaiteam-btn-start)] hover:bg-[var(--chaiteam-btn-primary-hover)] text-white transition-all disabled:bg-gray-400 cursor-pointer font-medium'
+                  >
+                    {loading ? 'Sending...' : 'Send Application'}
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

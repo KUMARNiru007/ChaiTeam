@@ -152,7 +152,7 @@ function BatchPage() {
                 alt={batchData.name}
                 className='w-full h-full object-cover'
               />
-              <div className='absolute inset-0 bg-gradient-to-t from-black/60 to-transparent'></div>
+              <div className='absolute'></div>
             </div>
 
             {/* Batch Info Overlay */}
@@ -364,37 +364,58 @@ function BatchPage() {
                 </div>
               </div>
             )}
-            
+
             {activeTab === 'groups' && (
               <div>
-                {showGroups && <Groups batchId={batchId} userGroupId={userGroup?.id} />}
+                {showGroups && (
+                  <Groups batchId={batchId} userGroupId={userGroup?.id} />
+                )}
               </div>
             )}
 
             {activeTab === 'noticeboard' && (
               <div>
                 {noticesLoading ? (
-                  <div className="text-center p-8">
-                    <div className={`spinner mx-auto`} style={{
-                      border: '4px solid rgba(255, 161, 22, 0.2)',
-                      borderLeft: '4px solid rgba(255, 161, 22, 0.8)',
-                      borderRadius: '50%',
-                      width: '40px',
-                      height: '40px',
-                      animation: 'spin 1s linear infinite'
-                    }}></div>
-                    <p className={`mt-4 text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                  <div className='text-center p-8'>
+                    <div
+                      className={`spinner mx-auto`}
+                      style={{
+                        border: '4px solid rgba(255, 161, 22, 0.2)',
+                        borderLeft: '4px solid rgba(255, 161, 22, 0.8)',
+                        borderRadius: '50%',
+                        width: '40px',
+                        height: '40px',
+                        animation: 'spin 1s linear infinite',
+                      }}
+                    ></div>
+                    <p
+                      className={`mt-4 text-sm ${
+                        darkMode ? 'text-gray-400' : 'text-gray-600'
+                      }`}
+                    >
                       Loading notices...
                     </p>
                   </div>
                 ) : noticesError ? (
-                  <div className={`text-center p-8 rounded-xl ${darkMode ? 'bg-red-900/20' : 'bg-red-50'}`}>
-                    <div className={`w-12 h-12 mx-auto rounded-full flex items-center justify-center ${
-                      darkMode ? 'bg-red-900/40' : 'bg-red-100'
-                    }`}>
+                  <div
+                    className={`text-center p-8 rounded-xl ${
+                      darkMode ? 'bg-red-900/20' : 'bg-red-50'
+                    }`}
+                  >
+                    <div
+                      className={`w-12 h-12 mx-auto rounded-full flex items-center justify-center ${
+                        darkMode ? 'bg-red-900/40' : 'bg-red-100'
+                      }`}
+                    >
                       <i className='ri-error-warning-line text-2xl text-red-500'></i>
                     </div>
-                    <p className={`mt-4 ${darkMode ? 'text-red-300' : 'text-red-600'}`}>{noticesError}</p>
+                    <p
+                      className={`mt-4 ${
+                        darkMode ? 'text-red-300' : 'text-red-600'
+                      }`}
+                    >
+                      {noticesError}
+                    </p>
                     <button
                       onClick={() => window.location.reload()}
                       className='mt-4 px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-sm font-medium rounded-lg transition-colors duration-200'
@@ -414,7 +435,7 @@ function BatchPage() {
                     <p className='mt-4 text-gray-500'>No notices yet</p>
                   </div>
                 ) : (
-                  <div className="flex flex-col gap-4">
+                  <div className='flex flex-col gap-4'>
                     {/* Debug section - uncomment if needed */}
                     {/* <div className="p-4 bg-yellow-100 text-black rounded-lg">
                       <h3 className="font-bold mb-2">Debug - Notices Data:</h3>
@@ -423,18 +444,30 @@ function BatchPage() {
 
                     {/* Pinned Notices - Fixed at the top */}
                     {(() => {
-                      const pinnedNotices = notices.filter(notice => {
+                      const pinnedNotices = notices.filter((notice) => {
                         // Handle different possible property names for type
-                        const noticeType = notice.type || notice.noticeType || notice.category;
-                        return noticeType === 'PINNED' || noticeType === 'pinned' || notice.isPinned;
+                        const noticeType =
+                          notice.type || notice.noticeType || notice.category;
+                        return (
+                          noticeType === 'PINNED' ||
+                          noticeType === 'pinned' ||
+                          notice.isPinned
+                        );
                       });
-                      
-                      console.log('Pinned notices count:', pinnedNotices.length);
+
+                      console.log(
+                        'Pinned notices count:',
+                        pinnedNotices.length,
+                      );
 
                       return (
                         <>
                           {pinnedNotices
-                            .sort((a, b) => new Date(b.createdAt || b.date || b.timestamp) - new Date(a.createdAt || a.date || a.timestamp))
+                            .sort(
+                              (a, b) =>
+                                new Date(b.createdAt || b.date || b.timestamp) -
+                                new Date(a.createdAt || a.date || a.timestamp),
+                            )
                             .map((notice) => (
                               <div
                                 key={notice.id || notice._id}
@@ -444,25 +477,57 @@ function BatchPage() {
                                     : 'bg-blue-50 hover:bg-blue-100 border border-blue-200'
                                 }`}
                               >
-                                <div className="absolute top-3 right-3">
-                                  <i className="ri-pushpin-line text-blue-500 text-lg"></i>
+                                <div className='absolute top-3 right-3'>
+                                  <i className='ri-pushpin-line text-blue-500 text-lg'></i>
                                 </div>
-                                <div className="pr-8">
-                                  <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                                <div className='pr-8'>
+                                  <h3
+                                    className={`text-lg font-semibold ${
+                                      darkMode ? 'text-white' : 'text-gray-900'
+                                    }`}
+                                  >
                                     {notice.title}
                                   </h3>
-                                  <p className={`mb-3 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                                    {notice.content || notice.message || notice.description}
+                                  <p
+                                    className={`mb-3 ${
+                                      darkMode
+                                        ? 'text-gray-300'
+                                        : 'text-gray-600'
+                                    }`}
+                                  >
+                                    {notice.content ||
+                                      notice.message ||
+                                      notice.description}
                                   </p>
-                                  <div className="flex items-center gap-4 text-sm">
-                                    <div className={`flex items-center gap-1 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                                      <i className="ri-user-line"></i>
-                                      <span>{notice.createdBy?.name || notice.author?.name || 'Unknown'}</span>
-                                    </div>
-                                    <div className={`flex items-center gap-1 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                                      <i className="ri-time-line"></i>
+                                  <div className='flex items-center gap-4 text-sm'>
+                                    <div
+                                      className={`flex items-center gap-1 ${
+                                        darkMode
+                                          ? 'text-gray-400'
+                                          : 'text-gray-500'
+                                      }`}
+                                    >
+                                      <i className='ri-user-line'></i>
                                       <span>
-                                        {new Date(notice.createdAt || notice.date || notice.timestamp).toLocaleString('en-IN')}
+                                        {notice.createdBy?.name ||
+                                          notice.author?.name ||
+                                          'Unknown'}
+                                      </span>
+                                    </div>
+                                    <div
+                                      className={`flex items-center gap-1 ${
+                                        darkMode
+                                          ? 'text-gray-400'
+                                          : 'text-gray-500'
+                                      }`}
+                                    >
+                                      <i className='ri-time-line'></i>
+                                      <span>
+                                        {new Date(
+                                          notice.createdAt ||
+                                            notice.date ||
+                                            notice.timestamp,
+                                        ).toLocaleString('en-IN')}
                                         {notice.isEdited && ' (edited)'}
                                       </span>
                                     </div>
@@ -476,17 +541,29 @@ function BatchPage() {
 
                     {/* Regular Notices - Below pinned notices */}
                     {(() => {
-                      const regularNotices = notices.filter(notice => {
-                        const noticeType = notice.type || notice.noticeType || notice.category;
-                        return !(noticeType === 'PINNED' || noticeType === 'pinned' || notice.isPinned);
+                      const regularNotices = notices.filter((notice) => {
+                        const noticeType =
+                          notice.type || notice.noticeType || notice.category;
+                        return !(
+                          noticeType === 'PINNED' ||
+                          noticeType === 'pinned' ||
+                          notice.isPinned
+                        );
                       });
 
-                      console.log('Regular notices count:', regularNotices.length);
+                      console.log(
+                        'Regular notices count:',
+                        regularNotices.length,
+                      );
 
                       return (
                         <>
                           {regularNotices
-                            .sort((a, b) => new Date(b.createdAt || b.date || b.timestamp) - new Date(a.createdAt || a.date || a.timestamp))
+                            .sort(
+                              (a, b) =>
+                                new Date(b.createdAt || b.date || b.timestamp) -
+                                new Date(a.createdAt || a.date || a.timestamp),
+                            )
                             .map((notice) => (
                               <div
                                 key={notice.id || notice._id}
@@ -496,22 +573,54 @@ function BatchPage() {
                                     : 'bg-white hover:bg-gray-50 border border-gray-200'
                                 }`}
                               >
-                                <div className="pr-8">
-                                  <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                                <div className='pr-8'>
+                                  <h3
+                                    className={`text-lg font-semibold ${
+                                      darkMode ? 'text-white' : 'text-gray-900'
+                                    }`}
+                                  >
                                     {notice.title}
                                   </h3>
-                                  <p className={`mb-3 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                                    {notice.content || notice.message || notice.description}
+                                  <p
+                                    className={`mb-3 ${
+                                      darkMode
+                                        ? 'text-gray-300'
+                                        : 'text-gray-600'
+                                    }`}
+                                  >
+                                    {notice.content ||
+                                      notice.message ||
+                                      notice.description}
                                   </p>
-                                  <div className="flex items-center gap-4 text-sm">
-                                    <div className={`flex items-center gap-1 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                                      <i className="ri-user-line"></i>
-                                      <span>{notice.createdBy?.name || notice.author?.name || 'Unknown'}</span>
-                                    </div>
-                                    <div className={`flex items-center gap-1 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                                      <i className="ri-time-line"></i>
+                                  <div className='flex items-center gap-4 text-sm'>
+                                    <div
+                                      className={`flex items-center gap-1 ${
+                                        darkMode
+                                          ? 'text-gray-400'
+                                          : 'text-gray-500'
+                                      }`}
+                                    >
+                                      <i className='ri-user-line'></i>
                                       <span>
-                                        {new Date(notice.createdAt || notice.date || notice.timestamp).toLocaleString('en-IN')}
+                                        {notice.createdBy?.name ||
+                                          notice.author?.name ||
+                                          'Unknown'}
+                                      </span>
+                                    </div>
+                                    <div
+                                      className={`flex items-center gap-1 ${
+                                        darkMode
+                                          ? 'text-gray-400'
+                                          : 'text-gray-500'
+                                      }`}
+                                    >
+                                      <i className='ri-time-line'></i>
+                                      <span>
+                                        {new Date(
+                                          notice.createdAt ||
+                                            notice.date ||
+                                            notice.timestamp,
+                                        ).toLocaleString('en-IN')}
                                         {notice.isEdited && ' (edited)'}
                                       </span>
                                     </div>
