@@ -1,5 +1,5 @@
 import expess from 'express';
-import { GetCloudinarySignature } from '../controllers/Cloudinary.controler.js';
+import { GetCloudinarySignature } from '../controllers/Cloudinary.controller.js';
 
 const CloudinaryRouter = expess.Router();
 

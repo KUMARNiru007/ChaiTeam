@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext.jsx';
-import { batchService, groupService } from '../services/api';
+import { batchService, groupService, noticeService } from '../services/api';
 import Groups from './Groups';
 
 function BatchPage() {
@@ -12,8 +12,18 @@ function BatchPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showGroups, setShowGroups] = useState(true);
+  const [activeTab, setActiveTab] = useState('overview');
+  const [notices, setNotices] = useState([]);
+  const [noticesLoading, setNoticesLoading] = useState(false);
+  const [noticesError, setNoticesError] = useState(null);
 
   const { darkMode, toggleTheme } = useTheme();
+
+  const tabs = [
+    { id: 'overview', label: 'Overview' },
+    { id: 'groups', label: 'Groups' },
+    { id: 'noticeboard', label: 'Noticeboard' },
+  ];
 
   useEffect(() => {
     const fetchBatchDetails = async () => {
@@ -36,6 +46,21 @@ function BatchPage() {
 
     if (batchId) {
       fetchBatchDetails();
+      // Fetch notices when batch ID is available
+      const fetchBatchNotices = async () => {
+        try {
+          setNoticesLoading(true);
+          const batchNotices = await noticeService.getBatchNotices(batchId);
+          setNotices(batchNotices);
+          setNoticesError(null);
+        } catch (err) {
+          console.error('Failed to fetch batch notices:', err);
+          setNoticesError('Failed to load notices. Please try again.');
+        } finally {
+          setNoticesLoading(false);
+        }
+      };
+      fetchBatchNotices();
     }
   }, [batchId]);
 
@@ -284,158 +309,157 @@ function BatchPage() {
             </div>
           </div>
 
-          {/* User's Group Card */}
-          {/* {userGroup && (
-            <Link
-              className={`p-6 rounded-2xl mb-6 transition-all duration-200 ${
-                darkMode
-                  ? 'bg-gradient-to-br from-orange-600 to-blue-400 hover:from-orange-700 hover:to-blue-800'
-                  : 'bg-gradient-to-br from-orange-500 to-blue-600 hover:from-orange-600 hover:to-blue-700'
-              } cursor-pointer shadow-lg hover:shadow-xl`}
-              to='groups'
-            >
-              <div className='flex items-start justify-between mb-1'>
-                <div className='flex items-start gap-3'>
-                  <div className='w-12 h-12 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center'>
-                    <i className='ri-star-fill text-white text-lg'></i>
-                  </div>
-                  <div>
-                    <p className='text-white/80 text-xs font-medium mb-0.5'>
-                      Your Group
-                    </p>
-                    <h3 className='text-white font-bold text-xl'>
-                      {userGroup.name}
-                    </h3>
-                  </div>
-                </div>
-                <i className='ri-arrow-right-line text-white text-xl'></i>
-              </div>
-              <p className='text-white/90 text-sm leading-relaxed'>
-                {userGroup.description || 'No description available'}
-              </p>
-            </Link>
-          )} */}
-
-          {/* Toggle Button */}
-          <div className='flex justify-between items-center mb-1'>
-            <h2
-              className={`text-xl font-bold ${
-                darkMode ? 'text-white' : 'text-gray-900'
-              }`}
-            >
-              All Groups
-            </h2>
+          {/* Tabs */}
+          <div className='flex gap-4 mb-4 mt-4 border-b border-gray-200'>
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-4 py-2 font-semibold transition rounded-t-lg ${
+                  activeTab === tab.id
+                    ? 'border-b-2 border-[var(--chaiteam-orange)] text-[var(--chaiteam-orange)]'
+                    : darkMode
+                    ? 'text-gray-400 hover:text-gray-200'
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
           </div>
 
-          {/* Content Area */}
-          {showGroups ? (
-            <Groups batchId={batchId} userGroupId={userGroup?.id} />
-          ) : (
-            // <div
-            //   className={`rounded-2xl p-6 ${
-            //     darkMode ? 'bg-[#2b2d31]' : 'bg-white border border-gray-200'
-            //   }`}
-            // >
-            //   <h3
-            //     className={`text-lg font-bold mb-4 ${
-            //       darkMode ? 'text-white' : 'text-gray-900'
-            //     }`}
-            //   >
-            //     Batch Information
-            //   </h3>
-            //   <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-            //     <div
-            //       className={`p-5 rounded-xl ${
-            //         darkMode ? 'bg-[#1e1f22]' : 'bg-gray-50'
-            //       }`}
-            //     >
-            //       <div className='flex items-center gap-3 mb-3'>
-            //         <i
-            //           className={`ri-information-line text-xl ${
-            //             darkMode ? 'text-blue-400' : 'text-blue-500'
-            //           }`}
-            //         ></i>
-            //         <h4
-            //           className={`font-semibold ${
-            //             darkMode ? 'text-white' : 'text-gray-900'
-            //           }`}
-            //         >
-            //           Batch Status
-            //         </h4>
-            //       </div>
-            //       <p
-            //         className={`text-sm ${
-            //           darkMode ? 'text-gray-300' : 'text-gray-600'
-            //         }`}
-            //       >
-            //         Current status:{' '}
-            //         <span className='font-semibold'>{batchData.status}</span>
-            //       </p>
-            //     </div>
+          {/* Tab Content */}
+          <div
+            className={`p-4 rounded-lg ${
+              darkMode ? 'bg-[#2b2d31]' : 'bg-white'
+            } border border-gray-200`}
+          >
+            {activeTab === 'overview' && (
+              <div className='flex flex-col gap-8'>
+                <div className='flex flex-col gap-1'>
+                  <span className='text-xl font-semibold'>About</span>
+                  <span className='text-sm'>{batchData.description}</span>
+                </div>
 
-            //     <div
-            //       className={`p-5 rounded-xl ${
-            //         darkMode ? 'bg-[#1e1f22]' : 'bg-gray-50'
-            //       }`}
-            //     >
-            //       <div className='flex items-center gap-3 mb-3'>
-            //         <i
-            //           className={`ri-user-line text-xl ${
-            //             darkMode ? 'text-green-400' : 'text-green-500'
-            //           }`}
-            //         ></i>
-            //         <h4
-            //           className={`font-semibold ${
-            //             darkMode ? 'text-white' : 'text-gray-900'
-            //           }`}
-            //         >
-            //           Members Count
-            //         </h4>
-            //       </div>
-            //       <p
-            //         className={`text-sm ${
-            //           darkMode ? 'text-gray-300' : 'text-gray-600'
-            //         }`}
-            //       >
-            //         Total enrolled:{' '}
-            //         <span className='font-semibold'>
-            //           {batchData.batchMembers?.length || 0} students
-            //         </span>
-            //       </p>
-            //     </div>
+                <div className='flex flex-col gap-1'>
+                  <span className='text-xl font-semibold'>Details</span>
+                  <div className='mt-1'>
+                    <div className='flex justify-between border border-b-0 rounded-t-lg border-black p-2 px-2'>
+                      <span>Batch Admin</span>
+                      <span>{batchData.admin?.name || 'Not assigned'}</span>
+                    </div>
+                    <div className='flex justify-between border border-b-0 border-black p-2 px-2'>
+                      <span>Total Members</span>
+                      <span>{batchData.batchMembers?.length || 0} Members</span>
+                    </div>
+                    <div className='flex justify-between border border-b-0 border-black p-2 px-2'>
+                      <span>Status</span>
+                      <span>{batchData.status}</span>
+                    </div>
+                    <div className='flex justify-between border rounded-b-lg border-black p-2 px-2'>
+                      <span>Batch ID</span>
+                      <span>{batchData.id}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            
 
-            //     <div
-            //       className={`p-5 rounded-xl md:col-span-2 ${
-            //         darkMode ? 'bg-[#1e1f22]' : 'bg-gray-50'
-            //       }`}
-            //     >
-            //       <div className='flex items-center gap-3 mb-3'>
-            //         <i
-            //           className={`ri-file-text-line text-xl ${
-            //             darkMode ? 'text-purple-400' : 'text-purple-500'
-            //           }`}
-            //         ></i>
-            //         <h4
-            //           className={`font-semibold ${
-            //             darkMode ? 'text-white' : 'text-gray-900'
-            //           }`}
-            //         >
-            //           Description
-            //         </h4>
-            //       </div>
-            //       <p
-            //         className={`text-sm leading-relaxed ${
-            //           darkMode ? 'text-gray-300' : 'text-gray-600'
-            //         }`}
-            //       >
-            //         {batchData.description ||
-            //           'No description available for this batch.'}
-            //       </p>
-            //     </div>
-            //   </div>
-            // </div>
-            <div>Snket</div>
-          )}
+            {activeTab === 'groups' && (
+              <div>
+                {showGroups && <Groups batchId={batchId} userGroupId={userGroup?.id} />}
+              </div>
+            )}
+
+            {activeTab === 'noticeboard' && (
+              <div>
+                {noticesLoading ? (
+                  <div className="text-center p-8">
+                    <div className={`spinner mx-auto`} style={{
+                      border: '4px solid rgba(255, 161, 22, 0.2)',
+                      borderLeft: '4px solid rgba(255, 161, 22, 0.8)',
+                      borderRadius: '50%',
+                      width: '40px',
+                      height: '40px',
+                      animation: 'spin 1s linear infinite'
+                    }}></div>
+                    <p className={`mt-4 text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                      Loading notices...
+                    </p>
+                  </div>
+                ) : noticesError ? (
+                  <div className={`text-center p-8 rounded-xl ${darkMode ? 'bg-red-900/20' : 'bg-red-50'}`}>
+                    <div className={`w-12 h-12 mx-auto rounded-full flex items-center justify-center ${
+                      darkMode ? 'bg-red-900/40' : 'bg-red-100'
+                    }`}>
+                      <i className='ri-error-warning-line text-2xl text-red-500'></i>
+                    </div>
+                    <p className={`mt-4 ${darkMode ? 'text-red-300' : 'text-red-600'}`}>{noticesError}</p>
+                    <button
+                      onClick={() => window.location.reload()}
+                      className='mt-4 px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-sm font-medium rounded-lg transition-colors duration-200'
+                    >
+                      Try Again
+                    </button>
+                  </div>
+                ) : notices.length === 0 ? (
+                  <div className='text-center py-8'>
+                    <div
+                      className={`w-16 h-16 mx-auto rounded-full flex items-center justify-center ${
+                        darkMode ? 'bg-gray-800' : 'bg-gray-100'
+                      }`}
+                    >
+                      <i className='ri-chat-unread-line text-3xl text-gray-400'></i>
+                    </div>
+                    <p className='mt-4 text-gray-500'>No notices yet</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {notices.map((notice) => (
+                      <div
+                        key={notice.id}
+                        className={`p-4 rounded-xl transition-all duration-200 ${
+                          darkMode
+                            ? 'bg-[#313338] hover:bg-[#2b2d31] border border-[#404249]'
+                            : 'bg-white hover:bg-gray-50 border border-gray-200'
+                        }`}
+                      >
+                        <div className="flex justify-between items-start mb-2">
+                          <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                            {notice.title}
+                          </h3>
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            notice.type === 'PINNED' 
+                              ? 'bg-blue-100 text-blue-800'
+                              : 'bg-gray-100 text-gray-800'
+                          }`}>
+                            {notice.type.toLowerCase()}
+                          </span>
+                        </div>
+                        <p className={`mb-3 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                          {notice.content}
+                        </p>
+                        <div className="flex items-center gap-4 text-sm">
+                          <div className={`flex items-center gap-1 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                            <i className="ri-user-line"></i>
+                            <span>{notice.createdBy?.name || 'Unknown'}</span>
+                          </div>
+                          <div className={`flex items-center gap-1 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                            <i className="ri-time-line"></i>
+                            <span>
+                              {new Date(notice.createdAt).toLocaleString()}
+                              {notice.isEdited && ' (edited)'}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       ) : (
         <div className='flex items-center justify-center min-h-[60vh]'>
