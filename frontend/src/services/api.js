@@ -221,6 +221,19 @@ export const groupService = {
       throw error;
     }
   },
+
+  kickMemberFromGroup: async (groupId, userId, reason) => {
+    try {
+      const response = await axiosInstance.post(
+        `/groups/kickMember/${groupId}`,
+        { userId, reason },
+      );
+      console.log('Kicked Memeber: ', response.data.Data);
+    } catch (error) {
+      console.error('Eror while kicking the member from group: ', error);
+      throw error;
+    }
+  },
 };
 
 // Notice API services

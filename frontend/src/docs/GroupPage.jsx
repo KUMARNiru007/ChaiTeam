@@ -14,10 +14,13 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
   const [noticesError, setNoticeserror] = useState(null);
   const [joinGroupModal, setJoinGroupModal] = useState(false);
   const [reasonToJoin, setReasonToJoin] = useState('');
+  const [reasonTokick, setReasonToKick] = useState('');
   const [joinApplications, setJoinApplications] = useState([]);
   const [joinApplicationsError, setJoinApplicationsError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [applicationLoading, setApplicationLoading] = useState(false);
+  const [openKickMemberModal, setOpenKickMemberModal] = useState(false);
+  const [selectedMember, setSelectedMember] = useState(null);
 
   const { darkMode, toggleTheme } = useTheme();
   const navigate = useNavigate();
@@ -114,6 +117,44 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
   const handleOnClose = () => {
     setJoinGroupModal(false);
     setReasonToJoin('');
+  };
+
+  const handleKickMember = async (e) => {
+    e.preventDefault();
+
+    if (!selectedMember) {
+      alert('Member is not selected ');
+      return;
+    }
+
+    if (!reasonTokick.trim()) {
+      alert('Reason is required');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await groupService.kickMemberFromGroup(
+        group.id,
+        selectedMember,
+        reasonTokick,
+      );
+      alert('Memeber has been kicked Sucessfully');
+      setOpenKickMemberModal(false);
+      setSelectedMember(null);
+      setReasonToKick('');
+    } catch (error) {
+      console.error('Error while kicking the member from group: ', error);
+      alert('failed to kick the member from group');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCloseKickModal = () => {
+    setOpenKickMemberModal(false);
+    setReasonToKick('');
+    setSelectedMember(null);
   };
 
   const handleAcceptApplication = async (userId, name, email) => {
@@ -471,7 +512,7 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
                   {group.member.map((member, index) => (
                     <div
                       key={member.id}
-                      className={`flex items-center gap-3 p-4 rounded-xl border shadow-sm ${
+                      className={`relative flex items-center gap-3 p-4 rounded-xl border shadow-sm ${
                         darkMode
                           ? 'bg-[#18181B] border-[#343434] hover:bg-[#9e9e9e]/20 hover:border-[#9e9e9e]/20'
                           : 'bg-white border-slate-300 hover:bg-[#ff9335]/10 hover:border-[#ff9335]/20'
@@ -496,6 +537,20 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
                           {member.email || 'member@example.com'}
                         </div>
                       </div>
+                      {leader === groupMember &&
+                        (member.role === 'LEADER' ? (
+                          ''
+                        ) : (
+                          <button
+                            onClick={() => {
+                              setSelectedMember(member.userId);
+                              setOpenKickMemberModal(true);
+                            }}
+                            className='absolute top-5 right-12 w-9 h-9 border rounded-lg text-lg hover:text-red-500 hover:border-red-400 cursor-pointer'
+                          >
+                            <i className='ri-user-minus-fill'></i>
+                          </button>
+                        ))}
                     </div>
                   ))}
                 </div>
@@ -851,6 +906,54 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
                     className='px-4 py-2 rounded-lg bg-[var(--chaiteam-btn-start)] hover:bg-[var(--chaiteam-btn-primary-hover)] text-white transition-all disabled:bg-gray-400 cursor-pointer font-medium'
                   >
                     {loading ? 'Sending...' : 'Send Application'}
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* kick Memeber Modal */}
+      {openKickMemberModal && (
+        <div className='fixed inset-0 flex items-center justify-center bg-black/40 z-50'>
+          <div className='bg-white p-6 rounded-xl relative shadow-lg w-[500px]'>
+            <h2 className='text-xl font-semibold mb-6 text-center'>
+              Kick Member
+            </h2>
+
+            <form onSubmit={handleKickMember} className='flex flex-col mt-3'>
+              <div>
+                <label className='block text-sm font-medium text-gray-700 mb-2'>
+                  Why do you wanted to Kick?{' '}
+                  <span className='text-red-500'>*</span>
+                </label>
+                <textarea
+                  type='text'
+                  placeholder='Give Reason'
+                  value={reasonTokick}
+                  onChange={(e) => setReasonToKick(e.target.value)}
+                  className='w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-blue-500'
+                  rows={4}
+                  required
+                />
+              </div>
+
+              <div className='mt-4 text-right'>
+                <div className='flex gap-3 justify-end'>
+                  <button
+                    type='button'
+                    onClick={() => handleCloseKickModal()}
+                    className='px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 transition-all font-medium'
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type='submit'
+                    disabled={loading}
+                    className='px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white transition-all disabled:bg-gray-400 cursor-pointer font-medium'
+                  >
+                    {loading ? 'Kicking...' : 'Kick Member'}
                   </button>
                 </div>
               </div>

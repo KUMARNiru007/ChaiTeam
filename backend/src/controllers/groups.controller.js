@@ -556,7 +556,7 @@ export const kickMemberFromGroup = async (req, res) => {
       data: {
         userId: userId,
         action: 'KICKED_FROM_GROUP',
-        description: `${user.name} kicked from group ${group.name}.
+        description: `${member.name} kicked from group ${group.name}.
         Reason given by group leader :- 
         ${reason}`,
       },
@@ -566,13 +566,13 @@ export const kickMemberFromGroup = async (req, res) => {
       data: {
         groupId: groupId,
         action: 'MEMBER_KICKED',
-        description: `${user.name} is kicked from the group.
+        description: `${member.name} is kicked from the group.
         Reason by Leader :- 
         ${reason}`,
       },
     });
 
-    res
+    return res
       .status(200)
       .json(
         new ApiResponse(400, null, 'User kicked from the group successfully'),
