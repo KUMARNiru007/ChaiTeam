@@ -5,6 +5,7 @@ import { groupService } from '../services/api.js';
 import { useAuthStore } from '../store/useAuthStore.js';
 import EditNoticeModal from '../components/EditNoticeModal.jsx';
 import CreateNoticeModal from '../components/CreateNoticeModel.jsx';
+import EditGroupModal from '../components/editGroupModal.jsx';
 
 const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -25,8 +26,10 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
   const [applicationLoading, setApplicationLoading] = useState(false);
   const [openKickMemberModal, setOpenKickMemberModal] = useState(false);
   const [selectedMember, setSelectedMember] = useState(null);
-   const [showCreateModal, setShowCreateModal] = useState(false);
-
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [leaveGroupModal, setLeaveGroupModal] = useState(false);
+  const [reasonToleave, setReasonToleave] = useState('');
+  const [editGroupModal, setEditGroupModal] = useState(false);
 
   const { darkMode, toggleTheme } = useTheme();
   const navigate = useNavigate();
@@ -46,20 +49,21 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
   const leader = group.member.find((mem) => mem.role === 'LEADER');
   const groupMember = group.member.find((mem) => mem.userId === authUser.id);
 
-
   const handleEditNotice = (notice) => {
     setSelectedNotice(notice);
     setShowEditModal(true);
   };
 
   const handleUpdateNotice = (updatedNotice) => {
-    setNotices(notices.map(notice => 
-      notice.id === updatedNotice.id ? updatedNotice : notice
-    ));
+    setNotices(
+      notices.map((notice) =>
+        notice.id === updatedNotice.id ? updatedNotice : notice,
+      ),
+    );
   };
 
   const handleDeleteNotice = (noticeId) => {
-    setNotices(notices.filter(notice => notice.id !== noticeId));
+    setNotices(notices.filter((notice) => notice.id !== noticeId));
   };
 
   const handleCreateNotice = (newNotice) => {
@@ -184,6 +188,40 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
     setSelectedMember(null);
   };
 
+  const handleleaveGroup = async (e) => {
+    e.preventDefault();
+
+    if (!selectedMember) {
+      alert('Member is not selected.');
+      return;
+    }
+
+    if (!reasonToleave) {
+      alert('Reason to leave group is required');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await groupService.leaveGroup(group.id, selectedMember, reasonToleave);
+      alert('Group left Successfully');
+      setLeaveGroupModal(false);
+      setSelectedMember(null);
+      setReasonToleave('');
+    } catch (error) {
+      console.error('Error while leaving the group ', error);
+      alert(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCloseLeaveGroupModal = () => {
+    setLeaveGroupModal(false);
+    setReasonToleave('');
+    setSelectedMember(null);
+  };
+
   const handleAcceptApplication = async (userId, name, email) => {
     if (!group.id) return;
     try {
@@ -214,6 +252,33 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
       alert('Error: ', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleGroupUpdate = async (groupId, payload) => {
+    try {
+      if (!payload) {
+        await handleDeleteGroup(groupId);
+        return;
+      }
+
+      await groupService.updateGroup(groupId, payload);
+      setEditGroupModal(false);
+      alert('Group updated successfully');
+    } catch (error) {
+      console.error('Error while Deleting the group: ', error);
+      alert('failed to update Batch.');
+    }
+  };
+
+  const handleDeleteGroup = async (groupId) => {
+    if (!groupId) return;
+    try {
+      await groupService.disbannedGroup(groupId);
+      alert('Group Deleted Successfully');
+    } catch (error) {
+      console.log('Error while delteing the Group: ', error);
+      alert('Error in deleting the batch: ', error);
     }
   };
 
@@ -298,16 +363,14 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
         </div>
         <div className='flex gap-3'>
           {groupMember ? (
-           
-                    <button
-                      onClick={() => setShowCreateModal(true)}
-                      className="px-4 py-2 bg-[var(--chaiteam-orange)] text-white rounded-xl hover:bg-[var(--chaiteam-orange)]/90 
-                      cursor-pointer transition-all duration-200 flex items-center gap-2"
-                    >
-                      <i className="ri-add-line"></i>
-                      Create Notice
-                    </button>
-                  
+            <button
+              onClick={() => setShowCreateModal(true)}
+              className='px-4 py-2 bg-[var(--chaiteam-orange)] text-white rounded-xl hover:bg-[var(--chaiteam-orange)]/90 
+                      cursor-pointer transition-all duration-200 flex items-center gap-2'
+            >
+              <i className='ri-add-line'></i>
+              Create Notice
+            </button>
           ) : (
             <button
               onClick={() => setJoinGroupModal(true)}
@@ -318,8 +381,25 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
           )}
 
           {groupMember === leader && groupMember ? (
-            <button className='p-2 px-4 rounded-md text-sm bg-[var(--chaiteam-orange)] hover:bg-[var(--chaiteam-orange-hover)] cursor-pointer'>
+            <button
+              onClick={() => setEditGroupModal(true)}
+              className='p-2 px-4 rounded-md text-sm bg-[var(--chaiteam-orange)] hover:bg-[var(--chaiteam-orange-hover)] cursor-pointer'
+            >
               Edit Group
+            </button>
+          ) : (
+            ''
+          )}
+
+          {groupMember !== leader && groupMember ? (
+            <button
+              onClick={() => {
+                setSelectedMember(groupMember.userId);
+                setLeaveGroupModal(true);
+              }}
+              className='p-2 px-4 rounded-md text-sm text-white bg-red-500 hover:bg-red-600 cursor-pointer'
+            >
+              Leave Group
             </button>
           ) : (
             ''
@@ -751,56 +831,60 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
                   } transition-all duration-200`}
                 >
                   <span className='text-lg font-semibold'>{notice.title}</span>
-                        <span className='text-sm'>{notice.content}</span>
-                        <span className="text-sm font-semibold flex items-center gap-1">
-                          <i className="ri-user-line"></i>
-                          <span className="font-normal text-xs flex items-center gap-1">
-                            {notice.createdBy?.name || 'Unknown User'}
-                            <span>,</span>
-                            <i className="ri-time-line"></i>
-                            {notice.updateAt
-                              ? new Date(notice.updateAt).toLocaleDateString('en-IN', {
-                                  year: 'numeric',
-                                  month: 'short',
-                                  day: 'numeric',
-                                  hour: '2-digit',
-                                  minute: '2-digit',
-                                  hour12: true,
-                                })
-                              : 'Date not available'}
-                          </span>
+                  <span className='text-sm'>{notice.content}</span>
+                  <span className='text-sm font-semibold flex items-center gap-1'>
+                    <i className='ri-user-line'></i>
+                    <span className='font-normal text-xs flex items-center gap-1'>
+                      {notice.createdBy?.name || 'Unknown User'}
+                      <span>,</span>
+                      <i className='ri-time-line'></i>
+                      {notice.updateAt
+                        ? new Date(notice.updateAt).toLocaleDateString(
+                            'en-IN',
+                            {
+                              year: 'numeric',
+                              month: 'short',
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              hour12: true,
+                            },
+                          )
+                        : 'Date not available'}
+                    </span>
                   </span>
 
                   {/* Type Badge */}
                   {/* Type Badge */}
-<div
-  className={`absolute top-2 right-6 rounded-md px-2 py-1 text-xs font-semibold flex items-center gap-1 ${
-    notice.type === 'PINNED'
-      ? 'bg-green-200 text-green-700'
-      : ''
-  }`}
->
-  {notice.type === 'PINNED' && (
-    <>
-      <i className="ri-pushpin-fill"></i>
-      <span>PINNED</span>
-    </>
-  )}
-</div>
+                  <div
+                    className={`absolute top-2 right-6 rounded-md px-2 py-1 text-xs font-semibold flex items-center gap-1 ${
+                      notice.type === 'PINNED'
+                        ? 'bg-green-200 text-green-700'
+                        : ''
+                    }`}
+                  >
+                    {notice.type === 'PINNED' && (
+                      <>
+                        <i className='ri-pushpin-fill'></i>
+                        <span>PINNED</span>
+                      </>
+                    )}
+                  </div>
 
-                   {/* Edit Button*/}
-                        {isAdmin || leader && (
-                          <button
-                            onClick={() => handleEditNotice(notice)}
-                            className={`absolute bottom-2 right-4 p-2 rounded-xl transition-opacity duration-200 ${
-                              darkMode
-                                ? 'hover:bg-white/10 text-white'
-                                : 'hover:bg-black/10 text-black'
-                            }`}
-                          >
-                            <i className="ri-edit-line"></i>
-                          </button>
-                        )}
+                  {/* Edit Button*/}
+                  {isAdmin ||
+                    (leader && (
+                      <button
+                        onClick={() => handleEditNotice(notice)}
+                        className={`absolute bottom-2 right-4 p-2 rounded-xl transition-opacity duration-200 ${
+                          darkMode
+                            ? 'hover:bg-white/10 text-white'
+                            : 'hover:bg-black/10 text-black'
+                        }`}
+                      >
+                        <i className='ri-edit-line'></i>
+                      </button>
+                    ))}
                 </div>
               ))}
           </div>
@@ -967,6 +1051,54 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
         </div>
       )}
 
+      {/* Leave Group Modal */}
+      {leaveGroupModal && (
+        <div className='fixed inset-0 flex items-center justify-center bg-black/40 z-50'>
+          <div className='bg-white p-6 rounded-xl relative shadow-lg w-[500px]'>
+            <h2 className='text-xl font-semibold mb-6 text-center'>
+              Leave Group
+            </h2>
+
+            <form onSubmit={handleleaveGroup} className='flex flex-col mt-3'>
+              <div>
+                <label className='block text-sm font-medium text-gray-700 mb-2'>
+                  Why do you wanted to Leave?{' '}
+                  <span className='text-red-500'>*</span>
+                </label>
+                <textarea
+                  type='text'
+                  placeholder='Give Reason'
+                  value={reasonToleave}
+                  onChange={(e) => setReasonToleave(e.target.value)}
+                  className='w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-blue-500'
+                  rows={4}
+                  required
+                />
+              </div>
+
+              <div className='mt-4 text-right'>
+                <div className='flex gap-3 justify-end'>
+                  <button
+                    type='button'
+                    onClick={() => handleCloseLeaveGroupModal()}
+                    className='px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 transition-all font-medium'
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type='submit'
+                    disabled={loading}
+                    className='px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white transition-all disabled:bg-gray-400 cursor-pointer font-medium'
+                  >
+                    {loading ? 'leaving...' : 'leave Group'}
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       {/* kick Memeber Modal */}
       {openKickMemberModal && (
         <div className='fixed inset-0 flex items-center justify-center bg-black/40 z-50'>
@@ -1032,6 +1164,15 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
           onClose={() => setShowEditModal(false)}
           onUpdate={handleUpdateNotice}
           onDelete={handleDeleteNotice}
+        />
+      )}
+
+      {/* Edit group Modal */}
+      {editGroupModal && (
+        <EditGroupModal
+          group={group}
+          onClose={() => setEditGroupModal(false)}
+          onSave={handleGroupUpdate}
         />
       )}
     </div>

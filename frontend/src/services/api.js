@@ -234,6 +234,44 @@ export const groupService = {
       throw error;
     }
   },
+
+  leaveGroup: async (groupId, userId, reason) => {
+    try {
+      const resposne = await axiosInstance.post(
+        `/groups/leaveGroup/${groupId}`,
+        { userId, reason },
+      );
+      // console.log('Leaved Memeber: ', resposne.data.Data);
+    } catch (error) {
+      console.error('Error while leaving the group: ', error);
+      throw error;
+    }
+  },
+
+  disbannedGroup: async (groupId) => {
+    try {
+      const response = await axiosInstance.delete(
+        `/groups/disbannedGroup/${groupId}`,
+      );
+      // console.log('Delted Group: ', response.data.Data);
+    } catch (error) {
+      console.error('Error while Deleting the group: ', error);
+      throw error;
+    }
+  },
+
+  updateGroup: async (groupId, payload) => {
+    try {
+      const response = await axiosInstance.put(
+        `/groups/updateGroup/${groupId}`,
+        payload,
+      );
+      console.log('Updated Data: ', response.data.Data);
+    } catch (error) {
+      console.error('Error while Updating the group: ', error);
+      throw error;
+    }
+  },
 };
 
 // Notice API services
