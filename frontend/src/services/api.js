@@ -260,30 +260,22 @@ export const noticeService = {
     }
   },
 
-  getNoticesByScope: async (scope) => {
+  getGroupNotices: async (groupId) => {
     try {
-      const response = await axiosInstance.get(`/notices?scope=${scope}`);
-      return response.data.data || response.data;
+      const response = await axiosInstance.get(
+        `/noticeboard/getGroupNotices/${groupId}`,
+      );
+      return response.data.Data || response.data;
     } catch (error) {
-      console.error('Error fetching notices by scope:', error);
-      throw error;
-    }
-  },
-
-  getNoticeById: async (id) => {
-    try {
-      const response = await axiosInstance.get(`/notices/${id}`);
-      return response.data.data || response.data;
-    } catch (error) {
-      console.error('Error fetching notice:', error);
+      console.error('Error fetching group notices:', error);
       throw error;
     }
   },
 
   createNotice: async (noticeData) => {
     try {
-      const response = await axiosInstance.post('/notices', noticeData);
-      return response.data.data || response.data;
+      const response = await axiosInstance.post('/noticeboard/create', noticeData);
+      return response.data.Data || response.data;
     } catch (error) {
       console.error('Error creating notice:', error);
       throw error;
@@ -292,8 +284,8 @@ export const noticeService = {
 
   updateNotice: async (id, noticeData) => {
     try {
-      const response = await axiosInstance.put(`/notices/${id}`, noticeData);
-      return response.data.data || response.data;
+      const response = await axiosInstance.put(`/noticeboard/updateNotice/${id}`, noticeData);
+      return response.data.Data || response.data;
     } catch (error) {
       console.error('Error updating notice:', error);
       throw error;
@@ -302,13 +294,33 @@ export const noticeService = {
 
   deleteNotice: async (id) => {
     try {
-      const response = await axiosInstance.delete(`/notices/${id}`);
-      return response.data.data || response.data;
+      const response = await axiosInstance.delete(`/noticeboard/deleteNotice/${id}`);
+      return response.data.Data || response.data;
     } catch (error) {
       console.error('Error deleting notice:', error);
       throw error;
     }
   },
+
+  pinNotice: async (id) => {
+    try {
+      const response = await axiosInstance.patch(`/noticeboard/pin/${id}`);
+      return response.data.Data || response.data;
+    } catch (error) {
+      console.error('Error pinning notice:', error);
+      throw error;
+    }
+  },
+
+  unpinNotice: async (id) => {
+    try {
+      const response = await axiosInstance.patch(`/noticeboard/unpin/${id}`);
+      return response.data.Data || response.data;
+    } catch (error) {
+      console.error('Error unpinning notice:', error);
+      throw error;
+    }
+  }
 };
 
 // Auth API services

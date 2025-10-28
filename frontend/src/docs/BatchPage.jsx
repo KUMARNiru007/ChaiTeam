@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext.jsx';
-import { batchService, groupService, noticeService } from '../services/api';
+import { batchService, groupService, noticeService, userService } from '../services/api';
 import Groups from './Groups';
+import EditNoticeModal from '../components/EditNoticeModal';
 
 function BatchPage() {
   const { batchId } = useParams();
@@ -16,8 +17,22 @@ function BatchPage() {
   const [notices, setNotices] = useState([]);
   const [noticesLoading, setNoticesLoading] = useState(false);
   const [noticesError, setNoticesError] = useState(null);
+  const [selectedNotice, setSelectedNotice] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
 
   const { darkMode, toggleTheme } = useTheme();
+
+  const handleEditNotice = (notice) => {
+    setSelectedNotice(notice);
+    setShowEditModal(true);
+  };
+
+  const handleUpdateNotice = (updatedNotice) => {
+    setNotices(notices.map(notice => 
+      notice.id === updatedNotice.id ? updatedNotice : notice
+    ));
+  };
 
   const tabs = [
     { id: 'overview', label: 'Overview' },
@@ -29,12 +44,14 @@ function BatchPage() {
     const fetchBatchDetails = async () => {
       try {
         setLoading(true);
-        const [batch, group] = await Promise.all([
+        const [batch, group, user] = await Promise.all([
           batchService.getBatchById(batchId),
           groupService.getUserGroup(batchId).catch(() => null),
+          userService.getCurrentUser().catch(() => null),
         ]);
         setBatchData(batch);
         setUserGroup(group);
+        setCurrentUser(user);
         setError(null);
       } catch (err) {
         console.error('Failed to fetch batch details:', err);
@@ -63,6 +80,9 @@ function BatchPage() {
       fetchBatchNotices();
     }
   }, [batchId]);
+
+  // Check if current user is admin
+  const isAdmin = currentUser?.role === 'ADMIN';
 
   return (
     <div
@@ -375,58 +395,71 @@ function BatchPage() {
 
             {activeTab === 'noticeboard' && (
               <div
-            className={`p-2 ${
-              darkMode ? 'bg-[#111111] text-white' : 'bg-white text-black'
-            }`}
-          >
-            {notices
-              .sort((a, b) =>
-                a.type === 'PINNED' && b.type !== 'PINNED' ? -1 : 1,
-              ) // sort once
-              .map((notice, index) => (
-                <div
-                  key={notice.id || index}
-                  className={`relative border rounded-xl p-4 flex flex-col gap-2 mb-3  ${
-                    darkMode
-                      ? 'bg-[#18181B] border-[#343434] hover:bg-[#9e9e9e]/20 hover:border-[#9e9e9e]/20'
-                      : 'bg-white border-slate-300 hover:bg-[#ff9335]/10 hover:border-[#ff9335]/20'
-                  } transition-all duration-200`}
-                >
-                  <span className='text-lg font-semibold'>{notice.title}</span>
-                  <span className='text-sm'>{notice.content}</span>
-                  <span className="text-sm font-semibold flex items-center gap-1">
-                     <i className="ri-user-line"></i>
-                     <span className="font-normal text-xs flex items-center gap-1">
-                     {notice.createdBy?.name || 'Unknown User'}
-                      <span>,</span>
-                     <i className="ri-time-line"></i>
-                     {notice.updateAt
-                      ? new Date(notice.updateAt).toLocaleDateString('en-IN', {
-                      year: 'numeric',
-                      month: 'short',
-                      day: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                      hour12: true,
-                       })
-                       : 'Date not available'}
+                className={`p-2 ${
+                  darkMode ? 'bg-[#111111] text-white' : 'bg-white text-black'
+                }`}
+              >
+                {notices
+                  .sort((a, b) =>
+                    a.type === 'PINNED' && b.type !== 'PINNED' ? -1 : 1,
+                  ) // sort once
+                  .map((notice, index) => (
+                    <div
+                      key={notice.id || index}
+                      className={`relative border rounded-xl p-4 flex flex-col gap-2 mb-3 group ${
+                        darkMode
+                          ? 'bg-[#18181B] border-[#343434] hover:bg-[#9e9e9e]/20 hover:border-[#9e9e9e]/20'
+                          : 'bg-white border-slate-300 hover:bg-[#ff9335]/10 hover:border-[#ff9335]/20'
+                      } transition-all duration-200`}
+                    >
+                      <span className='text-lg font-semibold'>{notice.title}</span>
+                      <span className='text-sm'>{notice.content}</span>
+                      <span className="text-sm font-semibold flex items-center gap-1">
+                        <i className="ri-user-line"></i>
+                        <span className="font-normal text-xs flex items-center gap-1">
+                          {notice.createdBy?.name || 'Unknown User'}
+                          <span>,</span>
+                          <i className="ri-time-line"></i>
+                          {notice.updateAt
+                            ? new Date(notice.updateAt).toLocaleDateString('en-IN', {
+                                year: 'numeric',
+                                month: 'short',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                hour12: true,
+                              })
+                            : 'Date not available'}
+                        </span>
                       </span>
-                    </span>
 
+                      {/* Type Badge */}
+                      <div
+                        className={`absolute top-2 right-6 rounded-md p-2 text-xs font-semibold ${
+                          notice.type === 'PINNED'
+                            ? 'bg-green-200 text-green-700'
+                            : ''
+                        }`}
+                      >
+                        {notice.type === 'PINNED' ? `PINNED` : null}
+                      </div>
 
-                  {/* Type Badge */}
-                  <div
-                    className={`absolute top-2 right-6 rounded-md p-2 text-xs font-semibold ${
-                      notice.type === 'PINNED'
-                        ? 'bg-green-200 text-green-700'
-                        : ''
-                    }`}
-                  >
-                    {notice.type === 'PINNED' ? `PINNED` : null}
-                  </div>
-                </div>
-              ))}
-          </div>
+                      {/* Edit Button always visible for admin */}
+                      {isAdmin && (
+                        <button
+                          onClick={() => handleEditNotice(notice)}
+                          className={`absolute top-2 right-16 p-2 rounded-xl transition-opacity duration-200 ${
+                            darkMode
+                              ? 'hover:bg-white/10 text-white'
+                              : 'hover:bg-black/10 text-black'
+                          }`}
+                        >
+                          <i className="ri-edit-line"></i>
+                        </button>
+                      )}
+                    </div>
+                  ))}
+              </div>
             )}
           </div>
         </div>
@@ -460,6 +493,15 @@ function BatchPage() {
             </p>
           </div>
         </div>
+      )}
+      
+      {/* Edit Notice Modal */}
+      {showEditModal && selectedNotice && (
+        <EditNoticeModal
+          notice={selectedNotice}
+          onClose={() => setShowEditModal(false)}
+          onUpdate={handleUpdateNotice}
+        />
       )}
     </div>
   );
