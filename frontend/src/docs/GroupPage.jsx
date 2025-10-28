@@ -772,15 +772,22 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
                   </span>
 
                   {/* Type Badge */}
-                  <div
-                    className={`absolute top-2 right-6 rounded-md p-2 text-xs font-semibold ${
-                      notice.type === 'PINNED'
-                        ? 'bg-green-200 text-green-700'
-                        : ''
-                    }`}
-                  >
-                    {notice.type === 'PINNED' ? `PINNED` : null}
-                  </div>
+                  {/* Type Badge */}
+<div
+  className={`absolute top-2 right-6 rounded-md px-2 py-1 text-xs font-semibold flex items-center gap-1 ${
+    notice.type === 'PINNED'
+      ? 'bg-green-200 text-green-700'
+      : ''
+  }`}
+>
+  {notice.type === 'PINNED' && (
+    <>
+      <i className="ri-pushpin-fill"></i>
+      <span>PINNED</span>
+    </>
+  )}
+</div>
+
                    {/* Edit Button*/}
                         {isAdmin || leader && (
                           <button
