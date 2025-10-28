@@ -4,7 +4,7 @@ import { ApiError } from '../utils/ApiError.js';
 
 export const createNotice = async (req, res) => {
   try {
-    const { title, content, scope, groupId, batchId } = req.body;
+    const { title, content, scope, groupId, batchId, type } = req.body;
     const userId = req.user.id;
 
     if (!title || !content || !scope) {
@@ -42,6 +42,7 @@ export const createNotice = async (req, res) => {
         groupId: groupId || null,
         batchId: batchId || null,
         createdById: userId,
+        type: type || 'NORMAL', // Include the type field, default to NORMAL if not provided
       },
     });
 
@@ -56,7 +57,7 @@ export const createNotice = async (req, res) => {
 
     return res
       .status(201)
-      .json(new ApiResponse(201, newNotice, 'New ntice created Successfully'));
+      .json(new ApiResponse(201, newNotice, 'New notice created Successfully'));
   } catch (error) {
     console.log(error);
     return res
@@ -177,17 +178,17 @@ export const getGlobalNotices = async (req, res) => {
 export const updateNotice = async (req, res) => {
   try {
     const { noticeId } = req.params;
-    const { title, content } = req.body;
+    const { title, content, type } = req.body;
     const user = req.user;
 
     if (!noticeId) {
       return res.status(400).json(new ApiError(400, 'noticeId is required'));
     }
 
-    if (!title || !content) {
+    if (!title && !content && !type) {
       return res
         .status(400)
-        .json(new ApiError(400, 'Both title and content is required'));
+        .json(new ApiError(400, 'Provide at least one field to update (title, content, or type)'));
     }
 
     const notice = await db.notices.findUnique({
@@ -209,14 +210,18 @@ export const updateNotice = async (req, res) => {
         );
     }
 
+    // Create update data object with only the provided fields
+    const updateData = {
+      ...(title && { title }),
+      ...(content && { content }),
+      ...(type && { type }),
+      isEdited: true,
+      updateAt: new Date(),
+    };
+
     const updatedNotice = await db.notices.update({
       where: { id: noticeId },
-      data: {
-        title,
-        content,
-        isEdited: true,
-        updateAt: new Date(),
-      },
+      data: updateData,
     });
 
     if (updatedNotice.scope === 'GROUP') {

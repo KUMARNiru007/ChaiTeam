@@ -374,266 +374,59 @@ function BatchPage() {
             )}
 
             {activeTab === 'noticeboard' && (
-              <div>
-                {noticesLoading ? (
-                  <div className='text-center p-8'>
-                    <div
-                      className={`spinner mx-auto`}
-                      style={{
-                        border: '4px solid rgba(255, 161, 22, 0.2)',
-                        borderLeft: '4px solid rgba(255, 161, 22, 0.8)',
-                        borderRadius: '50%',
-                        width: '40px',
-                        height: '40px',
-                        animation: 'spin 1s linear infinite',
-                      }}
-                    ></div>
-                    <p
-                      className={`mt-4 text-sm ${
-                        darkMode ? 'text-gray-400' : 'text-gray-600'
-                      }`}
-                    >
-                      Loading notices...
-                    </p>
-                  </div>
-                ) : noticesError ? (
+              <div
+            className={`p-2 ${
+              darkMode ? 'bg-[#111111] text-white' : 'bg-white text-black'
+            }`}
+          >
+            {notices
+              .sort((a, b) =>
+                a.type === 'PINNED' && b.type !== 'PINNED' ? -1 : 1,
+              ) // sort once
+              .map((notice, index) => (
+                <div
+                  key={notice.id || index}
+                  className={`relative border rounded-xl p-4 flex flex-col gap-2 mb-3  ${
+                    darkMode
+                      ? 'bg-[#18181B] border-[#343434] hover:bg-[#9e9e9e]/20 hover:border-[#9e9e9e]/20'
+                      : 'bg-white border-slate-300 hover:bg-[#ff9335]/10 hover:border-[#ff9335]/20'
+                  } transition-all duration-200`}
+                >
+                  <span className='text-lg font-semibold'>{notice.title}</span>
+                  <span className='text-sm'>{notice.content}</span>
+                  <span className="text-sm font-semibold flex items-center gap-1">
+                     <i className="ri-user-line"></i>
+                     <span className="font-normal text-xs flex items-center gap-1">
+                     {notice.createdBy?.name || 'Unknown User'}
+                      <span>,</span>
+                     <i className="ri-time-line"></i>
+                     {notice.updateAt
+                      ? new Date(notice.updateAt).toLocaleDateString('en-IN', {
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      hour12: true,
+                       })
+                       : 'Date not available'}
+                      </span>
+                    </span>
+
+
+                  {/* Type Badge */}
                   <div
-                    className={`text-center p-8 rounded-xl ${
-                      darkMode ? 'bg-red-900/20' : 'bg-red-50'
+                    className={`absolute top-2 right-6 rounded-md p-2 text-xs font-semibold ${
+                      notice.type === 'PINNED'
+                        ? 'bg-green-200 text-green-700'
+                        : ''
                     }`}
                   >
-                    <div
-                      className={`w-12 h-12 mx-auto rounded-full flex items-center justify-center ${
-                        darkMode ? 'bg-red-900/40' : 'bg-red-100'
-                      }`}
-                    >
-                      <i className='ri-error-warning-line text-2xl text-red-500'></i>
-                    </div>
-                    <p
-                      className={`mt-4 ${
-                        darkMode ? 'text-red-300' : 'text-red-600'
-                      }`}
-                    >
-                      {noticesError}
-                    </p>
-                    <button
-                      onClick={() => window.location.reload()}
-                      className='mt-4 px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-sm font-medium rounded-lg transition-colors duration-200'
-                    >
-                      Try Again
-                    </button>
+                    {notice.type === 'PINNED' ? `PINNED` : null}
                   </div>
-                ) : notices.length === 0 ? (
-                  <div className='text-center py-8'>
-                    <div
-                      className={`w-16 h-16 mx-auto rounded-full flex items-center justify-center ${
-                        darkMode ? 'bg-gray-800' : 'bg-gray-100'
-                      }`}
-                    >
-                      <i className='ri-chat-unread-line text-3xl text-gray-400'></i>
-                    </div>
-                    <p className='mt-4 text-gray-500'>No notices yet</p>
-                  </div>
-                ) : (
-                  <div className='flex flex-col gap-4'>
-                    {/* Debug section - uncomment if needed */}
-                    {/* <div className="p-4 bg-yellow-100 text-black rounded-lg">
-                      <h3 className="font-bold mb-2">Debug - Notices Data:</h3>
-                      <pre className="text-xs">{JSON.stringify(notices, null, 2)}</pre>
-                    </div> */}
-
-                    {/* Pinned Notices - Fixed at the top */}
-                    {(() => {
-                      const pinnedNotices = notices.filter((notice) => {
-                        // Handle different possible property names for type
-                        const noticeType =
-                          notice.type || notice.noticeType || notice.category;
-                        return (
-                          noticeType === 'PINNED' ||
-                          noticeType === 'pinned' ||
-                          notice.isPinned
-                        );
-                      });
-
-                      console.log(
-                        'Pinned notices count:',
-                        pinnedNotices.length,
-                      );
-
-                      return (
-                        <>
-                          {pinnedNotices
-                            .sort(
-                              (a, b) =>
-                                new Date(b.createdAt || b.date || b.timestamp) -
-                                new Date(a.createdAt || a.date || a.timestamp),
-                            )
-                            .map((notice) => (
-                              <div
-                                key={notice.id || notice._id}
-                                className={`relative p-4 rounded-xl transition-all duration-200 ${
-                                  darkMode
-                                    ? 'bg-blue-900/20 hover:bg-blue-900/30 border border-blue-800/30'
-                                    : 'bg-blue-50 hover:bg-blue-100 border border-blue-200'
-                                }`}
-                              >
-                                <div className='absolute top-3 right-3'>
-                                  <i className='ri-pushpin-line text-blue-500 text-lg'></i>
-                                </div>
-                                <div className='pr-8'>
-                                  <h3
-                                    className={`text-lg font-semibold ${
-                                      darkMode ? 'text-white' : 'text-gray-900'
-                                    }`}
-                                  >
-                                    {notice.title}
-                                  </h3>
-                                  <p
-                                    className={`mb-3 ${
-                                      darkMode
-                                        ? 'text-gray-300'
-                                        : 'text-gray-600'
-                                    }`}
-                                  >
-                                    {notice.content ||
-                                      notice.message ||
-                                      notice.description}
-                                  </p>
-                                  <div className='flex items-center gap-4 text-sm'>
-                                    <div
-                                      className={`flex items-center gap-1 ${
-                                        darkMode
-                                          ? 'text-gray-400'
-                                          : 'text-gray-500'
-                                      }`}
-                                    >
-                                      <i className='ri-user-line'></i>
-                                      <span>
-                                        {notice.createdBy?.name ||
-                                          notice.author?.name ||
-                                          'Unknown'}
-                                      </span>
-                                    </div>
-                                    <div
-                                      className={`flex items-center gap-1 ${
-                                        darkMode
-                                          ? 'text-gray-400'
-                                          : 'text-gray-500'
-                                      }`}
-                                    >
-                                      <i className='ri-time-line'></i>
-                                      <span>
-                                        {new Date(
-                                          notice.createdAt ||
-                                            notice.date ||
-                                            notice.timestamp,
-                                        ).toLocaleString('en-IN')}
-                                        {notice.isEdited && ' (edited)'}
-                                      </span>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            ))}
-                        </>
-                      );
-                    })()}
-
-                    {/* Regular Notices - Below pinned notices */}
-                    {(() => {
-                      const regularNotices = notices.filter((notice) => {
-                        const noticeType =
-                          notice.type || notice.noticeType || notice.category;
-                        return !(
-                          noticeType === 'PINNED' ||
-                          noticeType === 'pinned' ||
-                          notice.isPinned
-                        );
-                      });
-
-                      console.log(
-                        'Regular notices count:',
-                        regularNotices.length,
-                      );
-
-                      return (
-                        <>
-                          {regularNotices
-                            .sort(
-                              (a, b) =>
-                                new Date(b.createdAt || b.date || b.timestamp) -
-                                new Date(a.createdAt || a.date || a.timestamp),
-                            )
-                            .map((notice) => (
-                              <div
-                                key={notice.id || notice._id}
-                                className={`relative p-4 rounded-xl transition-all duration-200 ${
-                                  darkMode
-                                    ? 'bg-[#313338] hover:bg-[#2b2d31] border border-[#404249]'
-                                    : 'bg-white hover:bg-gray-50 border border-gray-200'
-                                }`}
-                              >
-                                <div className='pr-8'>
-                                  <h3
-                                    className={`text-lg font-semibold ${
-                                      darkMode ? 'text-white' : 'text-gray-900'
-                                    }`}
-                                  >
-                                    {notice.title}
-                                  </h3>
-                                  <p
-                                    className={`mb-3 ${
-                                      darkMode
-                                        ? 'text-gray-300'
-                                        : 'text-gray-600'
-                                    }`}
-                                  >
-                                    {notice.content ||
-                                      notice.message ||
-                                      notice.description}
-                                  </p>
-                                  <div className='flex items-center gap-4 text-sm'>
-                                    <div
-                                      className={`flex items-center gap-1 ${
-                                        darkMode
-                                          ? 'text-gray-400'
-                                          : 'text-gray-500'
-                                      }`}
-                                    >
-                                      <i className='ri-user-line'></i>
-                                      <span>
-                                        {notice.createdBy?.name ||
-                                          notice.author?.name ||
-                                          'Unknown'}
-                                      </span>
-                                    </div>
-                                    <div
-                                      className={`flex items-center gap-1 ${
-                                        darkMode
-                                          ? 'text-gray-400'
-                                          : 'text-gray-500'
-                                      }`}
-                                    >
-                                      <i className='ri-time-line'></i>
-                                      <span>
-                                        {new Date(
-                                          notice.createdAt ||
-                                            notice.date ||
-                                            notice.timestamp,
-                                        ).toLocaleString('en-IN')}
-                                        {notice.isEdited && ' (edited)'}
-                                      </span>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            ))}
-                        </>
-                      );
-                    })()}
-                  </div>
-                )}
-              </div>
+                </div>
+              ))}
+          </div>
             )}
           </div>
         </div>
