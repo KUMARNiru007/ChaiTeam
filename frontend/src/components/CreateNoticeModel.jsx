@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { noticeService } from '../services/api';
 import { useTheme } from '../context/ThemeContext';
 
-function EditNoticeModal({ notice, onClose, onUpdate, onDelete }) {
-  const [title, setTitle] = useState(notice.title);
-  const [content, setContent] = useState(notice.content);
-  const [type, setType] = useState(notice.type);
+function CreateNoticeModal({ batchId, userGroup, onClose, onCreate }) {
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const [scope, setScope] = useState('BATCH');
+  const [type, setType] = useState('NORMAL');
   const [loading, setLoading] = useState(false);
-  const [deleteLoading, setDeleteLoading] = useState(false);
   const [error, setError] = useState('');
   const { darkMode } = useTheme();
 
@@ -16,39 +16,31 @@ function EditNoticeModal({ notice, onClose, onUpdate, onDelete }) {
     setLoading(true);
     setError('');
 
+    // Prepare notice data based on scope
+    const noticeData = {
+      title,
+      content,
+      scope,
+      type
+    };
+
+    // Add scope-specific IDs
+    if (scope === 'BATCH') {
+      noticeData.batchId = batchId;
+    } else if (scope === 'GROUP' && userGroup) {
+      noticeData.groupId = userGroup.id;
+    }
+    // For GLOBAL scope, no additional IDs needed
+
     try {
-      const updatedNotice = await noticeService.updateNotice(notice.id, {
-        title,
-        content,
-        type
-      });
-      onUpdate(updatedNotice);
+      const newNotice = await noticeService.createNotice(noticeData);
+      onCreate(newNotice);
       onClose();
     } catch (err) {
-      setError('Failed to update notice. Please try again.');
-      console.error('Error updating notice:', err);
+      setError('Failed to create notice. Please try again.');
+      console.error('Error creating notice:', err);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleDelete = async () => {
-    if (!window.confirm('Are you sure you want to delete this notice? This action cannot be undone.')) {
-      return;
-    }
-
-    setDeleteLoading(true);
-    setError('');
-
-    try {
-      await noticeService.deleteNotice(notice.id);
-      onDelete(notice.id);
-      onClose();
-    } catch (err) {
-      setError('Failed to delete notice. Please try again.');
-      console.error('Error deleting notice:', err);
-    } finally {
-      setDeleteLoading(false);
     }
   };
 
@@ -68,7 +60,7 @@ function EditNoticeModal({ notice, onClose, onUpdate, onDelete }) {
           <i className="ri-close-line text-xl"></i>
         </button>
 
-        <h2 className="text-xl font-bold mb-4">Edit Notice</h2>
+        <h2 className="text-xl font-bold mb-4">Create New Notice</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -106,6 +98,32 @@ function EditNoticeModal({ notice, onClose, onUpdate, onDelete }) {
 
           <div>
             <label className="block mb-2 text-sm font-medium">
+              Scope
+            </label>
+            <select
+              value={scope}
+              onChange={(e) => setScope(e.target.value)}
+              className={`w-full p-3 rounded-xl border ${
+                darkMode 
+                  ? 'bg-[#1e1f22] border-[#3f4147] text-white' 
+                  : 'bg-white border-gray-300 text-black'
+              } focus:outline-none focus:ring-2 focus:ring-[var(--chaiteam-orange)]`}
+            >
+              <option value="BATCH">Batch</option>
+              <option value="GROUP" disabled={!userGroup}>
+                {userGroup ? 'Group' : 'Group (Join a group first)'}
+              </option>
+              <option value="GLOBAL">Global</option>
+            </select>
+            <p className="text-xs text-gray-500 mt-1">
+              {scope === 'BATCH' && 'Notice will be visible to all batch members'}
+              {scope === 'GROUP' && 'Notice will be visible only to your group members'}
+              {scope === 'GLOBAL' && 'Notice will be visible to all users'}
+            </p>
+          </div>
+
+          <div>
+            <label className="block mb-2 text-sm font-medium">
               Type
             </label>
             <select
@@ -117,8 +135,8 @@ function EditNoticeModal({ notice, onClose, onUpdate, onDelete }) {
                   : 'bg-white border-gray-300 text-black'
               } focus:outline-none focus:ring-2 focus:ring-[var(--chaiteam-orange)]`}
             >
-              <option value="NORMAL">NORMAL</option>
-              <option value="PINNED">PINNED</option>
+              <option value="NORMAL">Normal</option>
+              <option value="PINNED">Pinned</option>
             </select>
           </div>
 
@@ -128,46 +146,25 @@ function EditNoticeModal({ notice, onClose, onUpdate, onDelete }) {
             </div>
           )}
 
-          <div className="flex justify-between items-center mt-6">
+          <div className="flex justify-end gap-3 mt-6">
             <button
               type="button"
-              onClick={handleDelete}
-              disabled={deleteLoading}
-              className="px-4 py-2 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-all duration-200 disabled:opacity-50 flex items-center gap-2"
+              onClick={onClose}
+              className={`px-4 py-2 rounded-xl transition-all duration-200 ${
+                darkMode
+                  ? 'bg-[#1e1f22] hover:bg-[#313338] text-white'
+                  : 'bg-gray-100 hover:bg-gray-200 text-black'
+              }`}
             >
-              {deleteLoading ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  Deleting...
-                </>
-              ) : (
-                <>
-                  <i className="ri-delete-bin-line"></i>
-                  Delete Notice
-                </>
-              )}
+              Cancel
             </button>
-
-            <div className="flex gap-3">
-              <button
-                type="button"
-                onClick={onClose}
-                className={`px-4 py-2 rounded-xl transition-all duration-200 ${
-                  darkMode
-                    ? 'bg-[#1e1f22] hover:bg-[#313338] text-white'
-                    : 'bg-gray-100 hover:bg-gray-200 text-black'
-                }`}
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                disabled={loading}
-                className="px-4 py-2 bg-[var(--chaiteam-orange)] text-white rounded-xl hover:bg-[var(--chaiteam-orange)]/90 transition-all duration-200 disabled:opacity-50"
-              >
-                {loading ? 'Updating...' : 'Update Notice'}
-              </button>
-            </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="px-4 py-2 bg-[var(--chaiteam-orange)] text-white rounded-xl hover:bg-[var(--chaiteam-orange)]/90 transition-all duration-200 disabled:opacity-50"
+            >
+              {loading ? 'Creating...' : 'Create Notice'}
+            </button>
           </div>
         </form>
       </div>
@@ -175,4 +172,4 @@ function EditNoticeModal({ notice, onClose, onUpdate, onDelete }) {
   );
 }
 
-export default EditNoticeModal;
+export default CreateNoticeModal;
