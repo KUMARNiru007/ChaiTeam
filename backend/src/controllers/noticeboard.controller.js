@@ -188,7 +188,12 @@ export const updateNotice = async (req, res) => {
     if (!title && !content && !type) {
       return res
         .status(400)
-        .json(new ApiError(400, 'Provide at least one field to update (title, content, or type)'));
+        .json(
+          new ApiError(
+            400,
+            'Provide at least one field to update (title, content, or type)',
+          ),
+        );
     }
 
     const notice = await db.notices.findUnique({
@@ -261,7 +266,7 @@ export const deleteNotice = async (req, res) => {
       return res.status(404).json(new ApiError(404, 'Notice Not Found'));
     }
 
-    const groupMemeber = await db.groupMember.findUnique({
+    const groupMemeber = await db.groupMember.findFirst({
       where: { userId: user.id },
     });
 

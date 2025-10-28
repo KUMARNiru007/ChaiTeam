@@ -274,7 +274,10 @@ export const noticeService = {
 
   createNotice: async (noticeData) => {
     try {
-      const response = await axiosInstance.post('/noticeboard/create', noticeData);
+      const response = await axiosInstance.post(
+        '/noticeboard/create',
+        noticeData,
+      );
       return response.data.Data || response.data;
     } catch (error) {
       console.error('Error creating notice:', error);
@@ -284,7 +287,10 @@ export const noticeService = {
 
   updateNotice: async (id, noticeData) => {
     try {
-      const response = await axiosInstance.put(`/noticeboard/updateNotice/${id}`, noticeData);
+      const response = await axiosInstance.put(
+        `/noticeboard/updateNotice/${id}`,
+        noticeData,
+      );
       return response.data.Data || response.data;
     } catch (error) {
       console.error('Error updating notice:', error);
@@ -294,7 +300,9 @@ export const noticeService = {
 
   deleteNotice: async (id) => {
     try {
-      const response = await axiosInstance.delete(`/noticeboard/deleteNotice/${id}`);
+      const response = await axiosInstance.delete(
+        `/noticeboard/deleteNotice/${id}`,
+      );
       return response.data.Data || response.data;
     } catch (error) {
       console.error('Error deleting notice:', error);
@@ -320,7 +328,7 @@ export const noticeService = {
       console.error('Error unpinning notice:', error);
       throw error;
     }
-  }
+  },
 };
 
 // Auth API services

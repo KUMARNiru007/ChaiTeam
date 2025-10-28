@@ -20,7 +20,7 @@ function EditNoticeModal({ notice, onClose, onUpdate, onDelete }) {
       const updatedNotice = await noticeService.updateNotice(notice.id, {
         title,
         content,
-        type
+        type,
       });
       onUpdate(updatedNotice);
       onClose();
@@ -33,7 +33,11 @@ function EditNoticeModal({ notice, onClose, onUpdate, onDelete }) {
   };
 
   const handleDelete = async () => {
-    if (!window.confirm('Are you sure you want to delete this notice? This action cannot be undone.')) {
+    if (
+      !window.confirm(
+        'Are you sure you want to delete this notice? This action cannot be undone.',
+      )
+    ) {
       return;
     }
 
@@ -53,83 +57,85 @@ function EditNoticeModal({ notice, onClose, onUpdate, onDelete }) {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
-      <div className={`relative w-full max-w-2xl p-6 rounded-xl shadow-lg ${
-        darkMode ? 'bg-[#2b2d31] text-white' : 'bg-white text-black'
-      }`}>
+    <div className='fixed inset-0 flex items-center justify-center bg-black/40 z-50'>
+      <div
+        className={`relative w-full max-w-2xl p-6 rounded-xl shadow-lg ${
+          darkMode ? 'bg-[#2b2d31] text-white' : 'bg-white text-black'
+        }`}
+      >
         {/* Header */}
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-semibold">Edit Notice</h2>
+        <div className='flex justify-between items-center mb-6'>
+          <h2 className='text-xl font-semibold'>Edit Notice</h2>
           <button
             onClick={onClose}
             className={`p-2 rounded-lg transition-all duration-200 ${
-              darkMode 
-                ? 'hover:bg-white/10 text-white' 
+              darkMode
+                ? 'hover:bg-white/10 text-white'
                 : 'hover:bg-black/10 text-black'
             }`}
           >
-            <i className="ri-close-line text-xl"></i>
+            <i className='ri-close-line text-xl'></i>
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className='space-y-6'>
           {/* Two Column Layout */}
-          <div className="grid grid-cols-1 gap-6">
+          <div className='grid grid-cols-1 gap-6'>
             {/* Left Column - Form Fields */}
-            <div className="space-y-4">
+            <div className='space-y-4'>
               {/* Title */}
               <div>
-                <label className="block text-sm font-medium mb-2">
-                  Title <span className="text-red-500">*</span>
+                <label className='block text-sm font-medium mb-2'>
+                  Title <span className='text-red-500'>*</span>
                 </label>
                 <input
-                  type="text"
+                  type='text'
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   className={`w-full p-3 rounded-lg border ${
-                    darkMode 
-                      ? 'bg-[#1e1f22] border-[#3f4147] text-white' 
+                    darkMode
+                      ? 'bg-[#1e1f22] border-[#3f4147] text-white'
                       : 'bg-white border-gray-300 text-black'
                   } focus:outline-none focus:ring-2 focus:ring-[var(--chaiteam-orange)]`}
                   required
-                  placeholder="Enter notice title"
+                  placeholder='Enter notice title'
                 />
               </div>
 
               {/* Content */}
               <div>
-                <label className="block text-sm font-medium mb-2">
-                  Content <span className="text-red-500">*</span>
+                <label className='block text-sm font-medium mb-2'>
+                  Content <span className='text-red-500'>*</span>
                 </label>
                 <textarea
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                   className={`w-full p-3 rounded-lg border ${
-                    darkMode 
-                      ? 'bg-[#1e1f22] border-[#3f4147] text-white' 
+                    darkMode
+                      ? 'bg-[#1e1f22] border-[#3f4147] text-white'
                       : 'bg-white border-gray-300 text-black'
                   } focus:outline-none focus:ring-2 focus:ring-[var(--chaiteam-orange)] min-h-[120px] resize-none`}
                   required
-                  placeholder="Enter notice content"
+                  placeholder='Enter notice content'
                 />
               </div>
 
               {/* Type */}
               <div>
-                <label className="block text-sm font-medium mb-2">
-                  Type <span className="text-red-500">*</span>
+                <label className='block text-sm font-medium mb-2'>
+                  Type <span className='text-red-500'>*</span>
                 </label>
                 <select
                   value={type}
                   onChange={(e) => setType(e.target.value)}
                   className={`w-full p-3 rounded-lg border ${
-                    darkMode 
-                      ? 'bg-[#1e1f22] border-[#3f4147] text-white' 
+                    darkMode
+                      ? 'bg-[#1e1f22] border-[#3f4147] text-white'
                       : 'bg-white border-gray-300 text-black'
                   } focus:outline-none focus:ring-2 focus:ring-[var(--chaiteam-orange)]`}
                 >
-                  <option value="NORMAL">Normal</option>
-                  <option value="PINNED">Pinned</option>
+                  <option value='NORMAL'>Normal</option>
+                  <option value='PINNED'>Pinned</option>
                 </select>
               </div>
             </div>
@@ -137,37 +143,37 @@ function EditNoticeModal({ notice, onClose, onUpdate, onDelete }) {
 
           {/* Error Message */}
           {error && (
-            <div className="p-3 rounded-lg bg-red-500/10 border border-red-500 text-red-500 text-sm">
+            <div className='p-3 rounded-lg bg-red-500/10 border border-red-500 text-red-500 text-sm'>
               {error}
             </div>
           )}
 
           {/* Buttons - Same layout as EditBatchModal */}
-          <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-600 flex justify-between items-center">
+          <div className='mt-6 pt-6 border-t border-gray-200 dark:border-gray-600 flex justify-between items-center'>
             {/* Delete button on the left */}
             <button
-              type="button"
+              type='button'
               onClick={handleDelete}
               disabled={deleteLoading}
-              className="px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white transition-all font-medium disabled:opacity-50 flex items-center gap-2"
+              className='px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white transition-all font-medium disabled:opacity-50 flex items-center gap-2'
             >
               {deleteLoading ? (
                 <>
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <div className='w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin'></div>
                   Deleting...
                 </>
               ) : (
                 <>
-                  <i className="ri-delete-bin-line"></i>
+                  <i className='ri-delete-bin-line'></i>
                   Delete Notice
                 </>
               )}
             </button>
 
             {/* Cancel and Save buttons on the right */}
-            <div className="flex gap-3">
+            <div className='flex gap-3'>
               <button
-                type="button"
+                type='button'
                 onClick={onClose}
                 className={`px-4 py-2 rounded-lg border transition-all font-medium ${
                   darkMode
@@ -178,9 +184,9 @@ function EditNoticeModal({ notice, onClose, onUpdate, onDelete }) {
                 Cancel
               </button>
               <button
-                type="submit"
+                type='submit'
                 disabled={loading}
-                className="px-4 py-2 rounded-lg bg-[var(--chaiteam-orange)] hover:bg-[var(--chaiteam-orange)]/90 text-white transition-all disabled:opacity-50 font-medium"
+                className='px-4 py-2 rounded-lg bg-[var(--chaiteam-orange)] hover:bg-[var(--chaiteam-orange)]/90 text-white transition-all disabled:opacity-50 font-medium'
               >
                 {loading ? 'Updating...' : 'Update Notice'}
               </button>
