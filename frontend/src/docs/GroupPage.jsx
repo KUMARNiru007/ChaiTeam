@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext.jsx';
 import { groupService } from '../services/api.js';
 import { useAuthStore } from '../store/useAuthStore.js';
+import EditNoticeModal from '../components/EditNoticeModal.jsx';
+import CreateNoticeModal from '../components/CreateNoticeModel.jsx';
 
 const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -12,6 +14,8 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
   const [notices, setNotices] = useState([]);
   const [noticesLoading, setNoticesLoading] = useState(false);
   const [noticesError, setNoticeserror] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedNotice, setSelectedNotice] = useState(null);
   const [joinGroupModal, setJoinGroupModal] = useState(false);
   const [reasonToJoin, setReasonToJoin] = useState('');
   const [reasonTokick, setReasonToKick] = useState('');
@@ -21,6 +25,8 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
   const [applicationLoading, setApplicationLoading] = useState(false);
   const [openKickMemberModal, setOpenKickMemberModal] = useState(false);
   const [selectedMember, setSelectedMember] = useState(null);
+   const [showCreateModal, setShowCreateModal] = useState(false);
+
 
   const { darkMode, toggleTheme } = useTheme();
   const navigate = useNavigate();
@@ -36,8 +42,29 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
   const groupMemberTabs = [{ id: 'Notice Board', label: 'Notice Board' }];
   const adminTabs = [{ id: 'Join Appications', label: 'Join Applications' }];
 
+  const isAdmin = group.member.find((mem) => mem.role === 'ADMIN');
   const leader = group.member.find((mem) => mem.role === 'LEADER');
   const groupMember = group.member.find((mem) => mem.userId === authUser.id);
+
+
+  const handleEditNotice = (notice) => {
+    setSelectedNotice(notice);
+    setShowEditModal(true);
+  };
+
+  const handleUpdateNotice = (updatedNotice) => {
+    setNotices(notices.map(notice => 
+      notice.id === updatedNotice.id ? updatedNotice : notice
+    ));
+  };
+
+  const handleDeleteNotice = (noticeId) => {
+    setNotices(notices.filter(notice => notice.id !== noticeId));
+  };
+
+  const handleCreateNotice = (newNotice) => {
+    setNotices([newNotice, ...notices]);
+  };
 
   useEffect(() => {
     const fetchGroupActivity = async () => {
@@ -271,9 +298,16 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
         </div>
         <div className='flex gap-3'>
           {groupMember ? (
-            <button className='p-2 px-4 rounded-md text-sm bg-green-500 hover:bg-green-400 cursor-pointer'>
-              Create Notice
-            </button>
+           
+                    <button
+                      onClick={() => setShowCreateModal(true)}
+                      className="px-4 py-2 bg-[var(--chaiteam-orange)] text-white rounded-xl hover:bg-[var(--chaiteam-orange)]/90 
+                      cursor-pointer transition-all duration-200 flex items-center gap-2"
+                    >
+                      <i className="ri-add-line"></i>
+                      Create Notice
+                    </button>
+                  
           ) : (
             <button
               onClick={() => setJoinGroupModal(true)}
@@ -717,25 +751,24 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
                   } transition-all duration-200`}
                 >
                   <span className='text-lg font-semibold'>{notice.title}</span>
-                  <span className='text-sm'>{notice.content}</span>
-                  <span className='text-sm font-semibold'>
-                    Creator & Date:{' '}
-                    <span className='font-normal text-red-500'>
-                      {notice.createdBy?.name},{' '}
-                      {notice.updateAt
-                        ? new Date(notice.updateAt).toLocaleDateString(
-                            'en-IN',
-                            {
-                              year: 'numeric',
-                              month: 'short',
-                              day: 'numeric',
-                              hour: '2-digit',
-                              minute: '2-digit',
-                              hour12: true,
-                            },
-                          )
-                        : 'Date not available'}
-                    </span>
+                        <span className='text-sm'>{notice.content}</span>
+                        <span className="text-sm font-semibold flex items-center gap-1">
+                          <i className="ri-user-line"></i>
+                          <span className="font-normal text-xs flex items-center gap-1">
+                            {notice.createdBy?.name || 'Unknown User'}
+                            <span>,</span>
+                            <i className="ri-time-line"></i>
+                            {notice.updateAt
+                              ? new Date(notice.updateAt).toLocaleDateString('en-IN', {
+                                  year: 'numeric',
+                                  month: 'short',
+                                  day: 'numeric',
+                                  hour: '2-digit',
+                                  minute: '2-digit',
+                                  hour12: true,
+                                })
+                              : 'Date not available'}
+                          </span>
                   </span>
 
                   {/* Type Badge */}
@@ -748,6 +781,19 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
                   >
                     {notice.type === 'PINNED' ? `PINNED` : null}
                   </div>
+                   {/* Edit Button*/}
+                        {isAdmin || leader && (
+                          <button
+                            onClick={() => handleEditNotice(notice)}
+                            className={`absolute bottom-2 right-4 p-2 rounded-xl transition-opacity duration-200 ${
+                              darkMode
+                                ? 'hover:bg-white/10 text-white'
+                                : 'hover:bg-black/10 text-black'
+                            }`}
+                          >
+                            <i className="ri-edit-line"></i>
+                          </button>
+                        )}
                 </div>
               ))}
           </div>
@@ -960,6 +1006,26 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
             </form>
           </div>
         </div>
+      )}
+
+      {/* Create Notice Modal */}
+      {showCreateModal && (
+        <CreateNoticeModal
+          groupId={userGroupId}
+          userGroup={group}
+          onClose={() => setShowCreateModal(false)}
+          onCreate={handleCreateNotice}
+        />
+      )}
+
+      {/* Edit Notice Modal */}
+      {showEditModal && selectedNotice && (
+        <EditNoticeModal
+          notice={selectedNotice}
+          onClose={() => setShowEditModal(false)}
+          onUpdate={handleUpdateNotice}
+          onDelete={handleDeleteNotice}
+        />
       )}
     </div>
   );

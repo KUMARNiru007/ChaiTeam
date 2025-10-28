@@ -53,87 +53,103 @@ function EditNoticeModal({ notice, onClose, onUpdate, onDelete }) {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/50">
-      <div className={`relative w-full max-w-md p-6 rounded-2xl shadow-lg ${
+    <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
+      <div className={`relative w-full max-w-2xl p-6 rounded-xl shadow-lg ${
         darkMode ? 'bg-[#2b2d31] text-white' : 'bg-white text-black'
       }`}>
-        <button
-          onClick={onClose}
-          className={`absolute top-4 right-4 p-2 rounded-xl transition-all duration-200 ${
-            darkMode 
-              ? 'hover:bg-white/10 text-white' 
-              : 'hover:bg-black/10 text-black'
-          }`}
-        >
-          <i className="ri-close-line text-xl"></i>
-        </button>
+        {/* Header */}
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-xl font-semibold">Edit Notice</h2>
+          <button
+            onClick={onClose}
+            className={`p-2 rounded-lg transition-all duration-200 ${
+              darkMode 
+                ? 'hover:bg-white/10 text-white' 
+                : 'hover:bg-black/10 text-black'
+            }`}
+          >
+            <i className="ri-close-line text-xl"></i>
+          </button>
+        </div>
 
-        <h2 className="text-xl font-bold mb-4">Edit Notice</h2>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Two Column Layout */}
+          <div className="grid grid-cols-1 gap-6">
+            {/* Left Column - Form Fields */}
+            <div className="space-y-4">
+              {/* Title */}
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Title <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className={`w-full p-3 rounded-lg border ${
+                    darkMode 
+                      ? 'bg-[#1e1f22] border-[#3f4147] text-white' 
+                      : 'bg-white border-gray-300 text-black'
+                  } focus:outline-none focus:ring-2 focus:ring-[var(--chaiteam-orange)]`}
+                  required
+                  placeholder="Enter notice title"
+                />
+              </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block mb-2 text-sm font-medium">
-              Title
-            </label>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className={`w-full p-3 rounded-xl border ${
-                darkMode 
-                  ? 'bg-[#1e1f22] border-[#3f4147] text-white' 
-                  : 'bg-white border-gray-300 text-black'
-              } focus:outline-none focus:ring-2 focus:ring-[var(--chaiteam-orange)]`}
-              required
-            />
+              {/* Content */}
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Content <span className="text-red-500">*</span>
+                </label>
+                <textarea
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  className={`w-full p-3 rounded-lg border ${
+                    darkMode 
+                      ? 'bg-[#1e1f22] border-[#3f4147] text-white' 
+                      : 'bg-white border-gray-300 text-black'
+                  } focus:outline-none focus:ring-2 focus:ring-[var(--chaiteam-orange)] min-h-[120px] resize-none`}
+                  required
+                  placeholder="Enter notice content"
+                />
+              </div>
+
+              {/* Type */}
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Type <span className="text-red-500">*</span>
+                </label>
+                <select
+                  value={type}
+                  onChange={(e) => setType(e.target.value)}
+                  className={`w-full p-3 rounded-lg border ${
+                    darkMode 
+                      ? 'bg-[#1e1f22] border-[#3f4147] text-white' 
+                      : 'bg-white border-gray-300 text-black'
+                  } focus:outline-none focus:ring-2 focus:ring-[var(--chaiteam-orange)]`}
+                >
+                  <option value="NORMAL">Normal</option>
+                  <option value="PINNED">Pinned</option>
+                </select>
+              </div>
+            </div>
           </div>
 
-          <div>
-            <label className="block mb-2 text-sm font-medium">
-              Content
-            </label>
-            <textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              className={`w-full p-3 rounded-xl border ${
-                darkMode 
-                  ? 'bg-[#1e1f22] border-[#3f4147] text-white' 
-                  : 'bg-white border-gray-300 text-black'
-              } focus:outline-none focus:ring-2 focus:ring-[var(--chaiteam-orange)] min-h-[100px]`}
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block mb-2 text-sm font-medium">
-              Type
-            </label>
-            <select
-              value={type}
-              onChange={(e) => setType(e.target.value)}
-              className={`w-full p-3 rounded-xl border ${
-                darkMode 
-                  ? 'bg-[#1e1f22] border-[#3f4147] text-white' 
-                  : 'bg-white border-gray-300 text-black'
-              } focus:outline-none focus:ring-2 focus:ring-[var(--chaiteam-orange)]`}
-            >
-              <option value="NORMAL">NORMAL</option>
-              <option value="PINNED">PINNED</option>
-            </select>
-          </div>
-
+          {/* Error Message */}
           {error && (
-            <div className="text-red-500 text-sm mt-2">
+            <div className="p-3 rounded-lg bg-red-500/10 border border-red-500 text-red-500 text-sm">
               {error}
             </div>
           )}
 
-          <div className="flex justify-between items-center mt-6">
+          {/* Buttons - Same layout as EditBatchModal */}
+          <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-600 flex justify-between items-center">
+            {/* Delete button on the left */}
             <button
               type="button"
               onClick={handleDelete}
               disabled={deleteLoading}
-              className="px-4 py-2 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-all duration-200 disabled:opacity-50 flex items-center gap-2"
+              className="px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white transition-all font-medium disabled:opacity-50 flex items-center gap-2"
             >
               {deleteLoading ? (
                 <>
@@ -148,14 +164,15 @@ function EditNoticeModal({ notice, onClose, onUpdate, onDelete }) {
               )}
             </button>
 
+            {/* Cancel and Save buttons on the right */}
             <div className="flex gap-3">
               <button
                 type="button"
                 onClick={onClose}
-                className={`px-4 py-2 rounded-xl transition-all duration-200 ${
+                className={`px-4 py-2 rounded-lg border transition-all font-medium ${
                   darkMode
-                    ? 'bg-[#1e1f22] hover:bg-[#313338] text-white'
-                    : 'bg-gray-100 hover:bg-gray-200 text-black'
+                    ? 'bg-[#1e1f22] border-[#3f4147] hover:bg-[#313338] text-white'
+                    : 'bg-gray-100 border-gray-300 hover:bg-gray-200 text-black'
                 }`}
               >
                 Cancel
@@ -163,7 +180,7 @@ function EditNoticeModal({ notice, onClose, onUpdate, onDelete }) {
               <button
                 type="submit"
                 disabled={loading}
-                className="px-4 py-2 bg-[var(--chaiteam-orange)] text-white rounded-xl hover:bg-[var(--chaiteam-orange)]/90 transition-all duration-200 disabled:opacity-50"
+                className="px-4 py-2 rounded-lg bg-[var(--chaiteam-orange)] hover:bg-[var(--chaiteam-orange)]/90 text-white transition-all disabled:opacity-50 font-medium"
               >
                 {loading ? 'Updating...' : 'Update Notice'}
               </button>
