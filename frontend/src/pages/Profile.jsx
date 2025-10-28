@@ -8,8 +8,9 @@ function Profile() {
   const [loading, setLoading] = useState(true);
   const [activities, setActivities] = useState([]);
   const [activityLoading, setActivityLoading] = useState(true);
+  const [activityError, setActivityError] = useState('');
 
-  // Fetch current user data - same logic as Sidebar.jsx
+  // Fetch current user data
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
@@ -18,7 +19,6 @@ function Profile() {
         setCurrentUser(userData);
       } catch (error) {
         console.error('Failed to fetch user data:', error);
-        // Fallback to empty user object to prevent errors
         setCurrentUser({ name: 'User', email: '' });
       } finally {
         setLoading(false);
@@ -34,10 +34,18 @@ function Profile() {
       if (!currentUser?.id) return;
       try {
         setActivityLoading(true);
+        setActivityError('');
         const activityData = await userService.getUserActivity(currentUser.id);
-        setActivities(activityData);
+        
+        // Sort activities by createdAT in descending order (newest first)
+        const sortedActivities = activityData.sort((a, b) => {
+          return new Date(b.createdAT) - new Date(a.createdAT);
+        });
+        
+        setActivities(sortedActivities);
       } catch (error) {
         console.error('Failed to fetch user activities:', error);
+        setActivityError('Failed to load activities');
       } finally {
         setActivityLoading(false);
       }
@@ -111,7 +119,6 @@ function Profile() {
                 </p>
               </div>
             </div>
-            
           </div>
         </div>
 
@@ -149,55 +156,128 @@ function Profile() {
 
         {/* User Activity Section */}
         <div className={`rounded-lg p-6 ${darkMode ? 'bg-[#18181b] border border-[#333]' : 'bg-white border border-gray-200'}`}>
-          <h2 className="text-lg font-semibold mb-4">Activity History</h2>
+          <h2 className="text-lg font-semibold mb-4">User Activity</h2>
           
           {activityLoading ? (
             <div className="flex justify-center py-4">
               <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-500"></div>
             </div>
+          ) : activityError ? (
+            <p className="text-gray-400 text-center py-4">{activityError}</p>
           ) : activities.length === 0 ? (
             <p className="text-gray-400 text-center py-4">No activities found.</p>
           ) : (
-            <div className="space-y-4">
-              {activities.map((activity, index) => (
-                <div
-                  key={activity.id || index}
-                  className={`p-4 rounded-lg ${
-                    darkMode ? 'bg-[#222] hover:bg-[#2a2a2a]' : 'bg-gray-50 hover:bg-gray-100'
-                  } transition-colors`}
-                >
-                  <div className="flex items-start gap-3">
-                    <div className={`mt-1 w-2 h-2 rounded-full ${
-                      activity.type === 'JOIN_BATCH' ? 'bg-green-500' :
-                      activity.type === 'LEAVE_BATCH' ? 'bg-red-500' :
-                      activity.type === 'JOIN_GROUP' ? 'bg-blue-500' :
-                      activity.type === 'LEAVE_GROUP' ? 'bg-yellow-500' :
-                      'bg-gray-500'
-                    }`} />
+            <div className="flex flex-col gap-4">
+              {activities.map((activity, index) => {
+                // Map user activity types to UI properties
+                const actionMap = {
+                  ACCOUNT_CREATED: {
+                    color: 'bg-green-500',
+                    title: 'Account Created',
+                    desc: activity.description || 'Your account was successfully created.',
+                  },
+                  ACCOUNT_DELTED: {
+                    color: 'bg-red-500',
+                    title: 'Account Deleted',
+                    desc: activity.description || 'Your account was deleted.',
+                  },
+                  APPLIED_TO_JOIN_GROUP: {
+                    color: 'bg-blue-500',
+                    title: 'Applied to Join Group',
+                    desc: activity.description || 'You applied to join a group.',
+                  },
+                  APLICATION_WITHDRAWN: {
+                    color: 'bg-yellow-500',
+                    title: 'Application Withdrawn',
+                    desc: activity.description || 'You withdrew an application to join a group.',
+                  },
+                  JOINED_GROUP: {
+                    color: 'bg-emerald-500',
+                    title: 'Joined Group',
+                    desc: activity.description || 'You joined a group.',
+                  },
+                  LEAVED_GROUP: {
+                    color: 'bg-orange-500',
+                    title: 'Left Group',
+                    desc: activity.description || 'You left a group.',
+                  },
+                  KICKED_FROM_GROUP: {
+                    color: 'bg-red-600',
+                    title: 'Removed from Group',
+                    desc: activity.description || 'You were removed from a group.',
+                  },
+                  CREATED_GROUP: {
+                    color: 'bg-purple-500',
+                    title: 'Group Created',
+                    desc: activity.description || 'You created a new group.',
+                  },
+                  DISBANNED_GROUP: {
+                    color: 'bg-pink-500',
+                    title: 'Group Disbanded',
+                    desc: activity.description || 'You disbanded a group.',
+                  },
+                  PROFILE_UPDATED: {
+                    color: 'bg-cyan-500',
+                    title: 'Profile Updated',
+                    desc: activity.description || 'You updated your profile information.',
+                  },
+                };
+
+                const { color, title, desc } = actionMap[activity.action] || {
+                  color: 'bg-gray-400',
+                  title: 'Unknown Activity',
+                  desc: activity.description || 'An action was performed.',
+                };
+
+                return (
+                  <div
+                    key={activity.id || index}
+                    className={`flex items-start gap-3 rounded-xl p-4 border transition-all duration-200 shadow-sm ${
+                      darkMode
+                        ? 'bg-[#1f1f1f] border-[#2b2b2b] hover:bg-[#2a2a2a]'
+                        : 'bg-white border-gray-200 hover:shadow-md'
+                    }`}
+                  >
+                    <div
+                      className={`w-3 h-3 rounded-full mt-1.5 ${color}`}
+                    ></div>
+
                     <div className="flex-1">
-                      <p className="text-sm">
-                        {activity.type === 'JOIN_BATCH' && 'Joined batch'}
-                        {activity.type === 'LEAVE_BATCH' && 'Left batch'}
-                        {activity.type === 'JOIN_GROUP' && 'Joined group'}
-                        {activity.type === 'LEAVE_GROUP' && 'Left group'}
-                        {activity.type === 'OTHER' && activity.description}
-                        {' '}
-                        <span className="font-medium">{activity.description}</span>
-                      </p>
-                      <p className="text-xs text-gray-400 mt-1">
-                        {activity.createdAt ? new Date(activity.createdAt).toLocaleString('en-IN', {
-                          year: 'numeric',
-                          month: 'short',
-                          day: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                          hour12: true
-                        }) : 'Date not available'}
+                      <div className="flex justify-between items-center">
+                        <h3
+                          className={`text-sm font-semibold ${
+                            darkMode ? 'text-gray-100' : 'text-gray-800'
+                          }`}
+                        >
+                          {title}
+                        </h3>
+                        <span className="text-xs text-gray-400">
+                          {activity.createdAT
+                            ? new Date(activity.createdAT).toLocaleString(
+                                'en-IN',
+                                {
+                                  year: 'numeric',
+                                  month: 'short',
+                                  day: 'numeric',
+                                  hour: '2-digit',
+                                  minute: '2-digit',
+                                  hour12: true,
+                                }
+                              )
+                            : 'Date not available'}
+                        </span>
+                      </div>
+                      <p
+                        className={`text-sm mt-1 ${
+                          darkMode ? 'text-gray-400' : 'text-gray-600'
+                        }`}
+                      >
+                        {desc}
                       </p>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
