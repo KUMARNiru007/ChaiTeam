@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { uploadToCloudinary } from '../utils/cloudinaryImageUpload.js';
+import { useTheme } from '../context/ThemeContext.jsx';
 
 const EditBatchModal = ({ isOpen, onClose, onSave, batch }) => {
   const [name, setName] = useState(batch?.name || '');
@@ -8,15 +9,19 @@ const EditBatchModal = ({ isOpen, onClose, onSave, batch }) => {
   const [logoImage, setLogoImage] = useState(null);
   const [bannerImage, setBannerImage] = useState(null);
   const [previewLogo, setPreviewLogo] = useState(batch?.logoImageUrl || null);
-  const [previewBanner, setPreviewBanner] = useState(batch?.bannerImageUrl || null);
+  const [previewBanner, setPreviewBanner] = useState(
+    batch?.bannerImageUrl || null,
+  );
   const [loading, setLoading] = useState(false);
   const [dragOverLogo, setDragOverLogo] = useState(false);
   const [dragOverBanner, setDragOverBanner] = useState(false);
 
+  const { darkMode } = useTheme();
+
   // Handle file selection
   const handleFileChange = (file, field) => {
     if (!file) return;
-    
+
     // Validate file type
     if (!file.type.startsWith('image/')) {
       alert('Please select a valid image file');
@@ -124,10 +129,12 @@ const EditBatchModal = ({ isOpen, onClose, onSave, batch }) => {
 
   return (
     <div className='fixed inset-0 flex items-center justify-center bg-black/40 z-50'>
-      <div className='bg-white p-6 rounded-xl w-[700px] relative shadow-lg'>
-        <h2 className='text-xl font-semibold mb-6 text-center'>
-          Edit Batch
-        </h2>
+      <div
+        className={` p-6 rounded-xl w-[700px] relative shadow-lg ${
+          darkMode ? 'bg-[#18181B] text-white' : 'bg-white text-black'
+        }`}
+      >
+        <h2 className='text-xl font-semibold mb-6 text-center'>Edit Batch</h2>
 
         <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
           {/* Main content in two columns */}
@@ -136,7 +143,7 @@ const EditBatchModal = ({ isOpen, onClose, onSave, batch }) => {
             <div className='space-y-4'>
               {/* Name */}
               <div>
-                <label className='block text-sm font-medium text-gray-700 mb-2'>
+                <label className='block text-sm font-medium mb-2'>
                   Batch Name <span className='text-red-500'>*</span>
                 </label>
                 <input
@@ -144,21 +151,29 @@ const EditBatchModal = ({ isOpen, onClose, onSave, batch }) => {
                   placeholder='Enter batch name'
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className='w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'
+                  className={`w-full border border-gray-300 p-3 rounded-lg  ${
+                    darkMode
+                      ? 'bg-[#27272A] text-white border-white/30'
+                      : 'border-gray-300 bg-white text-gray-900'
+                  }`}
                   required
                 />
               </div>
 
               {/* Description */}
               <div>
-                <label className='block text-sm font-medium text-gray-700 mb-2'>
+                <label className='block text-sm font-medium mb-2'>
                   Batch Description <span className='text-red-500'>*</span>
                 </label>
                 <textarea
                   placeholder='Enter batch description'
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  className='w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 h-32 resize-none'
+                  className={`w-full border border-gray-300 p-3 rounded-lg h-32 resize-none  ${
+                    darkMode
+                      ? 'bg-[#27272A] text-white border-white/30'
+                      : 'border-gray-300 bg-white text-gray-900'
+                  }`}
                   rows={4}
                   required
                 />
@@ -166,17 +181,21 @@ const EditBatchModal = ({ isOpen, onClose, onSave, batch }) => {
 
               {/* Status */}
               <div>
-                <label className='block text-sm font-medium text-gray-700 mb-2'>
+                <label className='block text-sm font-medium mb-2'>
                   Status <span className='text-red-500'>*</span>
                 </label>
                 <select
                   value={status}
                   onChange={(e) => setStatus(e.target.value)}
-                  className='w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'
+                  className={`w-full border border-gray-300 p-3 rounded-lg  ${
+                    darkMode
+                      ? 'bg-[#27272A] text-white border-white/30'
+                      : 'border-gray-300 bg-white text-gray-900'
+                  }`}
                 >
-                  <option value="ACTIVE">Active</option>
-                  <option value="INACTIVE">Inactive</option>
-                  <option value="COMPLETED">Completed</option>
+                  <option value='ACTIVE'>Active</option>
+                  <option value='INACTIVE'>Inactive</option>
+                  <option value='COMPLETED'>Completed</option>
                 </select>
               </div>
             </div>
@@ -185,10 +204,10 @@ const EditBatchModal = ({ isOpen, onClose, onSave, batch }) => {
             <div className='space-y-4'>
               {/* Logo */}
               <div>
-                <label className='block text-sm font-medium text-gray-700 mb-2'>
+                <label className='block text-sm font-medium mb-2'>
                   Logo Image <span className='text-red-500'>*</span>
                 </label>
-                
+
                 {/* Drag and Drop Area for Logo */}
                 <div
                   onDragOver={handleLogoDragOver}
@@ -196,32 +215,38 @@ const EditBatchModal = ({ isOpen, onClose, onSave, batch }) => {
                   onDrop={handleLogoDrop}
                   onClick={() => document.getElementById('logoInput').click()}
                   className={`border-2 border-dashed rounded-lg p-4 text-center cursor-pointer transition-all h-40 flex items-center justify-center ${
-                    dragOverLogo 
-                      ? 'border-blue-500 bg-blue-50' 
-                      : 'border-gray-300 hover:bg-gray-50'
-                  } ${
-                    previewLogo ? 'border-green-500' : ''
+                    dragOverLogo ? 'border-blue-500 bg-blue-50' : ''
+                  } ${previewLogo ? 'border-green-500' : ''} ${
+                    darkMode ? 'hover:bg-[#27272A]' : 'hover:bg-gray-50'
                   }`}
                 >
                   {previewLogo ? (
-                    <div className="text-green-600">
+                    <div className='text-green-600'>
                       <img
                         src={previewLogo}
                         alt='Logo Preview'
                         className='h-24 w-24 object-cover rounded-lg border mx-auto'
                       />
-                      <p className="text-sm mt-2 font-semibold">{logoImage?.name || 'Logo Image'}</p>
-                      <p className="text-xs mt-1 text-gray-600">Click or drag to change</p>
+                      <p className='text-sm mt-2 font-semibold'>
+                        {logoImage?.name || 'Logo Image'}
+                      </p>
+                      <p
+                        className={`text-xs mt-1 ${
+                          darkMode ? 'text-gray-400' : 'text-gray-600'
+                        }`}
+                      >
+                        Click or drag to change
+                      </p>
                     </div>
                   ) : (
                     <div>
-                      <i className={`ri-upload-cloud-2-line text-3xl mb-2 block ${
-                        dragOverLogo ? 'text-blue-500' : 'text-gray-400'
-                      }`}></i>
-                      <p className="text-gray-600 font-medium">
-                        Upload Logo
-                      </p>
-                      <p className="text-xs mt-1 text-gray-500">
+                      <i
+                        className={`ri-upload-cloud-2-line text-3xl mb-2 block ${
+                          dragOverLogo ? 'text-blue-500' : 'text-gray-400'
+                        }`}
+                      ></i>
+                      <p className='text-gray-600 font-medium'>Upload Logo</p>
+                      <p className='text-xs mt-1 text-gray-500'>
                         Drag & drop or click to upload
                       </p>
                     </div>
@@ -233,17 +258,19 @@ const EditBatchModal = ({ isOpen, onClose, onSave, batch }) => {
                   type='file'
                   id='logoInput'
                   accept='image/*'
-                  onChange={(e) => handleFileChange(e.target.files[0], 'logoImage')}
+                  onChange={(e) =>
+                    handleFileChange(e.target.files[0], 'logoImage')
+                  }
                   className='hidden'
                 />
               </div>
 
               {/* Banner */}
               <div>
-                <label className='block text-sm font-medium text-gray-700 mb-2'>
+                <label className='block text-sm font-medium mb-2'>
                   Banner Image <span className='text-red-500'>*</span>
                 </label>
-                
+
                 {/* Drag and Drop Area for Banner */}
                 <div
                   onDragOver={handleBannerDragOver}
@@ -251,32 +278,38 @@ const EditBatchModal = ({ isOpen, onClose, onSave, batch }) => {
                   onDrop={handleBannerDrop}
                   onClick={() => document.getElementById('bannerInput').click()}
                   className={`border-2 border-dashed rounded-lg p-4 text-center cursor-pointer transition-all h-40 flex items-center justify-center ${
-                    dragOverBanner 
-                      ? 'border-blue-500 bg-blue-50' 
-                      : 'border-gray-300 hover:bg-gray-50'
-                  } ${
-                    previewBanner ? 'border-green-500' : ''
+                    dragOverBanner ? 'border-blue-500 bg-blue-50' : ''
+                  } ${previewBanner ? 'border-green-500' : ''} ${
+                    darkMode ? 'hover:bg-[#27272A]' : 'hover:bg-gray-50'
                   }`}
                 >
                   {previewBanner ? (
-                    <div className="text-green-600">
+                    <div className='text-green-600'>
                       <img
                         src={previewBanner}
                         alt='Banner Preview'
                         className='h-20 w-full object-cover rounded-lg border'
                       />
-                      <p className="text-sm mt-2 font-semibold">{bannerImage?.name || 'Banner Image'}</p>
-                      <p className="text-xs mt-1 text-gray-600">Click or drag to change</p>
+                      <p className='text-sm mt-2 font-semibold'>
+                        {bannerImage?.name || 'Banner Image'}
+                      </p>
+                      <p
+                        className={`text-xs mt-1 ${
+                          darkMode ? 'text-gray-400' : 'text-gray-600'
+                        }`}
+                      >
+                        Click or drag to change
+                      </p>
                     </div>
                   ) : (
                     <div>
-                      <i className={`ri-upload-cloud-2-line text-3xl mb-2 block ${
-                        dragOverBanner ? 'text-blue-500' : 'text-gray-400'
-                      }`}></i>
-                      <p className="text-gray-600 font-medium">
-                        Upload Banner
-                      </p>
-                      <p className="text-xs mt-1 text-gray-500">
+                      <i
+                        className={`ri-upload-cloud-2-line text-3xl mb-2 block ${
+                          dragOverBanner ? 'text-blue-500' : 'text-gray-400'
+                        }`}
+                      ></i>
+                      <p className='text-gray-600 font-medium'>Upload Banner</p>
+                      <p className='text-xs mt-1 text-gray-500'>
                         Drag & drop or click to upload
                       </p>
                     </div>
@@ -288,7 +321,9 @@ const EditBatchModal = ({ isOpen, onClose, onSave, batch }) => {
                   type='file'
                   id='bannerInput'
                   accept='image/*'
-                  onChange={(e) => handleFileChange(e.target.files[0], 'bannerImage')}
+                  onChange={(e) =>
+                    handleFileChange(e.target.files[0], 'bannerImage')
+                  }
                   className='hidden'
                 />
               </div>
@@ -307,11 +342,15 @@ const EditBatchModal = ({ isOpen, onClose, onSave, batch }) => {
             </button>
 
             {/* Cancel and Save buttons on the right */}
-            <div className="flex gap-3">
+            <div className='flex gap-3'>
               <button
                 type='button'
                 onClick={onClose}
-                className='px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 transition-all font-medium'
+                className={`px-4 py-2 rounded-lg border transition-all font-medium ${
+                  darkMode
+                    ? 'border-white/30 hover:bg-[#27272A]'
+                    : 'border-gray-300 hover:bg-gray-100'
+                }`}
               >
                 Cancel
               </button>

@@ -12,7 +12,7 @@ const AdminAllGroups = () => {
   const [selectedTag, setSelectedTag] = useState('All Tags');
   const [selectedBatchName, setSelectedBatchName] = useState('All Batches');
 
-  const { darkMode } = useTheme();
+  const { darkMode, toggleTheme } = useTheme();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -90,12 +90,42 @@ const AdminAllGroups = () => {
   });
 
   return (
-    <div className='parkinsans-light text-center p-6'>
+    <div className='realtive parkinsans-light text-center p-6'>
+      <button
+        className='fixed z-10 right-12'
+        onClick={toggleTheme}
+        style={{
+          width: '32px',
+          height: '32px',
+          borderRadius: '50%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          cursor: 'pointer',
+        }}
+      >
+        <i
+          className={`ri-${darkMode ? 'sun' : 'moon'}-fill`}
+          style={{
+            color: `${darkMode ? '#ffffff' : '#000000'}`,
+            fontSize: '18px',
+          }}
+        ></i>
+      </button>
+
       <div>
-        <h2 className='text-3xl font-semibold text-gray-800 mb-2'>
+        <h2
+          className={`text-3xl font-semibold ${
+            darkMode ? 'text-white' : 'text-gray-800'
+          } mb-2`}
+        >
           All Groups
         </h2>
-        <p className='text-sm font-semibold text-gray-600 mt-2'>
+        <p
+          className={`text-sm font-semibold ${
+            darkMode ? 'text-white/70' : 'text-gray-600'
+          } mt-2`}
+        >
           Here, you can See and Manage all the groups on the Platform
         </p>
       </div>

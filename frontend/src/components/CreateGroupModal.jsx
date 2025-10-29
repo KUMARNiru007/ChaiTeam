@@ -1,13 +1,20 @@
 import React, { useState } from 'react';
 import { groupService } from '../services/api.js';
 import { uploadToCloudinary } from '../utils/cloudinaryImageUpload.js';
+import { useTheme } from '../context/ThemeContext.jsx';
 
-const CreateGroupModal = ({ isOpen, onClose, batchId, batchName, onCreateGroup }) => {
+const CreateGroupModal = ({
+  isOpen,
+  onClose,
+  batchId,
+  batchName,
+  onCreateGroup,
+}) => {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
     tags: '',
-    status: 'ACTIVE'
+    status: 'ACTIVE',
   });
   const [logoImage, setLogoImage] = useState(null);
   const [groupImage, setGroupImage] = useState(null);
@@ -17,17 +24,19 @@ const CreateGroupModal = ({ isOpen, onClose, batchId, batchName, onCreateGroup }
   const [dragOverLogo, setDragOverLogo] = useState(false);
   const [dragOverGroupImage, setDragOverGroupImage] = useState(false);
 
+  const { darkMode } = useTheme();
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleFileChange = (file, field) => {
     if (!file) return;
-    
+
     if (!file.type.startsWith('image/')) {
       alert('Please select a valid image file');
       return;
@@ -105,19 +114,19 @@ const CreateGroupModal = ({ isOpen, onClose, batchId, batchName, onCreateGroup }
       const payload = {
         name: formData.name,
         description: formData.description,
-        tags: formData.tags.split(',').map(tag => tag.trim()),
+        tags: formData.tags.split(',').map((tag) => tag.trim()),
         batchId: batchId,
         logoImageUrl: logoImageUrl,
         groupImageUrl: groupImageUrl,
-        status: formData.status
+        status: formData.status,
       };
 
       // Call the API to create group
       await groupService.createGroup(payload);
-      
+
       // Call the parent callback
       onCreateGroup();
-      
+
       alert('Group created successfully!');
       handleClose();
     } catch (err) {
@@ -133,7 +142,7 @@ const CreateGroupModal = ({ isOpen, onClose, batchId, batchName, onCreateGroup }
       name: '',
       description: '',
       tags: '',
-      status: 'ACTIVE'
+      status: 'ACTIVE',
     });
     setLogoImage(null);
     setGroupImage(null);
@@ -146,7 +155,11 @@ const CreateGroupModal = ({ isOpen, onClose, batchId, batchName, onCreateGroup }
 
   return (
     <div className='fixed inset-0 flex items-center justify-center bg-black/40 z-50'>
-      <div className='bg-white p-6 rounded-xl w-[700px] max-h-[90vh] overflow-y-auto relative shadow-lg'>
+      <div
+        className={`p-6 rounded-xl w-[700px] max-h-[90vh] overflow-y-auto relative shadow-lg ${
+          darkMode ? 'bg-[#2b2d31] text-white' : 'bg-white text-black'
+        }`}
+      >
         <h2 className='text-xl font-semibold mb-6 text-center'>
           Create New Group
         </h2>
@@ -158,7 +171,7 @@ const CreateGroupModal = ({ isOpen, onClose, batchId, batchName, onCreateGroup }
             <div className='space-y-4'>
               {/* Group Name */}
               <div>
-                <label className='block text-sm font-medium text-gray-700 mb-2'>
+                <label className='block text-sm font-medium mb-2'>
                   Group Name <span className='text-red-500'>*</span>
                 </label>
                 <input
@@ -167,14 +180,18 @@ const CreateGroupModal = ({ isOpen, onClose, batchId, batchName, onCreateGroup }
                   placeholder='Enter group name'
                   value={formData.name}
                   onChange={handleInputChange}
-                  className='w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'
+                  className={`w-full border border-gray-300 p-3 rounded-lg ${
+                    darkMode
+                      ? 'bg-[#1e1f22] border-[#3f4147] text-white'
+                      : 'bg-white border-gray-300 text-black'
+                  }`}
                   required
                 />
               </div>
 
               {/* Description */}
               <div>
-                <label className='block text-sm font-medium text-gray-700 mb-2'>
+                <label className='block text-sm font-medium mb-2'>
                   Group Description <span className='text-red-500'>*</span>
                 </label>
                 <textarea
@@ -182,7 +199,11 @@ const CreateGroupModal = ({ isOpen, onClose, batchId, batchName, onCreateGroup }
                   placeholder='Enter group description'
                   value={formData.description}
                   onChange={handleInputChange}
-                  className='w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 h-32 resize-none'
+                  className={`w-full border border-gray-300 p-3 rounded-lg h-32 resize-none ${
+                    darkMode
+                      ? 'bg-[#1e1f22] border-[#3f4147] text-white'
+                      : 'bg-white border-gray-300 text-black'
+                  }`}
                   rows={4}
                   required
                 />
@@ -190,7 +211,7 @@ const CreateGroupModal = ({ isOpen, onClose, batchId, batchName, onCreateGroup }
 
               {/* Tags */}
               <div>
-                <label className='block text-sm font-medium text-gray-700 mb-2'>
+                <label className='block text-sm font-medium mb-2'>
                   Tags <span className='text-red-500'>*</span>
                 </label>
                 <input
@@ -199,21 +220,27 @@ const CreateGroupModal = ({ isOpen, onClose, batchId, batchName, onCreateGroup }
                   placeholder='Enter tags separated by commas (e.g., react, node, mongodb)'
                   value={formData.tags}
                   onChange={handleInputChange}
-                  className='w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'
+                  className={`w-full border border-gray-300 p-3 rounded-lg ${
+                    darkMode
+                      ? 'bg-[#1e1f22] border-[#3f4147] text-white'
+                      : 'bg-white border-gray-300 text-black'
+                  }`}
                   required
                 />
               </div>
 
               {/* Status */}
               <div>
-                <label className='block text-sm font-medium text-gray-700 mb-2'>
-                  Status
-                </label>
+                <label className='block text-sm font-medium mb-2'>Status</label>
                 <select
                   name='status'
                   value={formData.status}
                   onChange={handleInputChange}
-                  className='w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'
+                  className={`w-full border border-gray-300 p-3 rounded-lg ${
+                    darkMode
+                      ? 'bg-[#1e1f22] border-[#3f4147] text-white'
+                      : 'bg-white border-gray-300 text-black'
+                  }`}
                 >
                   <option value='ACTIVE'>Active</option>
                   <option value='PRIVATE'>Private</option>
@@ -222,14 +249,16 @@ const CreateGroupModal = ({ isOpen, onClose, batchId, batchName, onCreateGroup }
 
               {/* Batch Info (read-only) */}
               <div>
-                <label className='block text-sm font-medium text-gray-700 mb-2'>
-                  Batch
-                </label>
+                <label className='block text-sm font-medium mb-2'>Batch</label>
                 <input
                   type='text'
                   value={batchName}
                   disabled
-                  className='w-full border border-gray-300 p-3 rounded-lg bg-gray-100 cursor-not-allowed'
+                  className={`w-full border p-3 rounded-lg cursor-not-allowed ${
+                    darkMode
+                      ? 'bg-[#1e1f22] border-[#3f4147] text-white'
+                      : 'bg-white border-gray-300 text-black'
+                  }`}
                 />
               </div>
             </div>
@@ -238,10 +267,10 @@ const CreateGroupModal = ({ isOpen, onClose, batchId, batchName, onCreateGroup }
             <div className='space-y-4'>
               {/* Logo Image */}
               <div>
-                <label className='block text-sm font-medium text-gray-700 mb-2'>
+                <label className='block text-sm font-medium mb-2'>
                   Logo Image
                 </label>
-                
+
                 {/* Drag and Drop Area for Logo */}
                 <div
                   onDragOver={handleLogoDragOver}
@@ -249,32 +278,32 @@ const CreateGroupModal = ({ isOpen, onClose, batchId, batchName, onCreateGroup }
                   onDrop={handleLogoDrop}
                   onClick={() => document.getElementById('logoInput').click()}
                   className={`border-2 border-dashed rounded-lg p-4 text-center cursor-pointer transition-all h-40 flex items-center justify-center ${
-                    dragOverLogo 
-                      ? 'border-blue-500 bg-blue-50' 
+                    dragOverLogo
+                      ? 'border-blue-500 bg-blue-50'
                       : 'border-gray-300 hover:bg-gray-50'
-                  } ${
-                    previewLogo ? 'border-green-500' : ''
-                  }`}
+                  } ${previewLogo ? 'border-green-500' : ''}`}
                 >
                   {previewLogo ? (
-                    <div className="text-green-600">
+                    <div className='text-green-600'>
                       <img
                         src={previewLogo}
                         alt='Logo Preview'
                         className='h-24 w-24 object-cover rounded-lg border mx-auto'
                       />
-                      <p className="text-sm mt-2 font-semibold">{logoImage?.name || 'Logo Image Selected'}</p>
-                      <p className="text-xs mt-1 text-gray-600">Click or drag to change</p>
+                      <p className='text-sm mt-2 font-semibold'>
+                        {logoImage?.name || 'Logo Image Selected'}
+                      </p>
+                      <p className='text-xs mt-1'>Click or drag to change</p>
                     </div>
                   ) : (
                     <div>
-                      <i className={`ri-upload-cloud-2-line text-3xl mb-2 block ${
-                        dragOverLogo ? 'text-blue-500' : 'text-gray-400'
-                      }`}></i>
-                      <p className="text-gray-600 font-medium">
-                        Upload Logo
-                      </p>
-                      <p className="text-xs mt-1 text-gray-500">
+                      <i
+                        className={`ri-upload-cloud-2-line text-3xl mb-2 block ${
+                          dragOverLogo ? 'text-blue-500' : 'text-gray-400'
+                        }`}
+                      ></i>
+                      <p className='text-gray-600 font-medium'>Upload Logo</p>
+                      <p className='text-xs mt-1 text-gray-500'>
                         Drag & drop or click to upload
                       </p>
                     </div>
@@ -286,7 +315,9 @@ const CreateGroupModal = ({ isOpen, onClose, batchId, batchName, onCreateGroup }
                   type='file'
                   id='logoInput'
                   accept='image/*'
-                  onChange={(e) => handleFileChange(e.target.files[0], 'logoImage')}
+                  onChange={(e) =>
+                    handleFileChange(e.target.files[0], 'logoImage')
+                  }
                   className='hidden'
                 />
               </div>
@@ -296,40 +327,46 @@ const CreateGroupModal = ({ isOpen, onClose, batchId, batchName, onCreateGroup }
                 <label className='block text-sm font-medium text-gray-700 mb-2'>
                   Group Image
                 </label>
-                
+
                 {/* Drag and Drop Area for Group Image */}
                 <div
                   onDragOver={handleGroupImageDragOver}
                   onDragLeave={handleGroupImageDragLeave}
                   onDrop={handleGroupImageDrop}
-                  onClick={() => document.getElementById('groupImageInput').click()}
+                  onClick={() =>
+                    document.getElementById('groupImageInput').click()
+                  }
                   className={`border-2 border-dashed rounded-lg p-4 text-center cursor-pointer transition-all h-40 flex items-center justify-center ${
-                    dragOverGroupImage 
-                      ? 'border-blue-500 bg-blue-50' 
+                    dragOverGroupImage
+                      ? 'border-blue-500 bg-blue-50'
                       : 'border-gray-300 hover:bg-gray-50'
-                  } ${
-                    previewGroupImage ? 'border-green-500' : ''
-                  }`}
+                  } ${previewGroupImage ? 'border-green-500' : ''}`}
                 >
                   {previewGroupImage ? (
-                    <div className="text-green-600">
+                    <div className='text-green-600'>
                       <img
                         src={previewGroupImage}
                         alt='Group Image Preview'
                         className='h-20 w-full object-cover rounded-lg border'
                       />
-                      <p className="text-sm mt-2 font-semibold">{groupImage?.name || 'Group Image Selected'}</p>
-                      <p className="text-xs mt-1 text-gray-600">Click or drag to change</p>
+                      <p className='text-sm mt-2 font-semibold'>
+                        {groupImage?.name || 'Group Image Selected'}
+                      </p>
+                      <p className='text-xs mt-1 text-gray-600'>
+                        Click or drag to change
+                      </p>
                     </div>
                   ) : (
                     <div>
-                      <i className={`ri-upload-cloud-2-line text-3xl mb-2 block ${
-                        dragOverGroupImage ? 'text-blue-500' : 'text-gray-400'
-                      }`}></i>
-                      <p className="text-gray-600 font-medium">
+                      <i
+                        className={`ri-upload-cloud-2-line text-3xl mb-2 block ${
+                          dragOverGroupImage ? 'text-blue-500' : 'text-gray-400'
+                        }`}
+                      ></i>
+                      <p className='text-gray-600 font-medium'>
                         Upload Group Image
                       </p>
-                      <p className="text-xs mt-1 text-gray-500">
+                      <p className='text-xs mt-1 text-gray-500'>
                         Drag & drop or click to upload
                       </p>
                     </div>
@@ -341,7 +378,9 @@ const CreateGroupModal = ({ isOpen, onClose, batchId, batchName, onCreateGroup }
                   type='file'
                   id='groupImageInput'
                   accept='image/*'
-                  onChange={(e) => handleFileChange(e.target.files[0], 'groupImage')}
+                  onChange={(e) =>
+                    handleFileChange(e.target.files[0], 'groupImage')
+                  }
                   className='hidden'
                 />
               </div>
@@ -349,11 +388,15 @@ const CreateGroupModal = ({ isOpen, onClose, batchId, batchName, onCreateGroup }
           </div>
 
           {/* Buttons */}
-          <div className='mt-4 pt-4 border-t border-gray-200 flex justify-end gap-3'>
+          <div className='mt-4 pt-4 border-t flex justify-end gap-3'>
             <button
               type='button'
               onClick={handleClose}
-              className='px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 transition-all font-medium'
+              className={`px-4 py-2 rounded-lg transition-all font-medium ${
+                darkMode
+                  ? 'bg-[#1e1f22] hover:bg-[#313338] text-white'
+                  : 'bg-gray-100 hover:bg-gray-200 text-black'
+              }`}
             >
               Cancel
             </button>

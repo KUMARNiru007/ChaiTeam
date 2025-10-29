@@ -16,11 +16,11 @@ const AdminBatchPage = () => {
   const [batchOptions, setBatchOptions] = useState([
     { id: 1, label: 'All Batches', value: 'all' },
   ]);
-  
+
   const [statusOptions, setStatusOptions] = useState([
     { id: 1, label: 'All Status', value: 'all' },
   ]);
-  
+
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedBatch, setSelectedBatch] = useState('all');
   const [selectedStatus, setSelectedStatus] = useState('all');
@@ -42,10 +42,10 @@ const AdminBatchPage = () => {
 
       await batchService.updateBatch(batchId, payload);
       // Update the batch in the list
-      setBatchesData(prevBatches =>
-        prevBatches.map(batch =>
-          batch.id === batchId ? { ...batch, ...payload } : batch
-        )
+      setBatchesData((prevBatches) =>
+        prevBatches.map((batch) =>
+          batch.id === batchId ? { ...batch, ...payload } : batch,
+        ),
       );
       setShowEditModal(false);
       alert('Batch updated successfully!');
@@ -64,10 +64,10 @@ const AdminBatchPage = () => {
       alert('CSV uploaded successfully!');
       // Refresh the batch members count
       const updatedBatch = await batchService.getBatchById(batchId);
-      setBatchesData(prevBatches => 
-        prevBatches.map(batch => 
-          batch.id === batchId ? updatedBatch : batch
-        )
+      setBatchesData((prevBatches) =>
+        prevBatches.map((batch) =>
+          batch.id === batchId ? updatedBatch : batch,
+        ),
       );
     } catch (error) {
       console.error('Error uploading CSV:', error);
@@ -89,11 +89,11 @@ const AdminBatchPage = () => {
         const uniqueBatches = batches.map((batch, index) => ({
           id: index + 2,
           label: batch.name,
-          value: batch.id
+          value: batch.id,
         }));
         setBatchOptions([
           { id: 1, label: 'All Batches', value: 'all' },
-          ...uniqueBatches
+          ...uniqueBatches,
         ]);
 
         // Update status options
@@ -101,7 +101,7 @@ const AdminBatchPage = () => {
           { id: 1, label: 'All Status', value: 'all' },
           { id: 2, label: 'Active', value: 'ACTIVE' },
           { id: 3, label: 'Completed', value: 'COMPLETED' },
-          { id: 4, label: 'Inactive', value: 'INACTIVE' }
+          { id: 4, label: 'Inactive', value: 'INACTIVE' },
         ]);
 
         setError(null);
@@ -131,8 +131,7 @@ const AdminBatchPage = () => {
 
     // Status filter
     const matchesStatus =
-      selectedStatus === 'all' ||
-      batch.status === selectedStatus;
+      selectedStatus === 'all' || batch.status === selectedStatus;
 
     return matchesSearch && matchesBatch && matchesStatus;
   });
@@ -196,8 +195,8 @@ const AdminBatchPage = () => {
         } cursor-pointer`}
       >
         {showEditButton && (
-          <div className="absolute top-2 right-2 z-10 bg-white/80 hover:bg-white p-2 rounded-full shadow-md transition-all duration-200">
-            <i className="ri-edit-line text-gray-700"></i>
+          <div className='absolute top-2 right-2 z-10 bg-white/80 hover:bg-white p-2 rounded-full shadow-md transition-all duration-200'>
+            <i className='ri-edit-line text-gray-700'></i>
           </div>
         )}
         <div className='h-28 w-full overflow-hidden'>
@@ -261,17 +260,26 @@ const AdminBatchPage = () => {
             }`}
           >
             <div className='flex items-center gap-1.5'>
-              <div className={`w-2 h-2 rounded-full ${
-                batch.status === 'ACTIVE' ? 'bg-green-500' :
-                batch.status === 'COMPLETED' ? 'bg-blue-500' :
-                batch.status === 'INACTIVE' ? 'bg-red-500' : 'bg-gray-500'
-              }`}></div>
-              <span className='font-medium'>{
-                batch.status === 'ACTIVE' ? 'Active' :
-                batch.status === 'COMPLETED' ? 'Completed' :
-                batch.status === 'INACTIVE' ? 'Inactive' :
-                batch.status
-              }</span>
+              <div
+                className={`w-2 h-2 rounded-full ${
+                  batch.status === 'ACTIVE'
+                    ? 'bg-green-500'
+                    : batch.status === 'COMPLETED'
+                    ? 'bg-blue-500'
+                    : batch.status === 'INACTIVE'
+                    ? 'bg-red-500'
+                    : 'bg-gray-500'
+                }`}
+              ></div>
+              <span className='font-medium'>
+                {batch.status === 'ACTIVE'
+                  ? 'Active'
+                  : batch.status === 'COMPLETED'
+                  ? 'Completed'
+                  : batch.status === 'INACTIVE'
+                  ? 'Inactive'
+                  : batch.status}
+              </span>
             </div>
             <div className='flex items-center gap-1.5'>
               <div
@@ -292,15 +300,21 @@ const AdminBatchPage = () => {
   return (
     <div className='min-h-screen p-8'>
       {/* Create Batch Section */}
-      <div className='mx-auto bg-white shadow-md rounded-2xl p-8 mb-8'>
+      <div
+        className={`mx-auto shadow-md rounded-2xl p-8 mb-8 ${
+          darkMode
+            ? 'bg-[#222225] text-white'
+            : 'border-gray-300 bg-gray-50 text-gray-600'
+        }`}
+      >
         <div className='flex justify-between items-center mb-1'>
-          <h1 className='text-3xl font-bold text-gray-800'>Manage Batches</h1>
-          <div className="flex gap-3">
+          <h1 className='text-3xl font-bold'>Manage Batches</h1>
+          <div className='flex gap-3'>
             <button
               onClick={() => setShowCSVModal(true)}
               className='bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg transition-all cursor-pointer flex items-center'
             >
-              <i className="ri-file-upload-line mr-2"></i> Upload CSV
+              <i className='ri-file-upload-line mr-2'></i> Upload CSV
             </button>
             <button
               onClick={() => setShowModal(true)}

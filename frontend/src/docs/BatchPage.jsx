@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext.jsx';
-import { batchService, groupService, noticeService, userService } from '../services/api.js';
+import {
+  batchService,
+  groupService,
+  noticeService,
+  userService,
+} from '../services/api.js';
 import Groups from './Groups';
 import EditNoticeModal from '../components/EditNoticeModal.jsx';
 import CreateNoticeModal from '../components/CreateNoticeModel.jsx';
@@ -33,13 +38,15 @@ function BatchPage() {
   };
 
   const handleUpdateNotice = (updatedNotice) => {
-    setNotices(notices.map(notice => 
-      notice.id === updatedNotice.id ? updatedNotice : notice
-    ));
+    setNotices(
+      notices.map((notice) =>
+        notice.id === updatedNotice.id ? updatedNotice : notice,
+      ),
+    );
   };
 
   const handleDeleteNotice = (noticeId) => {
-    setNotices(notices.filter(notice => notice.id !== noticeId));
+    setNotices(notices.filter((notice) => notice.id !== noticeId));
   };
 
   const handleCreateNotice = (newNotice) => {
@@ -403,22 +410,22 @@ function BatchPage() {
               {!userGroup && (
                 <button
                   onClick={() => setShowCreateGroupModal(true)}
-                  className="px-4 py-2 bg-[var(--chaiteam-info)] text-white rounded-xl hover:bg-[var(--chaiteam-info)]/90 
-                  cursor-pointer transition-all duration-200 flex items-center gap-2"
+                  className='px-4 py-2 bg-[var(--chaiteam-info)] text-white rounded-xl hover:bg-[var(--chaiteam-info)]/90 
+                  cursor-pointer transition-all duration-200 flex items-center gap-2'
                 >
-                  <i className="ri-add-line"></i>
+                  <i className='ri-add-line'></i>
                   Create Group
                 </button>
               )}
-              
+
               {/* Create Notice Button for Admin */}
               {isAdmin && (
                 <button
                   onClick={() => setShowCreateModal(true)}
-                  className="px-4 py-2 bg-[var(--chaiteam-orange)] text-white rounded-xl hover:bg-[var(--chaiteam-orange)]/90 
-                  cursor-pointer transition-all duration-200 flex items-center gap-2"
+                  className='px-4 py-2 bg-[var(--chaiteam-orange)] text-white rounded-xl hover:bg-[var(--chaiteam-orange)]/90 
+                  cursor-pointer transition-all duration-200 flex items-center gap-2'
                 >
-                  <i className="ri-add-line"></i>
+                  <i className='ri-add-line'></i>
                   Create Notice
                 </button>
               )}
@@ -427,9 +434,11 @@ function BatchPage() {
 
           {/* Tab Content */}
           <div
-            className={`p-4 rounded-lg ${
-              darkMode ? 'bg-[#2b2d31]' : 'bg-white'
-            } border border-gray-200`}
+            className={`p-4 rounded-lg border ${
+              darkMode
+                ? 'bg-[#111111] text-white border-white/60'
+                : 'bg-white text-black border-gray-400'
+            }`}
           >
             {activeTab === 'overview' && (
               <div className='flex flex-col gap-8'>
@@ -441,19 +450,43 @@ function BatchPage() {
                 <div className='flex flex-col gap-1'>
                   <span className='text-xl font-semibold'>Details</span>
                   <div className='mt-1'>
-                    <div className='flex justify-between border border-b-0 rounded-t-lg border-black p-2 px-2'>
+                    <div
+                      className={`flex justify-between border border-b-0 rounded-t-lg p-2 px-2 ${
+                        darkMode
+                          ? 'bg-[#18181B] border-[#545454] hover:bg-[#9e9e9e]/20 hover:border-[#9e9e9e]/20'
+                          : 'bg-white border-slate-300 hover:bg-[#ff9335]/10 hover:border-[#ff9335]/20'
+                      }`}
+                    >
                       <span>Batch Admin</span>
                       <span>{batchData.admin?.name || 'Not assigned'}</span>
                     </div>
-                    <div className='flex justify-between border border-b-0 border-black p-2 px-2'>
+                    <div
+                      className={`flex justify-between border border-b-0 rounded-t-lg p-2 px-2 ${
+                        darkMode
+                          ? 'bg-[#18181B] border-[#545454] hover:bg-[#9e9e9e]/20 hover:border-[#9e9e9e]/20'
+                          : 'bg-white border-slate-300 hover:bg-[#ff9335]/10 hover:border-[#ff9335]/20'
+                      }`}
+                    >
                       <span>Total Members</span>
                       <span>{batchData.batchMembers?.length || 0} Members</span>
                     </div>
-                    <div className='flex justify-between border border-b-0 border-black p-2 px-2'>
+                    <div
+                      className={`flex justify-between border border-b-0 rounded-t-lg p-2 px-2 ${
+                        darkMode
+                          ? 'bg-[#18181B] border-[#545454] hover:bg-[#9e9e9e]/20 hover:border-[#9e9e9e]/20'
+                          : 'bg-white border-slate-300 hover:bg-[#ff9335]/10 hover:border-[#ff9335]/20'
+                      }`}
+                    >
                       <span>Status</span>
                       <span>{batchData.status}</span>
                     </div>
-                    <div className='flex justify-between border rounded-b-lg border-black p-2 px-2'>
+                    <div
+                      className={`flex justify-between border border-b-0 rounded-t-lg p-2 px-2 ${
+                        darkMode
+                          ? 'bg-[#18181B] border-[#545454] hover:bg-[#9e9e9e]/20 hover:border-[#9e9e9e]/20'
+                          : 'bg-white border-slate-300 hover:bg-[#ff9335]/10 hover:border-[#ff9335]/20'
+                      }`}
+                    >
                       <span>Batch ID</span>
                       <span>{batchData.id}</span>
                     </div>
@@ -477,18 +510,20 @@ function BatchPage() {
                 }`}
               >
                 {noticesLoading ? (
-                  <div className="flex justify-center py-8">
-                    <div className="text-center">
-                      <div className="spinner mx-auto"></div>
-                      <p className="mt-2 text-sm text-gray-500">Loading notices...</p>
+                  <div className='flex justify-center py-8'>
+                    <div className='text-center'>
+                      <div className='spinner mx-auto'></div>
+                      <p className='mt-2 text-sm text-gray-500'>
+                        Loading notices...
+                      </p>
                     </div>
                   </div>
                 ) : noticesError ? (
-                  <div className="text-center py-8 text-red-500">
+                  <div className='text-center py-8 text-red-500'>
                     {noticesError}
                   </div>
                 ) : notices.length === 0 ? (
-                  <div className="text-center py-8 text-gray-500">
+                  <div className='text-center py-8 text-gray-500'>
                     No notices found. {isAdmin && 'Create the first notice!'}
                   </div>
                 ) : (
@@ -505,42 +540,46 @@ function BatchPage() {
                             : 'bg-white border-slate-300 hover:bg-[#ff9335]/10 hover:border-[#ff9335]/20'
                         } transition-all duration-200`}
                       >
-                        <span className='text-lg font-semibold'>{notice.title}</span>
+                        <span className='text-lg font-semibold'>
+                          {notice.title}
+                        </span>
                         <span className='text-sm'>{notice.content}</span>
-                        <span className="text-sm font-semibold flex items-center gap-1">
-                          <i className="ri-user-line"></i>
-                          <span className="font-normal text-xs flex items-center gap-1">
+                        <span className='text-sm font-semibold flex items-center gap-1'>
+                          <i className='ri-user-line'></i>
+                          <span className='font-normal text-xs flex items-center gap-1'>
                             {notice.createdBy?.name || 'Unknown User'}
                             <span>,</span>
-                            <i className="ri-time-line"></i>
+                            <i className='ri-time-line'></i>
                             {notice.updateAt
-                              ? new Date(notice.updateAt).toLocaleDateString('en-IN', {
-                                  year: 'numeric',
-                                  month: 'short',
-                                  day: 'numeric',
-                                  hour: '2-digit',
-                                  minute: '2-digit',
-                                  hour12: true,
-                                })
+                              ? new Date(notice.updateAt).toLocaleDateString(
+                                  'en-IN',
+                                  {
+                                    year: 'numeric',
+                                    month: 'short',
+                                    day: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                    hour12: true,
+                                  },
+                                )
                               : 'Date not available'}
                           </span>
                         </span>
                         {/* Type Badge */}
-<div
-  className={`absolute top-2 right-6 rounded-md px-2 py-1 text-xs font-semibold flex items-center gap-1 ${
-    notice.type === 'PINNED'
-      ? 'bg-green-200 text-green-700'
-      : ''
-  }`}
->
-  {notice.type === 'PINNED' && (
-    <>
-      <i className="ri-pushpin-fill"></i>
-      <span>PINNED</span>
-    </>
-  )}
-</div>
-
+                        <div
+                          className={`absolute top-2 right-6 rounded-md px-2 py-1 text-xs font-semibold flex items-center gap-1 ${
+                            notice.type === 'PINNED'
+                              ? 'bg-green-200 text-green-700'
+                              : ''
+                          }`}
+                        >
+                          {notice.type === 'PINNED' && (
+                            <>
+                              <i className='ri-pushpin-fill'></i>
+                              <span>PINNED</span>
+                            </>
+                          )}
+                        </div>
 
                         {/* Edit Button*/}
                         {isAdmin && (
@@ -552,7 +591,7 @@ function BatchPage() {
                                 : 'hover:bg-black/10 text-black'
                             }`}
                           >
-                            <i className="ri-edit-line"></i>
+                            <i className='ri-edit-line'></i>
                           </button>
                         )}
                       </div>
@@ -593,7 +632,7 @@ function BatchPage() {
           </div>
         </div>
       )}
-      
+
       {/* Edit Notice Modal */}
       {showEditModal && selectedNotice && (
         <EditNoticeModal

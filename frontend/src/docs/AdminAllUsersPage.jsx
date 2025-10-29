@@ -3,7 +3,7 @@ import { userService } from '../services/api.js';
 import { useTheme } from '../context/ThemeContext.jsx';
 
 const AdminAllUsersPage = () => {
-  const { darkMode } = useTheme();
+  const { darkMode, toggleTheme } = useTheme();
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -59,10 +59,40 @@ const AdminAllUsersPage = () => {
 
   return (
     <div className='p-6 max-w-6xl relative flex flex-col items-center'>
-      <h2 className='text-3xl font-semibold mb-6 text-center text-gray-800'>
+      <button
+        className='fixed z-10 right-12'
+        onClick={toggleTheme}
+        style={{
+          width: '32px',
+          height: '32px',
+          borderRadius: '50%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          cursor: 'pointer',
+        }}
+      >
+        <i
+          className={`ri-${darkMode ? 'sun' : 'moon'}-fill`}
+          style={{
+            color: `${darkMode ? '#ffffff' : '#000000'}`,
+            fontSize: '18px',
+          }}
+        ></i>
+      </button>
+
+      <h2
+        className={`text-3xl font-semibold mb-6 text-center ${
+          darkMode ? 'text-white' : 'text-gray-600'
+        }`}
+      >
         All Students
       </h2>
-      <p className='text-sm font-semibold text-center mb-4 text-gray-500'>
+      <p
+        className={`text-sm font-semibold text-center mb-4 ${
+          darkMode ? 'text-white/70' : 'text-gray-500'
+        }`}
+      >
         You can view all students on the platform here and also change their
         roles.
       </p>
