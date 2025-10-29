@@ -123,27 +123,6 @@ function BatchPage() {
       style={{ padding: '0rem 1.5rem 1.5rem 1.5rem' }}
       className='parkinsans-light'
     >
-      {/* Navigation*/}
-      <div className='sticky top-0 w-full bg-white text-black p-2 flex items-center justify-between shadow-sm z-50 '>
-        <div className='flex gap-1'>
-          <button
-            onClick={() => navigate(-1)}
-            className='bg-slate-300 rounded-md p-1 text-xl pl-2 pr-2 cursor-pointer'
-          >
-            <i className='ri-arrow-left-line'></i>
-          </button>
-          <button
-            onClick={() => navigate(1)}
-            className='bg-slate-300 rounded-md p-1 text-xl pl-2 pr-2 cursor-pointer'
-          >
-            <i className='ri-arrow-right-line'></i>
-          </button>
-        </div>
-        <div className='w-full h-full text-center flex flex-col items-center font-semibold text-xl'>
-          <span>{batchData?.name || 'Loading...'}</span>
-        </div>
-      </div>
-
       {loading ? (
         <div className='flex items-center justify-center min-h-[60vh]'>
           <div className='text-center'>
@@ -211,9 +190,29 @@ function BatchPage() {
         </div>
       ) : batchData ? (
         <div className='max-w-7xl mx-auto'>
+          {/* Navigation*/}
+      <div className='sticky top-0 w-full bg-white text-black p-2 flex items-center justify-between shadow-sm z-50 '>
+        <div className='flex gap-1'>
+          <button
+            onClick={() => navigate(-1)}
+            className='bg-slate-300 rounded-md p-1 text-xl pl-2 pr-2 cursor-pointer'
+          >
+            <i className='ri-arrow-left-line'></i>
+          </button>
+          <button
+            onClick={() => navigate(1)}
+            className='bg-slate-300 rounded-md p-1 text-xl pl-2 pr-2 cursor-pointer'
+          >
+            <i className='ri-arrow-right-line'></i>
+          </button>
+        </div>
+        <div className='w-full h-full text-center flex flex-col items-center font-semibold text-xl'>
+          <span>{batchData.name}</span>
+        </div>
+      </div>
           {/* Header Section with Banner */}
           <div
-            className={`relative rounded-2xl overflow-hidden mb-6 ${
+            className={`relative overflow-hidden mb-6 ${
               darkMode ? 'bg-[#2b2d31]' : 'bg-white border border-gray-200'
             }`}
           >
