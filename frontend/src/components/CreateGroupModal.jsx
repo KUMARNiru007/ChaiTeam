@@ -100,24 +100,19 @@ const CreateGroupModal = ({
     setLoading(true);
     try {
       // Upload images if provided
-      let logoImageUrl = null;
-      let groupImageUrl = null;
 
-      if (logoImage) {
-        logoImageUrl = await uploadToCloudinary(logoImage);
-      }
-
-      if (groupImage) {
-        groupImageUrl = await uploadToCloudinary(groupImage);
-      }
+      const [uploadedLogo, uploadedBanner] = await Promise.all([
+        uploadToCloudinary(logoImage),
+        uploadToCloudinary(groupImage),
+      ]);
 
       const payload = {
         name: formData.name,
         description: formData.description,
         tags: formData.tags.split(',').map((tag) => tag.trim()),
         batchId: batchId,
-        logoImageUrl: logoImageUrl,
-        groupImageUrl: groupImageUrl,
+        logoImageUrl: uploadedLogo,
+        groupImageUrl: uploadedBanner,
         status: formData.status,
       };
 

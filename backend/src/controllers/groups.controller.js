@@ -3,7 +3,8 @@ import { ApiResponse } from '../utils/ApiResponse.js';
 import { ApiError } from '../utils/ApiError.js';
 export const createGroup = async (req, res) => {
   try {
-    const { name, description, tags, batchId } = req.body;
+    const { name, description, tags, batchId, logoImageUrl, groupImageUrl } =
+      req.body;
     const userId = req.user.id;
     const batchName = req.batch.name;
 
@@ -34,6 +35,8 @@ export const createGroup = async (req, res) => {
         batchName,
         capacity: 1,
         leader_id: req.user.id,
+        logoImageUrl,
+        groupImageUrl,
         member: {
           create: {
             userId,

@@ -24,6 +24,7 @@ const Groups = ({ batchId }) => {
       try {
         setLoading(true);
         const data = await groupService.getBatchGroups(batchId);
+        console.log('Groups Data: ', data);
         setGroupsData(data);
         setError(null);
       } catch (err) {
