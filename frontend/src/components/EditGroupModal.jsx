@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { uploadToCloudinary } from '../utils/cloudinaryImageUpload.js';
+import { useTheme } from '../context/ThemeContext.jsx';
 
 const EditGroupModal = ({ group, onClose, onSave }) => {
   const [name, setName] = useState(group?.name || '');
@@ -16,6 +17,9 @@ const EditGroupModal = ({ group, onClose, onSave }) => {
   const [loading, setLoading] = useState(false);
   const [dragOverLogo, setDragOverLogo] = useState(false);
   const [dragOverBanner, setDragOverBanner] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+
+  const { darkMode } = useTheme();
 
   // Handle file selection
   const handleFileChange = (file, field) => {
@@ -154,6 +158,7 @@ const EditGroupModal = ({ group, onClose, onSave }) => {
   };
 
   const handleDelete = async () => {
+    setDeleteLoading(true);
     if (window.confirm('Are you sure you want to delete this group?')) {
       try {
         await onSave(group.id, null); // Pass null as payload to indicate deletion
@@ -161,13 +166,19 @@ const EditGroupModal = ({ group, onClose, onSave }) => {
       } catch (err) {
         console.error('Error deleting group:', err);
         alert('Failed to delete group.');
+      } finally {
+        setDeleteLoading(false);
       }
     }
   };
 
   return (
     <div className='fixed inset-0 flex items-center justify-center bg-black/40 z-50'>
-      <div className='bg-white p-6 rounded-xl w-[700px] relative shadow-lg max-h-[90vh] overflow-y-auto'>
+      <div
+        className={`p-6 rounded-xl w-[700px] relative shadow-lg max-h-[90vh] overflow-y-auto ${
+          darkMode ? 'bg-[#18181B] text-white' : 'bg-white text-black'
+        }`}
+      >
         <h2 className='text-xl font-semibold mb-6 text-center'>Edit group</h2>
 
         <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
@@ -177,7 +188,7 @@ const EditGroupModal = ({ group, onClose, onSave }) => {
             <div className='space-y-4'>
               {/* Name */}
               <div>
-                <label className='block text-sm font-medium text-gray-700 mb-2'>
+                <label className='block text-sm font-medium mb-2'>
                   Group Name <span className='text-red-500'>*</span>
                 </label>
                 <input
@@ -185,21 +196,29 @@ const EditGroupModal = ({ group, onClose, onSave }) => {
                   placeholder='Enter group name'
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className='w-full border border-gray-300 p-3 rounded-lg'
+                  className={`w-full border p-3 rounded-lg ${
+                    darkMode
+                      ? 'bg-[#27272A] text-white border-white/30'
+                      : 'border-gray-300 bg-white text-gray-900'
+                  }`}
                   required
                 />
               </div>
 
               {/* Description */}
               <div>
-                <label className='block text-sm font-medium text-gray-700 mb-2'>
+                <label className='block text-sm font-medium mb-2'>
                   Group Description <span className='text-red-500'>*</span>
                 </label>
                 <textarea
                   placeholder='Enter group description'
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  className='w-full border border-gray-300 p-3 rounded-lg  h-32 resize-none'
+                  className={`w-full border p-3 rounded-lg  h-32 resize-none ${
+                    darkMode
+                      ? 'bg-[#27272A] text-white border-white/30'
+                      : 'border-gray-300 bg-white text-gray-900'
+                  }`}
                   rows={4}
                   required
                 />
@@ -207,13 +226,17 @@ const EditGroupModal = ({ group, onClose, onSave }) => {
 
               {/* Status */}
               <div>
-                <label className='block text-sm font-medium text-gray-700 mb-2'>
+                <label className='block text-sm font-medium mb-2'>
                   Status <span className='text-red-500'>*</span>
                 </label>
                 <select
                   value={status}
                   onChange={(e) => setStatus(e.target.value)}
-                  className='w-full border border-gray-300 p-3 rounded-lg '
+                  className={`w-full border p-3 rounded-lg ${
+                    darkMode
+                      ? 'bg-[#27272A] text-white border-white/30'
+                      : 'border-gray-300 bg-white text-gray-900'
+                  }`}
                 >
                   <option value='ACTIVE'>Active</option>
                   <option value='INACTIVE'>Inactive</option>
@@ -223,7 +246,7 @@ const EditGroupModal = ({ group, onClose, onSave }) => {
 
               {/* Tags */}
               <div>
-                <label className='block text-sm font-medium text-gray-700 mb-2'>
+                <label className='block text-sm font-medium mb-2'>
                   Tags <span className='text-red-500'>*</span>
                 </label>
                 <input
@@ -233,7 +256,11 @@ const EditGroupModal = ({ group, onClose, onSave }) => {
                   onChange={handleTagInput}
                   onBlur={handleTagInputBlur}
                   onKeyDown={handleTagInputKeyDown}
-                  className='w-full border border-gray-300 p-3 rounded-lg '
+                  className={`w-full border p-3 rounded-lg ${
+                    darkMode
+                      ? 'bg-[#27272A] text-white border-white/30'
+                      : 'border-gray-300 bg-white text-gray-900'
+                  }`}
                 />
                 <p className='text-xs text-gray-500 mt-1'>
                   Separate tags with commas or press Enter
@@ -277,10 +304,10 @@ const EditGroupModal = ({ group, onClose, onSave }) => {
                   onDrop={handleLogoDrop}
                   onClick={() => document.getElementById('logoInput').click()}
                   className={`border-2 border-dashed rounded-lg p-4 text-center cursor-pointer transition-all h-40 flex items-center justify-center ${
-                    dragOverLogo
-                      ? 'border-blue-500 bg-blue-50'
-                      : 'border-gray-300 hover:bg-gray-50'
-                  } ${previewLogo ? 'border-green-500' : ''}`}
+                    dragOverLogo ? 'border-blue-500 bg-blue-50' : ''
+                  } ${previewLogo ? 'border-green-500' : ''} ${
+                    darkMode ? 'hover:bg-[#27272A]' : 'hover:bg-gray-50'
+                  }`}
                 >
                   {previewLogo ? (
                     <div className='text-green-600'>
@@ -292,7 +319,11 @@ const EditGroupModal = ({ group, onClose, onSave }) => {
                       <p className='text-sm mt-2 font-semibold'>
                         {logoImage?.name || 'Logo Image'}
                       </p>
-                      <p className='text-xs mt-1 text-gray-600'>
+                      <p
+                        className={`text-xs mt-1 ${
+                          darkMode ? 'text-gray-400' : 'text-gray-600'
+                        }`}
+                      >
                         Click or drag to change
                       </p>
                     </div>
@@ -325,7 +356,7 @@ const EditGroupModal = ({ group, onClose, onSave }) => {
 
               {/* Banner */}
               <div>
-                <label className='block text-sm font-medium text-gray-700 mb-2'>
+                <label className='block text-sm font-medium mb-2'>
                   Banner Image <span className='text-red-500'>*</span>
                 </label>
 
@@ -336,10 +367,10 @@ const EditGroupModal = ({ group, onClose, onSave }) => {
                   onDrop={handleBannerDrop}
                   onClick={() => document.getElementById('bannerInput').click()}
                   className={`border-2 border-dashed rounded-lg p-4 text-center cursor-pointer transition-all h-40 flex items-center justify-center ${
-                    dragOverBanner
-                      ? 'border-blue-500 bg-blue-50'
-                      : 'border-gray-300 hover:bg-gray-50'
-                  } ${previewBanner ? 'border-green-500' : ''}`}
+                    dragOverBanner ? 'border-blue-500 bg-blue-50' : ''
+                  } ${previewBanner ? 'border-green-500' : ''} ${
+                    darkMode ? 'hover:bg-[#27272A]' : 'hover:bg-gray-50'
+                  }`}
                 >
                   {previewBanner ? (
                     <div className='text-green-600'>
@@ -351,7 +382,11 @@ const EditGroupModal = ({ group, onClose, onSave }) => {
                       <p className='text-sm mt-2 font-semibold'>
                         {bannerImage?.name || 'Banner Image'}
                       </p>
-                      <p className='text-xs mt-1 text-gray-600'>
+                      <p
+                        className={`text-xs mt-1 ${
+                          darkMode ? 'text-gray-400' : 'text-gray-600'
+                        }`}
+                      >
                         Click or drag to change
                       </p>
                     </div>
@@ -389,10 +424,11 @@ const EditGroupModal = ({ group, onClose, onSave }) => {
             {/* Delete button on the left */}
             <button
               type='button'
+              disabled={deleteLoading}
               onClick={handleDelete}
-              className='px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white transition-all font-medium cursor-pointer'
+              className='px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white transition-all font-medium cursor-pointer disabled:bg-gray-400'
             >
-              Delete group
+              {deleteLoading ? 'Deleting..' : 'Delete group'}
             </button>
 
             {/* Cancel and Save buttons on the right */}
@@ -400,7 +436,11 @@ const EditGroupModal = ({ group, onClose, onSave }) => {
               <button
                 type='button'
                 onClick={onClose}
-                className='px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 transition-all font-medium'
+                className={`px-4 py-2 rounded-lg border transition-all font-medium ${
+                  darkMode
+                    ? 'border-white/30 hover:bg-[#27272A]'
+                    : 'border-gray-300 hover:bg-gray-100'
+                }`}
               >
                 Cancel
               </button>

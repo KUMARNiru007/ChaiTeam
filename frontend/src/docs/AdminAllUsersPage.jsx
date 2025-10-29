@@ -181,7 +181,11 @@ const AdminAllUsersPage = () => {
 
             <button
               onClick={handleCloseModal}
-              className='w-full mt-3 border border-gray-400 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition cursor-pointer'
+              className={`w-full mt-3 border py-2 rounded-lg transition cursor-pointer ${
+                darkMode
+                  ? 'border-white/30 hover:bg-[#27272A]'
+                  : 'border-gray-300 hover:bg-gray-100'
+              }`}
             >
               Close
             </button>

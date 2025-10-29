@@ -369,7 +369,7 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
                       cursor-pointer transition-all duration-200 flex items-center gap-2'
             >
               <i className='ri-add-line'></i>
-              Create Notice
+              Add Notice
             </button>
           ) : (
             <button
@@ -1007,14 +1007,18 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
       {/* Join group Modal */}
       {joinGroupModal && (
         <div className='fixed inset-0 flex items-center justify-center bg-black/40 z-50'>
-          <div className='bg-white p-6 rounded-xl relative shadow-lg w-[500px]'>
+          <div
+            className={`p-6 rounded-xl relative shadow-lg w-[500px] ${
+              darkMode ? 'bg-[#18181B] text-white' : 'bg-white text-black'
+            }`}
+          >
             <h2 className='text-xl font-semibold mb-6 text-center'>
               Wanted to Join?
             </h2>
 
             <form onSubmit={handleSubmit} className='flex flex-col mt-3'>
               <div>
-                <label className='block text-sm font-medium text-gray-700 mb-2'>
+                <label className='block text-sm font-medium mb-2'>
                   Why should we Add You? <span className='text-red-500'>*</span>
                 </label>
                 <textarea
@@ -1033,7 +1037,11 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
                   <button
                     type='button'
                     onClick={handleOnClose}
-                    className='px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 transition-all font-medium'
+                    className={`px-4 py-2 rounded-lg border transition-all font-medium ${
+                      darkMode
+                        ? 'border-white/30 hover:bg-[#27272A]'
+                        : 'border-gray-300 hover:bg-gray-100'
+                    }`}
                   >
                     Cancel
                   </button>
@@ -1054,14 +1062,18 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
       {/* Leave Group Modal */}
       {leaveGroupModal && (
         <div className='fixed inset-0 flex items-center justify-center bg-black/40 z-50'>
-          <div className='bg-white p-6 rounded-xl relative shadow-lg w-[500px]'>
+          <div
+            className={`p-6 rounded-xl relative shadow-lg w-[500px] ${
+              darkMode ? 'bg-[#18181B] text-white' : 'bg-white text-black'
+            }`}
+          >
             <h2 className='text-xl font-semibold mb-6 text-center'>
               Leave Group
             </h2>
 
             <form onSubmit={handleleaveGroup} className='flex flex-col mt-3'>
               <div>
-                <label className='block text-sm font-medium text-gray-700 mb-2'>
+                <label className='block text-sm font-medium mb-2'>
                   Why do you wanted to Leave?{' '}
                   <span className='text-red-500'>*</span>
                 </label>
@@ -1081,7 +1093,11 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
                   <button
                     type='button'
                     onClick={() => handleCloseLeaveGroupModal()}
-                    className='px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 transition-all font-medium'
+                    className={`px-4 py-2 rounded-lg border transition-all font-medium ${
+                      darkMode
+                        ? 'border-white/30 hover:bg-[#27272A]'
+                        : 'border-gray-300 hover:bg-gray-100'
+                    }`}
                   >
                     Cancel
                   </button>
@@ -1102,14 +1118,18 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
       {/* kick Memeber Modal */}
       {openKickMemberModal && (
         <div className='fixed inset-0 flex items-center justify-center bg-black/40 z-50'>
-          <div className='bg-white p-6 rounded-xl relative shadow-lg w-[500px]'>
+          <div
+            className={`p-6 rounded-xl relative shadow-lg w-[500px] ${
+              darkMode ? 'bg-[#18181B] text-white' : 'bg-white text-black'
+            }`}
+          >
             <h2 className='text-xl font-semibold mb-6 text-center'>
               Kick Member
             </h2>
 
             <form onSubmit={handleKickMember} className='flex flex-col mt-3'>
               <div>
-                <label className='block text-sm font-medium text-gray-700 mb-2'>
+                <label className='block text-sm font-medium mb-2'>
                   Why do you wanted to Kick?{' '}
                   <span className='text-red-500'>*</span>
                 </label>
@@ -1129,7 +1149,11 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
                   <button
                     type='button'
                     onClick={() => handleCloseKickModal()}
-                    className='px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 transition-all font-medium'
+                    className={`px-4 py-2 rounded-lg border transition-all font-medium ${
+                      darkMode
+                        ? 'border-white/30 hover:bg-[#27272A]'
+                        : 'border-gray-300 hover:bg-gray-100'
+                    }`}
                   >
                     Cancel
                   </button>
