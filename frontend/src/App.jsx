@@ -7,7 +7,6 @@ import Batches from './docs/Batches';
 import BatchPage from './docs/BatchPage';
 import Groups from './docs/Groups';
 import GroupPage from './docs/GroupPage';
-import Docs from './Layout/Docs';
 import Profile from './pages/Profile';
 import LoginPage from './pages/LoginPage';
 import NotFound from './pages/NotFound';
