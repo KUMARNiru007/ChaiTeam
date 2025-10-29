@@ -5,6 +5,7 @@ import { batchService, groupService, noticeService, userService } from '../servi
 import Groups from './Groups';
 import EditNoticeModal from '../components/EditNoticeModal.jsx';
 import CreateNoticeModal from '../components/CreateNoticeModel.jsx';
+import CreateGroupModal from '../components/CreateGroupModal.jsx';
 
 function BatchPage() {
   const { batchId } = useParams();
@@ -21,6 +22,7 @@ function BatchPage() {
   const [selectedNotice, setSelectedNotice] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
 
   const { darkMode, toggleTheme } = useTheme();
@@ -42,6 +44,21 @@ function BatchPage() {
 
   const handleCreateNotice = (newNotice) => {
     setNotices([newNotice, ...notices]);
+  };
+
+  const handleCreateGroup = () => {
+    // Refresh user group data after creating a group
+    refreshUserGroup();
+    setShowCreateGroupModal(false);
+  };
+
+  const refreshUserGroup = async () => {
+    try {
+      const group = await groupService.getUserGroup(batchId).catch(() => null);
+      setUserGroup(group);
+    } catch (err) {
+      console.error('Failed to refresh user group:', err);
+    }
   };
 
   const refreshNotices = async () => {
@@ -358,7 +375,7 @@ function BatchPage() {
             ))}
             {/* Create Notice Button for Admin */}
                 {isAdmin && (
-                  <div className="absolute right-10 mb-4 ">
+                  <div className="absolute right-10 top-86 mb-4 ">
                     <button
                       onClick={() => setShowCreateModal(true)}
                       className="px-4 py-2 bg-[var(--chaiteam-orange)] text-white rounded-xl hover:bg-[var(--chaiteam-orange)]/90 
@@ -366,6 +383,19 @@ function BatchPage() {
                     >
                       <i className="ri-add-line"></i>
                       Create Notice
+                    </button>
+                  </div>
+                )}
+                {/* Add Create Group button only show if user doesn't have a group */}
+                {!userGroup && (
+                  <div className="mb-4 absolute right-55 top-86 ">
+                    <button
+                      onClick={() => setShowCreateGroupModal(true)}
+                      className="px-4 py-2 bg-[var(--chaiteam-info)] text-white rounded-xl hover:bg-[var(--chaiteam-info)]/90 
+                      cursor-pointer transition-all duration-200 flex items-center gap-2"
+                    >
+                      <i className="ri-add-line"></i>
+                      Create Group
                     </button>
                   </div>
                 )}
@@ -557,6 +587,17 @@ function BatchPage() {
           userGroup={userGroup}
           onClose={() => setShowCreateModal(false)}
           onCreate={handleCreateNotice}
+        />
+      )}
+
+      {/* Create Group Modal */}
+      {showCreateGroupModal && (
+        <CreateGroupModal
+          isOpen={showCreateGroupModal}
+          onClose={() => setShowCreateGroupModal(false)}
+          batchId={batchId}
+          batchName={batchData?.name}
+          onCreateGroup={handleCreateGroup}
         />
       )}
     </div>

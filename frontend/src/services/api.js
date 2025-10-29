@@ -98,6 +98,17 @@ export const batchService = {
 
 // Groups API services
 export const groupService = {
+  // Add createGroup method here
+  createGroup: async (payload) => {
+    try {
+      const response = await axiosInstance.post('/groups/createGroup', payload);
+      return response.data.Data;
+    } catch (error) {
+      console.error('Error creating group:', error);
+      throw error;
+    }
+  },
+
   getAllGroups: async () => {
     try {
       const response = await axiosInstance.get('/groups/getAllGroups');
