@@ -113,9 +113,30 @@ function BatchPage() {
 
   return (
     <div
-      className='parkinsans-light min-h-screen transition-all duration-200'
-      style={{ padding: '1.5rem' }}
+      style={{ padding: '0rem 1.5rem 1.5rem 1.5rem' }}
+      className='parkinsans-light'
     >
+      {/* Navigation*/}
+      <div className='sticky top-0 w-full bg-white text-black p-2 flex items-center justify-between shadow-sm z-50 '>
+        <div className='flex gap-1'>
+          <button
+            onClick={() => navigate(-1)}
+            className='bg-slate-300 rounded-md p-1 text-xl pl-2 pr-2 cursor-pointer'
+          >
+            <i className='ri-arrow-left-line'></i>
+          </button>
+          <button
+            onClick={() => navigate(1)}
+            className='bg-slate-300 rounded-md p-1 text-xl pl-2 pr-2 cursor-pointer'
+          >
+            <i className='ri-arrow-right-line'></i>
+          </button>
+        </div>
+        <div className='w-full h-full text-center flex flex-col items-center font-semibold text-xl'>
+          <span>{batchData?.name || 'Loading...'}</span>
+        </div>
+      </div>
+
       {loading ? (
         <div className='flex items-center justify-center min-h-[60vh]'>
           <div className='text-center'>
@@ -356,49 +377,52 @@ function BatchPage() {
             </div>
           </div>
 
-          {/* Tabs */}
-          <div className='flex gap-4 mb-4 mt-4 border-b border-gray-200'>
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`px-4 py-2 font-semibold transition rounded-t-lg ${
-                  activeTab === tab.id
-                    ? 'border-b-2 border-[var(--chaiteam-orange)] text-[var(--chaiteam-orange)]'
-                    : darkMode
-                    ? 'text-gray-400 hover:text-gray-200'
-                    : 'text-gray-500 hover:text-gray-700'
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-            {/* Create Notice Button for Admin */}
-                {isAdmin && (
-                  <div className="absolute right-10 top-86 mb-4 ">
-                    <button
-                      onClick={() => setShowCreateModal(true)}
-                      className="px-4 py-2 bg-[var(--chaiteam-orange)] text-white rounded-xl hover:bg-[var(--chaiteam-orange)]/90 
-                      cursor-pointer transition-all duration-200 flex items-center gap-2"
-                    >
-                      <i className="ri-add-line"></i>
-                      Create Notice
-                    </button>
-                  </div>
-                )}
-                {/* Add Create Group button only show if user doesn't have a group */}
-                {!userGroup && (
-                  <div className="mb-4 absolute right-55 top-86 ">
-                    <button
-                      onClick={() => setShowCreateGroupModal(true)}
-                      className="px-4 py-2 bg-[var(--chaiteam-info)] text-white rounded-xl hover:bg-[var(--chaiteam-info)]/90 
-                      cursor-pointer transition-all duration-200 flex items-center gap-2"
-                    >
-                      <i className="ri-add-line"></i>
-                      Create Group
-                    </button>
-                  </div>
-                )}
+          {/* Tabs Section with Action Buttons */}
+          <div className='relative mb-4 mt-4'>
+            <div className='flex gap-4 border-b border-gray-200'>
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`px-4 py-2 font-semibold transition rounded-t-lg ${
+                    activeTab === tab.id
+                      ? 'border-b-2 border-[var(--chaiteam-orange)] text-[var(--chaiteam-orange)]'
+                      : darkMode
+                      ? 'text-gray-400 hover:text-gray-200'
+                      : 'text-gray-500 hover:text-gray-700'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Action Buttons */}
+            <div className='absolute right-0 top-0 flex gap-2'>
+              {/* Create Group button - only show if user doesn't have a group */}
+              {!userGroup && (
+                <button
+                  onClick={() => setShowCreateGroupModal(true)}
+                  className="px-4 py-2 bg-[var(--chaiteam-info)] text-white rounded-xl hover:bg-[var(--chaiteam-info)]/90 
+                  cursor-pointer transition-all duration-200 flex items-center gap-2"
+                >
+                  <i className="ri-add-line"></i>
+                  Create Group
+                </button>
+              )}
+              
+              {/* Create Notice Button for Admin */}
+              {isAdmin && (
+                <button
+                  onClick={() => setShowCreateModal(true)}
+                  className="px-4 py-2 bg-[var(--chaiteam-orange)] text-white rounded-xl hover:bg-[var(--chaiteam-orange)]/90 
+                  cursor-pointer transition-all duration-200 flex items-center gap-2"
+                >
+                  <i className="ri-add-line"></i>
+                  Create Notice
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Tab Content */}
