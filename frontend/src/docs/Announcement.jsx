@@ -6,7 +6,7 @@ import EditNoticeModal from "../components/EditNoticeModal.jsx";
 import CreateNoticeModal from "../components/CreateNoticeModel.jsx";
 
 const Announcement = () => {
-  const { darkMode, toggleTheme } = useTheme();
+  const { darkMode} = useTheme();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedType, setSelectedType] = useState("all");
   const [noticesData, setNoticesData] = useState([]);
@@ -17,9 +17,6 @@ const Announcement = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
 
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light');
-  }, [darkMode]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -140,29 +137,6 @@ const Announcement = () => {
               Add Notice
             </button>
           )}
-
-          {/* Theme Toggle Button */}
-          <button
-           className="fixed z-10 right-12"
-            onClick={toggleTheme}
-            style={{
-              width: "32px",
-              height: "32px",
-              borderRadius: "50%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-            }}
-          >
-            <i
-              className={`ri-${darkMode ? "sun" : "moon"}-fill`}
-              style={{
-                color: `${darkMode ? "#ffffff" : "#000000"}`,
-                fontSize: "18px",
-              }}
-            ></i>
-          </button>
         </div>
       </div>
 

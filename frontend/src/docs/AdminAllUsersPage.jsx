@@ -3,7 +3,7 @@ import { userService } from '../services/api.js';
 import { useTheme } from '../context/ThemeContext.jsx';
 
 const AdminAllUsersPage = () => {
-  const { darkMode, toggleTheme } = useTheme();
+  const { darkMode} = useTheme();
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -59,28 +59,6 @@ const AdminAllUsersPage = () => {
 
   return (
     <div className='p-6 max-w-6xl relative flex flex-col items-center'>
-      <button
-        className='fixed z-10 right-12'
-        onClick={toggleTheme}
-        style={{
-          width: '32px',
-          height: '32px',
-          borderRadius: '50%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          cursor: 'pointer',
-        }}
-      >
-        <i
-          className={`ri-${darkMode ? 'sun' : 'moon'}-fill`}
-          style={{
-            color: `${darkMode ? '#ffffff' : '#000000'}`,
-            fontSize: '18px',
-          }}
-        ></i>
-      </button>
-
       <h2
         className={`text-3xl font-semibold mb-6 text-center ${
           darkMode ? 'text-white' : 'text-gray-600'

@@ -21,7 +21,7 @@ const Batches = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const { darkMode, toggleTheme } = useTheme();
+  const { darkMode} = useTheme();
 
   useEffect(() => {
     const fetchBatches = async () => {
@@ -253,28 +253,6 @@ const Batches = () => {
             Full view of your all batches and batches you joined.
           </p>
         </div>
-
-        <button
-          className='fixed z-10 right-12'
-          onClick={toggleTheme}
-          style={{
-            width: '32px',
-            height: '32px',
-            borderRadius: '50%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-          }}
-        >
-          <i
-            className={`ri-${darkMode ? 'sun' : 'moon'}-fill`}
-            style={{
-              color: `${darkMode ? '#ffffff' : '#000000'}`,
-              fontSize: '18px',
-            }}
-          ></i>
-        </button>
       </div>
 
       {/* Search Filters */}

@@ -31,7 +31,7 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
   const [reasonToleave, setReasonToleave] = useState('');
   const [editGroupModal, setEditGroupModal] = useState(false);
 
-  const { darkMode, toggleTheme } = useTheme();
+  const { darkMode} = useTheme();
   const navigate = useNavigate();
   const { authUser } = useAuthStore();
 
@@ -318,7 +318,7 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
               alt={group.name}
               className='w-full h-full object-cover'
             />
-            <div className='absolute inset-0 bg-gradient-to-t from-black/60 to-transparent'></div>
+            <div className='absolute inset-0 '></div>
           </div>
 
           <div className='absolute -bottom-16 left-0 right-0 p-6'>
@@ -341,17 +341,6 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
               </div>
             </div>
           </div>
-
-          <button
-            onClick={toggleTheme}
-            className={`absolute top-4 right-4 w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200 backdrop-blur-sm ${
-              darkMode
-                ? 'bg-black/30 hover:bg-black/40 text-white'
-                : 'bg-black/30 hover:bg-black/20 text-white'
-            }`}
-          >
-            <i className={`ri-${darkMode ? 'sun' : 'moon'}-fill text-lg`}></i>
-          </button>
         </div>
       </div>
 

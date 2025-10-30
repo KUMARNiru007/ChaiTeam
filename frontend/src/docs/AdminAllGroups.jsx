@@ -12,7 +12,7 @@ const AdminAllGroups = () => {
   const [selectedTag, setSelectedTag] = useState('All Tags');
   const [selectedBatchName, setSelectedBatchName] = useState('All Batches');
 
-  const { darkMode, toggleTheme } = useTheme();
+  const { darkMode} = useTheme();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -91,28 +91,6 @@ const AdminAllGroups = () => {
 
   return (
     <div className='realtive parkinsans-light text-center p-6'>
-      <button
-        className='fixed z-10 right-12'
-        onClick={toggleTheme}
-        style={{
-          width: '32px',
-          height: '32px',
-          borderRadius: '50%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          cursor: 'pointer',
-        }}
-      >
-        <i
-          className={`ri-${darkMode ? 'sun' : 'moon'}-fill`}
-          style={{
-            color: `${darkMode ? '#ffffff' : '#000000'}`,
-            fontSize: '18px',
-          }}
-        ></i>
-      </button>
-
       <div>
         <h2
           className={`text-3xl font-semibold ${

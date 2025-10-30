@@ -12,7 +12,7 @@ const Sidebar = () => {
   const [openProfileModal, setOpenProfileModal] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const { darkMode } = useTheme();
+   const { darkMode, toggleTheme } = useTheme();
   const profileModalRef = useRef(null);
 
   const navItems = [
@@ -155,7 +155,7 @@ const Sidebar = () => {
       {/* Profile Section at Bottom */}
       <div className='sidebar-bottom relative' ref={profileModalRef}>
         <button
-          className={`sidebar-nav-item profile-item ${
+          className={`sidebar-nav-item profile-item cursor-pointer ${
             openProfileModal ? 'active' : ''
           }`}
           onClick={() => setOpenProfileModal(!openProfileModal)}
@@ -209,7 +209,7 @@ const Sidebar = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0, duration: 0.5, ease: 'easeInOut' }}
-            className={`absolute -top-[140px] border-[1px] p-3 text-sm rounded-xl w-[250px] ${
+            className={`absolute bottom-[78px] border-[1px] p-3 text-sm rounded-xl w-[250px] ${
               darkMode
                 ? 'bg-[var(--chaiteam-bg-primary)] text-white border-white/30'
                 : 'bg-white'
@@ -261,6 +261,16 @@ const Sidebar = () => {
               >
                 My profile
               </NavLink>
+              <button 
+              onClick={toggleTheme} 
+              className={`w-full text-[15px] cursor-pointer px-1.5 py-1 rounded-md transition-all duration-200 flex justify-between ${
+                  darkMode
+                    ? 'hover:bg-[var(--chaiteam-bg-secondary)]/50 text-white hover:text-white'
+                    : 'hover:bg-gray-200'
+                }`}             
+              >
+                Toggle theme <i className={`ri-${darkMode ? 'sun' : 'moon'}-fill text-lg`}></i>
+              </button>
               <NavLink
                 to='/logout'
                 onClick={() => setOpenProfileModal(!openProfileModal)}

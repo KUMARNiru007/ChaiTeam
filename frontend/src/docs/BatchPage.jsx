@@ -30,7 +30,7 @@ function BatchPage() {
   const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
 
-  const { darkMode, toggleTheme } = useTheme();
+  const { darkMode } = useTheme();
 
   const handleEditNotice = (notice) => {
     setSelectedNotice(notice);
@@ -152,7 +152,7 @@ function BatchPage() {
                 darkMode ? 'text-gray-400' : 'text-gray-600'
               }`}
             >
-              Loading batch details...
+              Loading Batch details...
             </p>
           </div>
         </div>
@@ -263,19 +263,7 @@ function BatchPage() {
                   </p>
                 </div>
               </div>
-            </div>
-
-            {/* Theme Toggle Button */}
-            <button
-              onClick={toggleTheme}
-              className={`absolute top-4 right-4 w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200 backdrop-blur-sm ${
-                darkMode
-                  ? 'bg-white/10 hover:bg-white/20 text-white'
-                  : 'bg-black/10 hover:bg-black/20 text-white'
-              }`}
-            >
-              <i className={`ri-${darkMode ? 'sun' : 'moon'}-fill text-lg`}></i>
-            </button>
+            </div>           
           </div>
 
           {/* Quick Stats */}
