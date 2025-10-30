@@ -143,12 +143,12 @@ const Announcement = () => {
 
           {/* Theme Toggle Button */}
           <button
+           className="fixed z-10 right-12"
             onClick={toggleTheme}
             style={{
               width: "32px",
               height: "32px",
               borderRadius: "50%",
-              marginRight: "2rem",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
