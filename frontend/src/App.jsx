@@ -12,6 +12,7 @@ import LoginPage from './pages/LoginPage';
 import NotFound from './pages/NotFound';
 import Dashboard from './docs/Dashboard';
 import Announcement from './docs/Announcement.jsx';
+import AllApplications from './docs/AllApplications.jsx';
 
 import GroupPageWrapper from './components/GroupPageWrapper.jsx';
 import AdminBatchPage from './docs/AdminBatchesPage.jsx';
@@ -53,6 +54,7 @@ function App() {
         <Route path='/batches/:batchId' element={<BatchPage />} />
         <Route path='/batches/:batchId/groups' element={<Groups />} />
         <Route path='/groups/:groupId' element={<GroupPageWrapper />} />
+        <Route path='/allApplications' element={<AllApplications />} />
         <Route path='/create-batch' element={<AdminBatchPage />} />
         <Route path='/allUsers' element={<AdminAllUsersPage />} />
         <Route path='/allGroups' element={<AdminAllGroups />} />

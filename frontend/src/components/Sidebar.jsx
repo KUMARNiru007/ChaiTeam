@@ -12,7 +12,7 @@ const Sidebar = () => {
   const [openProfileModal, setOpenProfileModal] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
-   const { darkMode, toggleTheme } = useTheme();
+  const { darkMode, toggleTheme } = useTheme();
   const profileModalRef = useRef(null);
 
   const navItems = [
@@ -22,6 +22,11 @@ const Sidebar = () => {
       path: '/announcement',
       label: 'Announcement',
       icon: 'ri-megaphone-line',
+    },
+    {
+      path: '/allApplications',
+      label: 'All Applications',
+      icon: 'ri-mail-unread-line',
     },
   ];
   const adminNavItems = [
@@ -261,15 +266,18 @@ const Sidebar = () => {
               >
                 My profile
               </NavLink>
-              <button 
-              onClick={toggleTheme} 
-              className={`w-full text-[15px] cursor-pointer px-1.5 py-1 rounded-md transition-all duration-200 flex justify-between ${
+              <button
+                onClick={toggleTheme}
+                className={`w-full text-[15px] cursor-pointer px-1.5 py-1 rounded-md transition-all duration-200 flex justify-between ${
                   darkMode
                     ? 'hover:bg-[var(--chaiteam-bg-secondary)]/50 text-white hover:text-white'
                     : 'hover:bg-gray-200'
-                }`}             
+                }`}
               >
-                Toggle theme <i className={`ri-${darkMode ? 'sun' : 'moon'}-fill text-lg`}></i>
+                Toggle theme{' '}
+                <i
+                  className={`ri-${darkMode ? 'sun' : 'moon'}-fill text-lg`}
+                ></i>
               </button>
               <NavLink
                 to='/logout'

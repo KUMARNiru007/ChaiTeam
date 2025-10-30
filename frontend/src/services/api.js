@@ -208,6 +208,19 @@ export const groupService = {
     }
   },
 
+  getAllUserJoinApplications: async (userId) => {
+    try {
+      const resposne = await axiosInstance.get(
+        `/groups/userApplications/${userId}`,
+      );
+      // console.log('User Applications: ', resposne);
+      return resposne.data.Data;
+    } catch (error) {
+      console.error('Error while fetching all user applications: ', error);
+      throw error;
+    }
+  },
+
   rejectApplication: async (groupId, userId) => {
     try {
       const response = await axiosInstance.post(
@@ -216,6 +229,17 @@ export const groupService = {
       );
     } catch (error) {
       console.error('error while rejecting the Application: ', error);
+      throw error;
+    }
+  },
+
+  withdrawApplication: async (applicationId) => {
+    try {
+      const resposen = await axiosInstance.get(
+        `/groups/withdrawApplication/${applicationId}`,
+      );
+    } catch (error) {
+      console.error('Error while withdrawing the Application: ', error);
       throw error;
     }
   },
@@ -229,6 +253,17 @@ export const groupService = {
       console.log('Added Member: ', response.data.Data);
     } catch (error) {
       console.error('Error while adding user to the group: ', error);
+      throw error;
+    }
+  },
+
+  markReadApplication: async (applicationId) => {
+    try {
+      const resposen = await axiosInstance.get(
+        `/groups/deleteApplication/${applicationId}`,
+      );
+    } catch (error) {
+      console.error('Error while deleting the Application: ', error);
       throw error;
     }
   },

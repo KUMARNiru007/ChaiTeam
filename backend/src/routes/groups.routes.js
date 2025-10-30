@@ -7,10 +7,12 @@ import {
   deleteGroup,
   addMemberToGroup,
   ApplyToJoinGroup,
-  fetchAllJoinApplications,
   leaveGroup,
   kickMemberFromGroup,
   rejectJoinApplication,
+  fetchUserAllApplications,
+  fetchAllGroupApplications,
+  deleteApplication,
 } from '../controllers/groups.controller.js';
 
 import { authMiddleWare, CheckRole } from '../middleware/auth.middleware.js';
@@ -26,7 +28,22 @@ router.get(
   '/allApplications/:groupId',
   authMiddleWare,
   CheckRole,
-  fetchAllJoinApplications,
+  fetchAllGroupApplications,
+);
+router.get(
+  '/userApplications/:userId',
+  authMiddleWare,
+  fetchUserAllApplications,
+);
+router.get(
+  '/withdrawApplication/:applicationId',
+  authMiddleWare,
+  deleteApplication,
+);
+router.get(
+  '/deleteApplication/:applicationId',
+  authMiddleWare,
+  deleteApplication,
 );
 router.post(
   '/addMemberToGroup/:groupId',

@@ -162,7 +162,7 @@ export const ApplyToJoinGroup = async (req, res) => {
     }
 
     const alreadyApplied = await db.joinApplication.findFirst({
-      where: { userId: req.user.id, groupId },
+      where: { userId: req.user.id, groupId, status: 'PENDING' },
     });
 
     if (alreadyApplied) {
@@ -186,8 +186,17 @@ export const ApplyToJoinGroup = async (req, res) => {
         );
     }
 
-    const newApplication = await db.joinApplication.create({
-      data: {
+    const newApplication = await prisma.joinApplication.upsert({
+      where: {
+        userId_groupId: {
+          userId: req.user.id,
+          groupId: groupId,
+        },
+      },
+      update: {
+        status: 'PENDING', // or whatever update logic you want
+      },
+      create: {
         userId: req.user.id,
         groupId,
         name: req.user.name,
@@ -225,7 +234,52 @@ export const ApplyToJoinGroup = async (req, res) => {
   }
 };
 
-export const fetchAllJoinApplications = async (req, res) => {
+export const fetchUserAllApplications = async (req, res) => {
+  const { userId } = req.params;
+  try {
+    if (!userId) {
+      return res.status(400).json(new ApiError(400, 'User Id is required'));
+    }
+
+    const userAplications = await db.joinApplication.findMany({
+      where: { userId },
+    });
+
+    if (!userAplications) {
+      return res
+        .status(400)
+        .json(
+          new ApiError(
+            404,
+            'No application found. User didn;t applied to any group',
+          ),
+        );
+    }
+
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          userAplications,
+          'All user aplications fethed successfully',
+        ),
+      );
+  } catch (error) {
+    console.error('Error while fethcing the user Join applications: ', error);
+    return res
+      .status(400)
+      .json(
+        new ApiError(
+          400,
+          'Error while fethcing the user Join applications: ',
+          error,
+        ),
+      );
+  }
+};
+
+export const fetchAllGroupApplications = async (req, res) => {
   const { groupId } = req.params;
   try {
     if (!groupId) {
@@ -320,8 +374,16 @@ export const addMemberToGroup = async (req, res) => {
       },
     });
 
-    await db.joinApplication.deleteMany({
-      where: { userId, groupId },
+    await prisma.joinApplication.update({
+      where: {
+        userId_groupId: {
+          userId: userId,
+          groupId: groupId,
+        },
+      },
+      data: {
+        status: 'APPROVED',
+      },
     });
 
     await db.groups.update({
@@ -370,6 +432,32 @@ export const addMemberToGroup = async (req, res) => {
   }
 };
 
+export const deleteApplication = async (req, res) => {
+  const { applicationId } = req.params;
+  try {
+    if (!applicationId) {
+      return res
+        .status(400)
+        .json(new ApiError(400, 'Applicatin Id is required'));
+    }
+
+    await db.joinApplication.delete({
+      where: { id: applicationId },
+    });
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, null, 'Application withdrawn Successfully'));
+  } catch (error) {
+    console.error('Error while withdrawing the Application: ', error);
+    return res
+      .status(400)
+      .json(
+        new ApiError(400, 'Error while withdrawing the Application: ', error),
+      );
+  }
+};
+
 export const rejectJoinApplication = async (req, res) => {
   try {
     const { userId } = req.body;
@@ -381,8 +469,16 @@ export const rejectJoinApplication = async (req, res) => {
         .json(new ApiError(400, 'Both userId and groupId are required'));
     }
 
-    await db.joinApplication.deleteMany({
-      where: { userId, groupId },
+    await prisma.joinApplication.update({
+      where: {
+        userId_groupId: {
+          userId: userId,
+          groupId: groupId,
+        },
+      },
+      data: {
+        status: 'REJECTED',
+      },
     });
 
     return res
