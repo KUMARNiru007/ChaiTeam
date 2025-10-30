@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { noticeService } from "../services/api";
+import { noticeService } from "../services/api.js";
 import { useTheme } from "../context/ThemeContext.jsx";
 
 const NoticeBoard = () => {

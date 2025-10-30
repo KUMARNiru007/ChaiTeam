@@ -17,11 +17,11 @@ const Sidebar = () => {
 
   const navItems = [
     { path: '/dashboard', label: 'Dashboard', icon: 'ri-home-3-line' },
-    { path: '/batches', label: 'Batches', icon: 'ri-school-fill' },
+    { path: '/batches', label: 'Batches', icon: 'ri-school-line' },
     {
-      path: '/noticeboard',
-      label: 'Noticeboard',
-      icon: 'ri-clapperboard-line',
+      path: '/announcement',
+      label: 'Announcement',
+      icon: 'ri-megaphone-line',
     },
   ];
   const adminNavItems = [

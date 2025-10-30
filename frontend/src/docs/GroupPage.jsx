@@ -42,7 +42,7 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
     { id: 'members', label: 'Members' },
     { id: 'activity', label: 'Group Activity' },
   ];
-  const groupMemberTabs = [{ id: 'Notice Board', label: 'Notice Board' }];
+  const groupMemberTabs = [{ id: 'Noticeboard', label: 'Noticeboard' }];
   const adminTabs = [{ id: 'Join Appications', label: 'Join Applications' }];
 
   const isAdmin = group.member.find((mem) => mem.role === 'ADMIN');
@@ -811,7 +811,7 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
             )}
           </div>
         )}
-        {groupMember && activeTab === 'Notice Board' && (
+        {groupMember && activeTab === 'Noticeboard' && (
           <div
             className={`p-2 ${
               darkMode ? 'bg-[#111111] text-white' : 'bg-white text-black'
@@ -854,7 +854,6 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
                     </span>
                   </span>
 
-                  {/* Type Badge */}
                   {/* Type Badge */}
                   <div
                     className={`absolute top-2 right-6 rounded-md px-2 py-1 text-xs font-semibold flex items-center gap-1 ${

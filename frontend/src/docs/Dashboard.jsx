@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTheme } from '../context/ThemeContext.jsx';
-import NoticeBoard from './NoticeBoard.jsx';
+import NoticeBoard from '../components/NoticeBoard.jsx';
 import { batchService, groupService } from '../services/api.js';
 import { useAuthStore } from '../store/useAuthStore.js';
 

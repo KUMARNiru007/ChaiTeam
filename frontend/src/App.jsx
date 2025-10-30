@@ -10,8 +10,9 @@ import GroupPage from './docs/GroupPage';
 import Profile from './pages/Profile';
 import LoginPage from './pages/LoginPage';
 import NotFound from './pages/NotFound';
-import NoticeBoard from './docs/NoticeBoard';
 import Dashboard from './docs/Dashboard';
+import Announcement from './docs/Announcement.jsx';
+
 import GroupPageWrapper from './components/GroupPageWrapper.jsx';
 import AdminBatchPage from './docs/AdminBatchesPage.jsx';
 import AdminAllUsersPage from './docs/AdminAllUsersPage.jsx';
@@ -55,7 +56,7 @@ function App() {
         <Route path='/create-batch' element={<AdminBatchPage />} />
         <Route path='/allUsers' element={<AdminAllUsersPage />} />
         <Route path='/allGroups' element={<AdminAllGroups />} />
-        <Route path='/noticeboard' element={<NoticeBoard />} />
+        <Route path='/announcement' element={<Announcement />} />
         <Route path='/profile' element={<Profile />} />
       </Route>
 
