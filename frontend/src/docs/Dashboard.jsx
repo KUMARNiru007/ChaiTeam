@@ -18,10 +18,10 @@ function Dashboard() {
         setLoading(true);
         checkAuth();
 
-        // Get user's batches (this endpoint returns batches the user is enrolled in)
+        // Get user's batches 
         const userBatches = await batchService.getAllBatches();
 
-        // Get all batches to show total count (using the same endpoint)
+        // Get all batches to show total count 
         const allBatches = await batchService.getAllBatches();
 
         // Get user's groups and total groups across all batches
@@ -170,25 +170,38 @@ function Dashboard() {
 
   if (loading) {
     return (
-      <div
-        className={`min-h-screen flex items-center justify-center ${
-          darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'
-        }`}
-      >
-        <div className='text-center'>
-          <i className='ri-loader-4-line animate-spin text-2xl mb-2'></i>
-          <p>Loading dashboard...</p>
+      <div style={{ textAlign: 'center', padding: '2rem' }}>
+          <div
+            className='spinner'
+            style={{
+              border: '4px solid rgba(255, 161, 22, 0.8)',
+              borderLeft: '4px solid #ffffff',
+              borderRadius: '50%',
+              width: '40px',
+              height: '40px',
+              animation: 'spin 1s linear infinite',
+              margin: '1rem auto',
+            }}
+          ></div>
+          <style jsx>{`
+            @keyframes spin {
+              0% {
+                transform: rotate(0deg);
+              }
+              100% {
+                transform: rotate(360deg);
+              }
+            }
+          `}</style>
+          <p style={{ marginTop: '1rem', color: '#b3b3b3' }}>
+            Loading dashboard...
+          </p>
         </div>
-      </div>
     );
   }
 
   return (
     <>
-      <link
-        href='https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css'
-        rel='stylesheet'
-      />
       <div
         className={`${
           darkMode
