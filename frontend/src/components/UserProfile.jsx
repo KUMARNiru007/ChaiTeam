@@ -6,7 +6,7 @@ import { userService } from '../services/api';
 function UserProfile() {
   const { userId } = useParams();
   const navigate = useNavigate();
-  const { darkMode, toggleTheme } = useTheme();
+  const { darkMode } = useTheme();
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activities, setActivities] = useState([]);
@@ -105,7 +105,7 @@ function UserProfile() {
   }
 
   return (
-    <div className={`w-full max-w-4xl mx-auto p-6 ${darkMode ? 'text-white' : 'text-black'}`}>
+    <div className={`w-full max-w-6xl mx-auto p-6 ${darkMode ? 'text-white' : 'text-black'}`}>
       <div className="flex flex-col gap-6">
         {/* Header with Back Button */}
         <div className="flex items-center justify-between">

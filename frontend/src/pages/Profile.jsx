@@ -6,6 +6,7 @@ function Profile() {
   const { darkMode } = useTheme();
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [userData, setUserData] = useState(null);
   const [activities, setActivities] = useState([]);
   const [activityLoading, setActivityLoading] = useState(true);
   const [activityError, setActivityError] = useState('');
@@ -55,7 +56,7 @@ function Profile() {
   }, [currentUser?.id]);
 
   return (
-    <div className={`w-full max-w-4xl mx-auto p-6 ${darkMode ? 'text-white' : 'text-black'}`}>
+    <div className={`w-full max-w-6xl mx-auto p-6 ${darkMode ? 'text-white' : 'text-black'}`}>
       <div className="flex flex-col gap-6">
         {/* Header */}
         <div className="flex flex-col gap-1">
@@ -94,6 +95,15 @@ function Profile() {
                 <p className="text-sm text-gray-400">
                   {loading ? 'Loading...' : currentUser?.email || 'No email available'}
                 </p>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className={`px-2 py-1 rounded text-xs font-medium ${
+                    userData?.isVerified 
+                      ? 'bg-green-100 text-green-900 dark:bg-green-200 dark:text-green-600' 
+                      : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+                  }`}>
+                    {userData?.isVerified ? 'Verified' : 'Unverified'}
+                  </span>
+                </div>
               </div>
             </div>
           </div>

@@ -69,11 +69,7 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
   const handleCreateNotice = (newNotice) => {
     setNotices([newNotice, ...notices]);
   };
-
-  // Function to handle view profile navigation
-  const handleViewProfile = (userId) => {
-    navigate(`/user-profile/${userId}`);
-  };
+  const viewProfile = (id) => () => navigate(`/user-profile/${id}`);
 
   useEffect(() => {
     const fetchGroupActivity = async () => {
@@ -656,16 +652,17 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
                       <div className='flex items-center gap-2'>
                         {/* View Profile Button */}
                         <button
-                          onClick={() => handleViewProfile(member.userId)}
+                          onClick={viewProfile(member.userId)}
                           className={`px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-2 ${
-                            darkMode
-                              ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                              : 'bg-blue-500 hover:bg-blue-600 text-white'
-                          } transition-colors cursor-pointer`}
+                             darkMode
+                               ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                               : 'bg-blue-500 hover:bg-blue-600 text-white'
+                               } transition-colors cursor-pointer`}
                         >
-                          <i className='ri-user-line text-xs'></i>
-                          View Profile
-                        </button>
+                       <i className="ri-user-line text-xs"></i>
+                        View Profile
+                      </button>
+
 
                         {/* Kick Button - Only for leader and non-leader members */}
                         {leader === groupMember && member.role !== 'LEADER' && (

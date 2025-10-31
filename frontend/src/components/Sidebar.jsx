@@ -23,17 +23,17 @@ const Sidebar = () => {
       label: 'Announcement',
       icon: 'ri-megaphone-line',
     },
-    {
-      path: '/allApplications',
-      label: 'All Applications',
-      icon: 'ri-mail-unread-line',
-    },
   ];
   const adminNavItems = [
     {
       path: '/create-batch',
       label: 'Manage Batches',
       icon: 'ri-add-box-line',
+    },
+    {
+      path: '/allApplications',
+      label: 'All Applications',
+      icon: 'ri-mail-unread-line',
     },
     { path: '/allUsers', label: 'All Users', icon: 'ri-team-line' },
     { path: '/allGroups', label: 'All Groups', icon: 'ri-parent-line' },
