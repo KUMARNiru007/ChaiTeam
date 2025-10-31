@@ -1,6 +1,7 @@
 import {React,useEffect,useState} from 'react'
 import { useTheme } from '../context/ThemeContext'
 import { userService } from '../services/api'; 
+import profile from '../assets/avatar1.webp'
 
 function Profile() {
   const { darkMode } = useTheme();
@@ -75,7 +76,7 @@ function Profile() {
                   </div>
                 ) : currentUser?.image ? (
                   <img 
-                    src={currentUser.image} 
+                    src={currentUser.image || profile} 
                     alt="Profile" 
                     className="w-full h-full object-cover" 
                   />

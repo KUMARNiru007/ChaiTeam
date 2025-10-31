@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { userService } from '../services/api';
+import profile from '../assets/avatar1.webp'
 
 function UserProfile() {
   const { userId } = useParams();
@@ -66,7 +67,7 @@ function UserProfile() {
         <div className="flex justify-center items-center min-h-[60vh]">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--chaiteam-orange)] mx-auto"></div>
-            <p className="mt-4 text-gray-400">Loading user profile...</p>
+            <p className="mt-4 text-gray-400">Loading...</p>
           </div>
         </div>
       </div>
@@ -131,7 +132,7 @@ function UserProfile() {
               <div className="w-16 h-16 rounded-lg overflow-hidden bg-gray-700">
                 {userData?.image ? (
                   <img 
-                    src={userData.image} 
+                    src={userData.image || profile} 
                     alt="Profile" 
                     className="w-full h-full object-cover" 
                   />
@@ -163,9 +164,9 @@ function UserProfile() {
                   <span className={`px-2 py-1 rounded text-xs font-medium ${
                     userData?.isVerified 
                       ? 'bg-green-100 text-green-900 dark:bg-green-200 dark:text-green-600' 
-                      : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+                      : ''
                   }`}>
-                    {userData?.isVerified ? 'Verified' : 'Unverified'}
+                    {userData?.isVerified ? 'Verified' : ''}
                   </span>
                 </div>
               </div>

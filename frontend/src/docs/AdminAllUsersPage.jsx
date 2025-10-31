@@ -3,6 +3,7 @@ import { userService } from '../services/api.js';
 import { useTheme } from '../context/ThemeContext.jsx';
 import { useNavigate } from 'react-router-dom';
 import CustomDropdown from '../components/CustomDropdown.jsx';
+import profile from '../assets/avatar1.webp'
 
 const AdminAllUsersPage = () => {
   const { darkMode } = useTheme();
@@ -221,7 +222,7 @@ const AdminAllUsersPage = () => {
                   }`}
                 >
                   <img
-                    src={user.image || '/default-avatar.png'}
+                    src={user.image || profile}
                     alt={user.name}
                     className='w-20 h-20 rounded-full mb-4 object-cover border-2 border-gray-300'
                   />
