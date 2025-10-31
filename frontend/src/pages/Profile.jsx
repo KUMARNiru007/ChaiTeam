@@ -99,9 +99,9 @@ function Profile() {
                   <span className={`px-2 py-1 rounded text-xs font-medium ${
                     userData?.isVerified 
                       ? 'bg-green-100 text-green-900 dark:bg-green-200 dark:text-green-600' 
-                      : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+                      : ''
                   }`}>
-                    {userData?.isVerified ? 'Verified' : 'Unverified'}
+                    {userData?.isVerified ? 'Verified' : ''}
                   </span>
                 </div>
               </div>

@@ -155,7 +155,7 @@ const Navbar = () => {
                   </div>
                   <div className='flex-1 min-w-0'>
                     <p className='text-sm font-medium truncate'>
-                      {currentUser.name}
+                    Hi,  {currentUser.name}
                     </p>
                     <p className='text-xs text-gray-500 dark:text-gray-400 truncate'>
                       {currentUser.email}
