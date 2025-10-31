@@ -148,6 +148,17 @@ function UserProfile() {
                 <p className="text-sm text-gray-400">
                   {userData?.username ? `@${userData.username}` : ''}
                 </p>
+                <div className='flex items-center gap-2 mt-1'>
+                    <span className={`px-2 py-1 rounded text-xs font-medium capitalize ${
+                      userData?.role === 'ADMIN' 
+                        ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+                        : userData?.role === 'LEADER'
+                        ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+                        : 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                    }`}>
+                      {userData?.role?.toLowerCase() || 'user'}
+                    </span>
+                  </div>
                 <div className="flex items-center gap-2 mt-1">
                   <span className={`px-2 py-1 rounded text-xs font-medium ${
                     userData?.isVerified 

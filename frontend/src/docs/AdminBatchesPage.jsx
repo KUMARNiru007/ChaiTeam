@@ -308,7 +308,11 @@ const AdminBatchPage = () => {
         }`}
       >
         <div className='flex justify-between items-center mb-1'>
-          <h1 className='text-3xl font-bold'>Manage Batches</h1>
+          <h2
+          className={`text-3xl font-semibold ${
+            darkMode ? 'text-white' : 'text-gray-800'
+          } mb-2`}
+        >Manage Batches</h2>
           <div className='flex gap-3'>
             <button
               onClick={() => setShowCSVModal(true)}

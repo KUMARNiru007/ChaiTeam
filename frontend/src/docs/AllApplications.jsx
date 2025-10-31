@@ -76,12 +76,12 @@ const AllApplications = () => {
   };
 
   return (
-    <div className='p-6 max-w-6xl relative flex flex-col items-center'>
+     <div className='realtive parkinsans-light text-center p-6'>
       <h2
-        className={`text-3xl font-semibold mb-6 text-center ${
-          darkMode ? 'text-white' : 'text-gray-600'
-        }`}
-      >
+          className={`text-3xl font-semibold ${
+            darkMode ? 'text-white' : 'text-gray-800'
+          } mb-2`}
+        >
         All Applications
       </h2>
       <p
