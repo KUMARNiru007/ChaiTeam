@@ -482,4 +482,8 @@ export const userService = {
       throw error;
     }
   },
+
+  getUserById: (userId) => api.get(`/users/${userId}`),
+  getUserActivities: (userId) => api.get(`/users/${userId}/activities`),
+
 };

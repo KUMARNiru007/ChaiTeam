@@ -165,20 +165,30 @@ const AdminAllGroups = () => {
           <div
             className='spinner'
             style={{
-              border: '4px solid rgba(0, 0, 0, 0.1)',
+              border: '4px solid rgba(255, 161, 22, 0.8)',
               borderLeft: '4px solid #ffffff',
               borderRadius: '50%',
               width: '40px',
               height: '40px',
               animation: 'spin 1s linear infinite',
-              margin: '0 auto',
+              margin: '1rem auto',
             }}
           ></div>
+          <style jsx>{`
+            @keyframes spin {
+              0% {
+                transform: rotate(0deg);
+              }
+              100% {
+                transform: rotate(360deg);
+              }
+            }
+          `}</style>
           <p style={{ marginTop: '1rem', color: '#b3b3b3' }}>
             Loading...
           </p>
         </div>
-      ) : error ? (
+       ) : error ? (
         <div style={{ textAlign: 'center', padding: '2rem', color: '#ff4d4f' }}>
           <i className='ri-error-warning-line' style={{ fontSize: '2rem' }}></i>
           <p style={{ marginTop: '1rem' }}>
