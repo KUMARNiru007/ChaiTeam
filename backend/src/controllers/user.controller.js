@@ -135,22 +135,33 @@ export const updateRole = async (req, res) => {
         );
     }
 
+    const currentUser = await db.user.findUnique({
+      where: { id: userId },
+      select: { role: true }
+    });
+
+    if (!currentUser) {
+      return res.status(404).json(new ApiError(404, 'User not found'));
+    }
+
+    const newRole = currentUser.role === 'USER' ? 'ADMIN' : 'USER';
+
     const updatedUser = await db.user.update({
       where: { id: userId },
       data: {
-        role: 'ADMIN',
+        role: newRole,
       },
     });
 
     if (!updatedUser) {
       return res
         .status(400)
-        .json(new ApiError(400, "User Role can't be upadted"));
+        .json(new ApiError(400, "User Role can't be updated"));
     }
 
     res
       .status(200)
-      .json(new ApiResponse(200, updateRole, 'User Role Updated Successfully'));
+      .json(new ApiResponse(200, updatedUser, 'User Role Updated Successfully'));
   } catch (error) {
     console.error('Error while updating the User Role: ', error);
     return res
