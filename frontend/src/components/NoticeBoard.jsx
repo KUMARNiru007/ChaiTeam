@@ -58,7 +58,7 @@ const NoticeBoard = () => {
               : 'border-4 border-gray-200 border-l-chaiteam-orange'
           }`}></div>
           <p className={`mt-4 text-sm ${darkMode ? 'text-chaiteam-text-secondary' : 'text-gray-600'}`}>
-            Loading notices...
+            Loading...
           </p>
         </div>
       ) : error ? (

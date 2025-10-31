@@ -572,9 +572,16 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
                       {leader.email || 'leader@example.com'}
                     </div>
                   </div>
-                  <span className='px-3 py-1 text-sm font-semibold rounded-lg bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400'>
-                    Leader
-                  </span>
+                  <span
+                   className={`
+                      px-3 py-1 text-sm font-semibold rounded-lg
+                         ${
+                         darkMode
+                        ? 'bg-orange-900/30 text-orange-400'
+                        : 'bg-orange-50 text-orange-700'
+                           }`}>
+                           Leader
+                    </span>
                 </div>
               </div>
             )}

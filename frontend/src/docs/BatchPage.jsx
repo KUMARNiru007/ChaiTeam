@@ -152,7 +152,7 @@ function BatchPage() {
                 darkMode ? 'text-gray-400' : 'text-gray-600'
               }`}
             >
-              Loading Batch details...
+              Loading...
             </p>
           </div>
         </div>

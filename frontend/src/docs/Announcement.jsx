@@ -203,7 +203,7 @@ const Announcement = () => {
             }
           `}</style>
           <p style={{ marginTop: "1rem", color: "#b3b3b3" }}>
-            Loading announcements...
+            Loading...
           </p>
         </div>
       ) : error ? (

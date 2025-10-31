@@ -194,7 +194,7 @@ function Dashboard() {
             }
           `}</style>
           <p style={{ marginTop: '1rem', color: '#b3b3b3' }}>
-            Loading dashboard...
+            Loading...
           </p>
         </div>
     );

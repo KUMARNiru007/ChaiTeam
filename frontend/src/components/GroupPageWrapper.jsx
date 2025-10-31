@@ -85,7 +85,7 @@ const GroupPageWrapper = () => {
             }
           }
         `}</style>
-        <p style={{ marginTop: '1rem', color: '#b3b3b3' }}>Loading Group</p>
+        <p style={{ marginTop: '1rem', color: '#b3b3b3' }}>Loading...</p>
       </div>
     );
   }

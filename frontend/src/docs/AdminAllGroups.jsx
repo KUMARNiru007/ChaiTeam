@@ -175,7 +175,7 @@ const AdminAllGroups = () => {
             }}
           ></div>
           <p style={{ marginTop: '1rem', color: '#b3b3b3' }}>
-            Loading groups...
+            Loading...
           </p>
         </div>
       ) : error ? (

@@ -329,7 +329,7 @@ const Batches = () => {
             }
           `}</style>
           <p style={{ marginTop: '1rem', color: '#b3b3b3' }}>
-            Loading batches...
+            Loading...
           </p>
         </div>
       ) : error ? (
