@@ -19,12 +19,13 @@ const Sidebar = () => {
 
   const navItems = [
     { path: '/dashboard', label: 'Dashboard', icon: 'ri-dashboard-line mr-2' },
-    { path: '/batches', label: 'Batches', icon: 'ri-school-line' },
     {
       path: '/announcement',
       label: 'Announcement',
-      icon: 'ri-megaphone-line',
+      icon: 'ri-megaphone-line',    
     },
+    { path: '/batches', label: 'Batches', icon: 'ri-school-line' },
+    // { path: '/batch-users', label: 'Batch Users', icon: 'ri-team-line' },
   ];
   
   const adminNavItems = [
@@ -38,7 +39,7 @@ const Sidebar = () => {
       label: 'All Applications',
       icon: 'ri-mail-unread-line',
     },
-    { path: '/allUsers', label: 'All Users', icon: 'ri-team-line' },
+    { path: '/allUsers', label: 'All Users', icon: 'ri-user-search-line' },
     { path: '/allGroups', label: 'All Groups', icon: 'ri-parent-line' },
   ];
 

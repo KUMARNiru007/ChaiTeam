@@ -14,7 +14,7 @@ import Dashboard from './docs/Dashboard';
 import Announcement from './docs/Announcement.jsx';
 import AllApplications from './docs/AllApplications.jsx';
 import UserProfile from './components/UserProfile.jsx'
-
+import BatchUsersPage from './components/BatchUsersPage.jsx';
 import GroupPageWrapper from './components/GroupPageWrapper.jsx';
 import AdminBatchPage from './docs/AdminBatchesPage.jsx';
 import AdminAllUsersPage from './docs/AdminAllUsersPage.jsx';
@@ -62,6 +62,7 @@ function App() {
         <Route path='/announcement' element={<Announcement />} />
         <Route path='/profile' element={<Profile />} />
         <Route path='/user-profile/:userId' element={<UserProfile />} />
+        <Route path="/batch-users" element={<BatchUsersPage />} />
       </Route>
 
       <Route path='*' element={<NotFound />} />
