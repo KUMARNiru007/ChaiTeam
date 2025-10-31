@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useTheme } from '../context/ThemeContext.jsx';
 import { toggleSidebar } from '../redux/sidebarSlice.js';
 import { userService } from '../services/api';
+import profile from '../assets/avatar1.webp'
 
 const Sidebar = () => {
   const isCollapsed = useSelector((state) => state.sidebar.isCollapsed);
@@ -191,7 +192,7 @@ const Sidebar = () => {
                 </div>
               ) : currentUser?.image ? (
                 <img
-                  src={currentUser.image}
+                  src={currentUser.image || profile}
                   alt={currentUser.name}
                   className='w-6 h-6 rounded-full object-cover'
                 />

@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { useTheme } from '../context/ThemeContext.jsx';
 import { userService } from '../services/api';
+import profile from '../assets/avatar1.webp'
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -141,7 +142,7 @@ const Navbar = () => {
                   <div className='flex-shrink-0'>
                     {currentUser.image ? (
                       <img
-                        src={currentUser.image}
+                        src={currentUser.image || profile}
                         alt={currentUser.name}
                         className='w-12 h-12 rounded-full object-cover'
                       />
