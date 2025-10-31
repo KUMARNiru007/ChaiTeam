@@ -158,3 +158,57 @@ export const updateRole = async (req, res) => {
       .json(new ApiError(500, 'Error while updating the User Role: ', error));
   }
 };
+
+export const getUserById = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    if (!userId) {
+      return res.status(400).json(new ApiError(400, 'User ID is required'));
+    }
+
+    const user = await db.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        name: true,
+        role: true,
+        createdAT: true,
+        updatedAT: true,
+        image: true,
+        isVerified: true,
+        // Don't include email or sensitive fields
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json(new ApiError(404, 'User not found'));
+    }
+
+    return res.status(200).json(new ApiResponse(200, user, 'User fetched successfully'));
+  } catch (error) {
+    console.log('Error while fetching user: ', error);
+    return res.status(500).json(new ApiError(500, 'Error while fetching user', error));
+  }
+};
+
+export const getUserActivities = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    if (!userId) {
+      return res.status(400).json(new ApiError(400, 'User ID is required'));
+    }
+
+    const activities = await db.userActivity.findMany({
+      where: { userId },
+      orderBy: { createdAT: 'desc' },
+      take: 50, // Limit to recent 50 activities
+    });
+
+    return res.status(200).json(new ApiResponse(200, activities, 'User activities fetched successfully'));
+  } catch (error) {
+    console.log('Error while fetching user activities: ', error);
+    return res.status(500).json(new ApiError(500, 'Error while fetching user activities', error));
+  }
+};

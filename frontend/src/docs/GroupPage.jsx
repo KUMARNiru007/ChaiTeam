@@ -70,6 +70,11 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
     setNotices([newNotice, ...notices]);
   };
 
+  // Function to handle view profile navigation
+  const handleViewProfile = (userId) => {
+    navigate(`/user-profile/${userId}`);
+  };
+
   useEffect(() => {
     const fetchGroupActivity = async () => {
       if (!group.id) return;
@@ -572,16 +577,17 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
                       {leader.email || 'leader@example.com'}
                     </div>
                   </div>
-                  <span
-                   className={`
-                      px-3 py-1 text-sm font-semibold rounded-lg
-                         ${
-                         darkMode
-                        ? 'bg-orange-900/30 text-orange-400'
-                        : 'bg-orange-50 text-orange-700'
-                           }`}>
-                           Leader
+                  <div className='flex items-center gap-2'>
+                    <span
+                      className={`px-3 py-1 text-sm font-semibold rounded-lg ${
+                        darkMode
+                          ? 'bg-orange-900/30 text-orange-400'
+                          : 'bg-orange-50 text-orange-700'
+                      }`}
+                    >
+                      Leader
                     </span>
+                  </div>
                 </div>
               </div>
             )}
@@ -647,20 +653,34 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
                           {member.email || 'member@example.com'}
                         </div>
                       </div>
-                      {leader === groupMember &&
-                        (member.role === 'LEADER' ? (
-                          ''
-                        ) : (
+                      <div className='flex items-center gap-2'>
+                        {/* View Profile Button */}
+                        <button
+                          onClick={() => handleViewProfile(member.userId)}
+                          className={`px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-2 ${
+                            darkMode
+                              ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                              : 'bg-blue-500 hover:bg-blue-600 text-white'
+                          } transition-colors cursor-pointer`}
+                        >
+                          <i className='ri-user-line text-xs'></i>
+                          View Profile
+                        </button>
+
+                        {/* Kick Button - Only for leader and non-leader members */}
+                        {leader === groupMember && member.role !== 'LEADER' && (
                           <button
                             onClick={() => {
                               setSelectedMember(member.userId);
                               setOpenKickMemberModal(true);
                             }}
-                            className='absolute top-5 right-12 w-9 h-9 border rounded-lg text-lg hover:text-red-500 hover:border-red-400 cursor-pointer'
+                            className='px-3 py-1.5 rounded-lg text-sm font-medium text-white bg-red-500 hover:bg-red-600 cursor-pointer transition-colors flex items-center gap-2'
+                            title='Kick Member'
                           >
                             <i className='ri-user-minus-fill'></i>
                           </button>
-                        ))}
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>

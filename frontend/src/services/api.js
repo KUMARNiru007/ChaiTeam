@@ -482,8 +482,23 @@ export const userService = {
       throw error;
     }
   },
+getUserById: async (userId) => {
+    try {
+      const response = await axiosInstance.get(`/user/${userId}`);
+      return response.data.Data || response.data;
+    } catch (error) {
+      console.error('Error fetching user by ID:', error);
+      throw error;
+    }
+  },
 
-  getUserById: (userId) => api.get(`/users/${userId}`),
-  getUserActivities: (userId) => api.get(`/users/${userId}/activities`),
-
+  getUserActivities: async (userId) => {
+    try {
+      const response = await axiosInstance.get(`/user/${userId}/activities`);
+      return response.data.Data || response.data;
+    } catch (error) {
+      console.error('Error fetching user activities:', error);
+      throw error;
+    }
+  },
 };

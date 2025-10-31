@@ -1,43 +1,49 @@
-import {React,useEffect,useState} from 'react'
-import { useTheme } from '../context/ThemeContext'
-import { userService } from '../services/api'; 
+import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useTheme } from '../context/ThemeContext';
+import { userService } from '../services/api';
 
-function Profile() {
-  const { darkMode } = useTheme();
-  const [currentUser, setCurrentUser] = useState(null);
+function UserProfile() {
+  const { userId } = useParams();
+  const navigate = useNavigate();
+  const { darkMode, toggleTheme } = useTheme();
+  const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activities, setActivities] = useState([]);
   const [activityLoading, setActivityLoading] = useState(true);
   const [activityError, setActivityError] = useState('');
+  const [error, setError] = useState('');
 
-  // Fetch current user data
   useEffect(() => {
-    const fetchCurrentUser = async () => {
+    const fetchUserData = async () => {
       try {
         setLoading(true);
-        const userData = await userService.getCurrentUser();
-        setCurrentUser(userData);
+        setError('');
+        const userData = await userService.getUserById(userId);
+        setUserData(userData);
       } catch (error) {
         console.error('Failed to fetch user data:', error);
-        setCurrentUser({ name: 'User', email: '' });
+        setError('Failed to load user profile. User may not exist.');
+        setUserData(null);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchCurrentUser();
-  }, []);
+    if (userId) {
+      fetchUserData();
+    }
+  }, [userId]);
 
-  // Fetch user activities
+
   useEffect(() => {
     const fetchUserActivities = async () => {
-      if (!currentUser?.id) return;
+      if (!userId) return;
       try {
         setActivityLoading(true);
         setActivityError('');
-        const activityData = await userService.getUserActivity(currentUser.id);
+        const activityData = await userService.getUserActivities(userId);
         
-        // Sort activities by createdAT in descending order (newest first)
         const sortedActivities = activityData.sort((a, b) => {
           return new Date(b.createdAT) - new Date(a.createdAT);
         });
@@ -52,15 +58,70 @@ function Profile() {
     };
 
     fetchUserActivities();
-  }, [currentUser?.id]);
+  }, [userId]);
+
+  if (loading) {
+    return (
+      <div className={`w-full max-w-4xl mx-auto p-6 ${darkMode ? 'text-white' : 'text-black'}`}>
+        <div className="flex justify-center items-center min-h-[60vh]">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--chaiteam-orange)] mx-auto"></div>
+            <p className="mt-4 text-gray-400">Loading user profile...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={`w-full max-w-4xl mx-auto p-6 ${darkMode ? 'text-white' : 'text-black'}`}>
+        <div className="flex flex-col gap-6">
+          <div className="flex items-center gap-4 mb-4">
+            <button
+              onClick={() => navigate(-1)}
+              className="bg-slate-300 dark:bg-slate-700 rounded-md p-2 text-lg cursor-pointer"
+            >
+              <i className="ri-arrow-left-line"></i>
+            </button>
+            <h1 className="text-2xl font-bold">User Profile</h1>
+          </div>
+          <div className={`rounded-lg p-8 text-center ${darkMode ? 'bg-[#18181b] border border-[#333]' : 'bg-white border border-gray-200'}`}>
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+              <i className="ri-error-warning-line text-2xl text-red-500"></i>
+            </div>
+            <h2 className="text-xl font-bold mb-2">User Not Found</h2>
+            <p className="text-gray-400 mb-4">{error}</p>
+            <button
+              onClick={() => navigate(-1)}
+              className="px-6 py-2 bg-[var(--chaiteam-orange)] text-white rounded-lg hover:bg-[var(--chaiteam-orange)]/90 transition-colors"
+            >
+              Go Back
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={`w-full max-w-4xl mx-auto p-6 ${darkMode ? 'text-white' : 'text-black'}`}>
       <div className="flex flex-col gap-6">
-        {/* Header */}
-        <div className="flex flex-col gap-1">
-          <h1 className="text-2xl font-bold">My Profile</h1>
-          <p className="text-sm text-gray-400">Manage your account and settings.</p>
+        {/* Header with Back Button */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <button
+            onClick={() => navigate(-1)}
+            className='bg-slate-300 rounded-md p-1 text-xl pl-2 pr-2 cursor-pointer'
+          >
+              <i className="ri-arrow-left-line"></i>
+            </button>
+            <div className="flex flex-col gap-1">
+              <h1 className="text-2xl font-bold">User Profile</h1>
+              <p className="text-sm text-gray-400">Viewing {userData?.name}'s profile</p>
+            </div>
+          </div>
+
         </div>
 
         {/* Profile Card */}
@@ -68,32 +129,34 @@ function Profile() {
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-4">
               <div className="w-16 h-16 rounded-lg overflow-hidden bg-gray-700">
-                {loading ? (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
-                  </div>
-                ) : currentUser?.image ? (
+                {userData?.image ? (
                   <img 
-                    src={currentUser.image} 
+                    src={userData.image} 
                     alt="Profile" 
                     className="w-full h-full object-cover" 
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#333] to-[#111] text-2xl font-bold text-white">
-                    {currentUser?.name?.charAt(0) || 'U'}
+                    {userData?.name?.charAt(0) || 'U'}
                   </div>
                 )}
               </div>
               <div>
                 <h2 className="text-xl font-bold">
-                  {loading ? 'Loading...' : currentUser?.name || 'User'}
+                  {userData?.name || 'User'}
                 </h2>
                 <p className="text-sm text-gray-400">
-                  {currentUser?.username ? `@${currentUser.username}` : ''}
+                  {userData?.username ? `@${userData.username}` : ''}
                 </p>
-                <p className="text-sm text-gray-400">
-                  {loading ? 'Loading...' : currentUser?.email || 'No email available'}
-                </p>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className={`px-2 py-1 rounded text-xs font-medium ${
+                    userData?.isVerified 
+                      ? 'bg-green-100 text-green-900 dark:bg-green-200 dark:text-green-600' 
+                      : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+                  }`}>
+                    {userData?.isVerified ? 'Verified' : 'Unverified'}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -107,25 +170,29 @@ function Profile() {
             <div>
               <p className="text-sm text-gray-400 mb-1">Full Name</p>
               <p className="font-medium">
-                {loading ? 'Loading...' : currentUser?.name || 'No name available'}
+                {userData?.name || 'No name available'}
               </p>
             </div>
             <div>
               <p className="text-sm text-gray-400 mb-1">Username</p>
               <p className="font-medium">
-                {currentUser?.username ? `@${currentUser.username}` : 'No username'}
-              </p>
-            </div>
-            <div>
-              <p className="text-sm text-gray-400 mb-1">Email</p>
-              <p className="font-medium">
-                {loading ? 'Loading...' : currentUser?.email || 'No email available'}
+                {userData?.username ? `@${userData.username}` : 'No username'}
               </p>
             </div>
             <div>
               <p className="text-sm text-gray-400 mb-1">Role</p>
               <p className="font-medium uppercase">
-                {currentUser?.role || 'USER'}
+                {userData?.role || 'USER'}
+              </p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-400 mb-1">Member Since</p>
+              <p className="font-medium">
+                {userData?.createdAT ? new Date(userData.createdAT).toLocaleDateString('en-IN', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                }) : 'Unknown'}
               </p>
             </div>
           </div>
@@ -133,7 +200,12 @@ function Profile() {
 
         {/* User Activity Section */}
         <div className={`rounded-lg p-6 ${darkMode ? 'bg-[#18181b] border border-[#333]' : 'bg-white border border-gray-200'}`}>
-          <h2 className="text-lg font-semibold mb-4">User Activity</h2>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold">User Activity</h2>
+            <span className="text-sm text-gray-400">
+              {activities.length} activities
+            </span>
+          </div>
           
           {activityLoading ? (
             <div className="flex justify-center py-4">
@@ -142,7 +214,7 @@ function Profile() {
           ) : activityError ? (
             <p className="text-gray-400 text-center py-4">{activityError}</p>
           ) : activities.length === 0 ? (
-            <p className="text-gray-400 text-center py-4">No activities found.</p>
+            <p className="text-gray-400 text-center py-4">No activities found for this user.</p>
           ) : (
             <div className="flex flex-col gap-4">
               {activities.map((activity, index) => {
@@ -151,52 +223,52 @@ function Profile() {
                   ACCOUNT_CREATED: {
                     color: 'bg-green-500',
                     title: 'Account Created',
-                    desc: activity.description || 'Your account was successfully created.',
+                    desc: activity.description || 'Account was successfully created.',
                   },
                   ACCOUNT_DELTED: {
                     color: 'bg-red-500',
                     title: 'Account Deleted',
-                    desc: activity.description || 'Your account was deleted.',
+                    desc: activity.description || 'Account was deleted.',
                   },
                   APPLIED_TO_JOIN_GROUP: {
                     color: 'bg-blue-500',
                     title: 'Applied to Join Group',
-                    desc: activity.description || 'You applied to join a group.',
+                    desc: activity.description || 'Applied to join a group.',
                   },
                   APLICATION_WITHDRAWN: {
                     color: 'bg-yellow-500',
                     title: 'Application Withdrawn',
-                    desc: activity.description || 'You withdrew an application to join a group.',
+                    desc: activity.description || 'Withdrew an application to join a group.',
                   },
                   JOINED_GROUP: {
                     color: 'bg-emerald-500',
                     title: 'Joined Group',
-                    desc: activity.description || 'You joined a group.',
+                    desc: activity.description || 'Joined a group.',
                   },
                   LEAVED_GROUP: {
                     color: 'bg-orange-500',
                     title: 'Left Group',
-                    desc: activity.description || 'You left a group.',
+                    desc: activity.description || 'Left a group.',
                   },
                   KICKED_FROM_GROUP: {
                     color: 'bg-red-600',
                     title: 'Removed from Group',
-                    desc: activity.description || 'You were removed from a group.',
+                    desc: activity.description || 'Was removed from a group.',
                   },
                   CREATED_GROUP: {
                     color: 'bg-purple-500',
                     title: 'Group Created',
-                    desc: activity.description || 'You created a new group.',
+                    desc: activity.description || 'Created a new group.',
                   },
                   DISBANNED_GROUP: {
                     color: 'bg-pink-500',
                     title: 'Group Disbanded',
-                    desc: activity.description || 'You disbanded a group.',
+                    desc: activity.description || 'Disbanded a group.',
                   },
                   PROFILE_UPDATED: {
                     color: 'bg-cyan-500',
                     title: 'Profile Updated',
-                    desc: activity.description || 'You updated your profile information.',
+                    desc: activity.description || 'Updated profile information.',
                   },
                 };
 
@@ -260,7 +332,7 @@ function Profile() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default Profile
+export default UserProfile;
