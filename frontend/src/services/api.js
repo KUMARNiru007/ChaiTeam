@@ -245,7 +245,7 @@ export const groupService = {
 
   withdrawApplication: async (applicationId) => {
     try {
-      const resposen = await axiosInstance.get(
+      const response = await axiosInstance.get(
         `/groups/withdrawApplication/${applicationId}`,
       );
     } catch (error) {
@@ -432,6 +432,15 @@ export const authService = {
   },
   githubLogin: () => {
     window.location.href = `${axiosInstance.defaults.baseURL}/auth/github`;
+  },
+  logout: async () => {
+    try {
+      const response = await axiosInstance.get('/auth/logout');
+      return response.data;
+    } catch (error) {
+      console.error('Error during logout:', error);
+      throw error;
+    }
   },
 };
 

@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { motion, AnimatePresence } from 'motion/react';
 import { useTheme } from '../context/ThemeContext.jsx';
 import { toggleSidebar } from '../redux/sidebarSlice.js';
-import { userService } from '../services/api';
+import { userService, authService } from '../services/api';
 import profile from '../assets/avatar1.webp'
 
 const Sidebar = () => {
@@ -86,13 +86,27 @@ const Sidebar = () => {
   }, [openProfileModal]);
 
   const handleLogout = async () => {
-      try {
-        await useAuthStore.getState().logout();
-        setOpenProfileModal(false);
-        navigate('/login');
-      } catch (error) {
-        console.error('Logout failed:', error);
-      }
+    try {
+      console.log('Logout initiated from sidebar');
+      await authService.logout();
+      console.log('Logout API call successful');
+      
+      // Clear any client-side storage
+      localStorage.removeItem('isLoggedOut');
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
+      
+      setOpenProfileModal(false);
+      console.log('Redirecting to home');
+      window.location.href = '/';
+    } catch (error) {
+      console.error('Logout API failed:', error);
+      localStorage.removeItem('isLoggedOut');
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
+      setOpenProfileModal(false);
+      window.location.href = '/';
+    }
   };
 
   const getInitials = (name) => {

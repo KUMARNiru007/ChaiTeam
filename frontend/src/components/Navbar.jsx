@@ -2,8 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { useTheme } from '../context/ThemeContext.jsx';
-import { userService } from '../services/api';
-import profile from '../assets/avatar1.webp'
+import { userService, authService } from '../services/api';
+import profile from '../assets/avatar1.webp';
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -52,13 +52,27 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      await useAuthStore.getState().logout();
+      console.log('Logout initiated');
+      await authService.logout();
+      console.log('Logout API call successful');
+      
+      // Clear any client-side storage
+      localStorage.removeItem('isLoggedOut');
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
+      
       setOpenProfileModal(false);
-      navigate('/login');
+      console.log('Redirecting to home');
+      window.location.href = '/';
     } catch (error) {
-      console.error('Logout failed:', error);
+      console.error('Logout API failed:', error);
+      localStorage.removeItem('isLoggedOut');
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
+      setOpenProfileModal(false);
+      window.location.href = '/';
     }
-};
+  };
 
   return (
     <motion.nav
