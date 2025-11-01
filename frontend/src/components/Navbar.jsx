@@ -50,11 +50,15 @@ const Navbar = () => {
     };
   }, [openProfileModal]);
 
-  const handleLogout = () => {
-    console.log('Logging out...');
-    setOpenProfileModal(false);
-    navigate('/logout');
-  };
+  const handleLogout = async () => {
+    try {
+      await useAuthStore.getState().logout();
+      setOpenProfileModal(false);
+      navigate('/login');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+};
 
   return (
     <motion.nav

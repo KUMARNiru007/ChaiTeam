@@ -11,6 +11,7 @@ import Groups from './Groups';
 import EditNoticeModal from '../components/EditNoticeModal.jsx';
 import CreateNoticeModal from '../components/CreateNoticeModel.jsx';
 import CreateGroupModal from '../components/CreateGroupModal.jsx';
+import { useAuthStore } from '../store/useAuthStore.js';
 
 function BatchPage() {
   const { batchId } = useParams();
@@ -29,8 +30,10 @@ function BatchPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const { darkMode } = useTheme();
+  const { authUser } = useAuthStore();
 
   const handleEditNotice = (notice) => {
     setSelectedNotice(notice);
@@ -54,7 +57,6 @@ function BatchPage() {
   };
 
   const handleCreateGroup = () => {
-    // Refresh user group data after creating a group
     refreshUserGroup();
     setShowCreateGroupModal(false);
   };
@@ -82,8 +84,21 @@ function BatchPage() {
     }
   };
 
+  const viewProfile = (userId) => () => {
+    if (userId) {
+      navigate(`/user-profile/${userId}`);
+    }
+  };
+
+  // Filter members based on search term - using batchMembers from batchData
+  const filteredMembers = batchData?.batchMembers?.filter(member => 
+    member.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    member.email?.toLowerCase().includes(searchTerm.toLowerCase())
+  ) || [];
+
   const tabs = [
     { id: 'overview', label: 'Overview' },
+    { id: 'members', label: 'Members' },
     { id: 'groups', label: 'Groups' },
     { id: 'noticeboard', label: 'Noticeboard' },
   ];
@@ -210,6 +225,7 @@ function BatchPage() {
               <span>{batchData.name}</span>
             </div>
           </div>
+          
           {/* Header Section with Banner */}
           <div
             className={`relative overflow-hidden mb-6 ${
@@ -448,7 +464,7 @@ function BatchPage() {
                       <span>{batchData.admin?.name || 'Not assigned'}</span>
                     </div>
                     <div
-                      className={`flex justify-between border border-b-0 rounded-t-lg p-2 px-2 ${
+                      className={`flex justify-between border border-b-0 p-2 px-2 ${
                         darkMode
                           ? 'bg-[#18181B] border-[#545454] hover:bg-[#9e9e9e]/20 hover:border-[#9e9e9e]/20'
                           : 'bg-white border-slate-300 hover:bg-[#ff9335]/10 hover:border-[#ff9335]/20'
@@ -458,7 +474,7 @@ function BatchPage() {
                       <span>{batchData.batchMembers?.length || 0} Members</span>
                     </div>
                     <div
-                      className={`flex justify-between border border-b-0 rounded-t-lg p-2 px-2 ${
+                      className={`flex justify-between border border-b-0 p-2 px-2 ${
                         darkMode
                           ? 'bg-[#18181B] border-[#545454] hover:bg-[#9e9e9e]/20 hover:border-[#9e9e9e]/20'
                           : 'bg-white border-slate-300 hover:bg-[#ff9335]/10 hover:border-[#ff9335]/20'
@@ -468,7 +484,7 @@ function BatchPage() {
                       <span>{batchData.status}</span>
                     </div>
                     <div
-                      className={`flex justify-between border border-b-0 rounded-t-lg p-2 px-2 ${
+                      className={`flex justify-between border rounded-b-lg p-2 px-2 ${
                         darkMode
                           ? 'bg-[#18181B] border-[#545454] hover:bg-[#9e9e9e]/20 hover:border-[#9e9e9e]/20'
                           : 'bg-white border-slate-300 hover:bg-[#ff9335]/10 hover:border-[#ff9335]/20'
@@ -478,6 +494,160 @@ function BatchPage() {
                       <span>{batchData.id}</span>
                     </div>
                   </div>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'members' && (
+              <div className='space-y-6'>
+                {/* Search Bar */}
+                <div className="flex items-center gap-4 mb-4">
+                  <div className={`relative flex-1 max-w-md ${darkMode ? 'text-white' : 'text-black'}`}>
+                    <i className="ri-search-line absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    <input
+                      type="text"
+                      placeholder="Search members by name or email..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className={`w-full pl-10 pr-4 py-2 rounded-lg border ${
+                        darkMode 
+                          ? 'bg-[#18181B] border-[#343434] text-white placeholder-gray-400' 
+                          : 'bg-white border-gray-300 text-black placeholder-gray-500'
+                      } focus:outline-none focus:ring-2 focus:ring-[var(--chaiteam-orange)] focus:border-transparent`}
+                    />
+                  </div>
+                  <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                    {filteredMembers.length} of {batchData.batchMembers?.length || 0} members
+                  </div>
+                </div>
+
+                {/* Admin Section */}
+                {batchData.admin && (
+                  <div>
+                    <h3
+                      className={`text-lg font-semibold mb-4 ${
+                        darkMode ? 'text-white' : 'text-gray-900'
+                      }`}
+                    >
+                      Batch Admin
+                    </h3>
+                    <div
+                      className={`flex items-center gap-4 p-4 rounded-xl border ${
+                        darkMode
+                          ? 'bg-[#18181B] border-[#343434] hover:bg-[#9e9e9e]/20 hover:border-[#9e9e9e]/20'
+                          : 'bg-white border-slate-300 hover:bg-[#ff9335]/10 hover:border-[#ff9335]/20'
+                      } shadow-sm mt-2`}
+                    >
+                      <div className='w-14 h-14 rounded-full bg-gray-400 flex items-center justify-center text-xl font-bold text-white'>
+                        {batchData.admin.name?.charAt(0).toUpperCase() || 'A'}
+                      </div>
+                      <div className='flex-1 min-w-0'>
+                        <div
+                          className={`font-semibold text-base ${
+                            darkMode ? 'text-white' : 'text-gray-900'
+                          }`}
+                        >
+                          {batchData.admin.name || 'Unknown'}
+                        </div>
+                        <div
+                          className={`text-sm ${
+                            darkMode ? 'text-gray-400' : 'text-gray-500'
+                          }`}
+                        >
+                          {batchData.admin.email || 'admin@example.com'}
+                        </div>
+                      </div>
+                      <div className='flex items-center gap-2'>
+                        <span
+                          className={`px-3 py-1 text-sm font-semibold rounded-lg ${
+                            darkMode
+                              ? 'bg-purple-900/30 text-purple-400'
+                              : 'bg-purple-50 text-purple-700'
+                          }`}
+                        >
+                          Admin
+                        </span>
+                        <button
+                          onClick={viewProfile(batchData.admin.id)}
+                          className={`px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-2 ${
+                            darkMode
+                              ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                              : 'bg-blue-500 hover:bg-blue-600 text-white'
+                          } transition-colors cursor-pointer`}
+                        >
+                          <i className="ri-user-line text-xs"></i>
+                          View Profile
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Members Section */}
+                <div>
+                  <h3
+                    className={`text-lg font-semibold mb-4 ${
+                      darkMode ? 'text-white' : 'text-gray-900'
+                    }`}
+                  >
+                    Batch Members ({filteredMembers.length})
+                  </h3>
+
+                  {filteredMembers.length === 0 ? (
+                    <div
+                      className={`flex flex-col items-center justify-center p-12 rounded-xl ${
+                        darkMode ? 'bg-[#2b2d31]' : 'bg-white'
+                      } border ${
+                        darkMode ? 'border-[#3a3b40]' : 'border-gray-200'
+                      }`}
+                    >
+                      <i
+                        className={`ri-group-line text-5xl mb-3 ${
+                          darkMode ? 'text-gray-400' : 'text-gray-300'
+                        }`}
+                      ></i>
+                      <p
+                        className={`${
+                          darkMode ? 'text-gray-400' : 'text-gray-500'
+                        }`}
+                      >
+                        {searchTerm ? 'No members found matching your search' : 'No members in this batch'}
+                      </p>
+                    </div>
+                  ) : (
+                    <div className='flex flex-col gap-3 mt-2'>
+                      {filteredMembers.map((member, index) => (
+                        <div
+                          key={member.id || index}
+                          className={`relative flex items-center gap-3 p-4 rounded-xl border shadow-sm ${
+                            darkMode
+                              ? 'bg-[#18181B] border-[#343434] hover:bg-[#9e9e9e]/20 hover:border-[#9e9e9e]/20'
+                              : 'bg-white border-slate-300 hover:bg-[#ff9335]/10 hover:border-[#ff9335]/20'
+                          }`}
+                        >
+                          <div className='w-12 h-12 rounded-full bg-gray-400 flex items-center justify-center text-lg font-bold text-white'>
+                            {member.name?.charAt(0).toUpperCase() || 'M'}
+                          </div>
+                          <div className='flex-1 min-w-0'>
+                            <div
+                              className={`font-medium text-sm ${
+                                darkMode ? 'text-white' : 'text-gray-900'
+                              }`}
+                            >
+                              {member.name || `Member ${index + 1}`}
+                            </div>
+                            <div
+                              className={`text-xs ${
+                                darkMode ? 'text-gray-400' : 'text-gray-500'
+                              } truncate`}
+                            >
+                              {member.email || 'member@example.com'}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             )}

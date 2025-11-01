@@ -94,6 +94,16 @@ export const batchService = {
       throw error;
     }
   },
+
+  getBatchMembers: async (batchId) => {
+    try {
+      const response = await axiosInstance.get(`/batch/${batchId}/members`);
+      return response.data.Data;
+    } catch (error) {
+      console.error('Error fetching batch members:', error);
+      throw error;
+    }
+  },
 };
 
 // Groups API services

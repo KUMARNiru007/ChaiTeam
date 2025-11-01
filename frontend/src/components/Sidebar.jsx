@@ -25,7 +25,6 @@ const Sidebar = () => {
       icon: 'ri-megaphone-line',    
     },
     { path: '/batches', label: 'Batches', icon: 'ri-school-line' },
-    // { path: '/batch-users', label: 'Batch Users', icon: 'ri-team-line' },
   ];
   
   const adminNavItems = [
@@ -86,11 +85,14 @@ const Sidebar = () => {
     };
   }, [openProfileModal]);
 
-  const handleLogout = () => {
-    // Add your logout logic here
-    console.log('Logging out...');
-    setOpenProfileModal(false);
-    navigate('/logout');
+  const handleLogout = async () => {
+      try {
+        await useAuthStore.getState().logout();
+        setOpenProfileModal(false);
+        navigate('/login');
+      } catch (error) {
+        console.error('Logout failed:', error);
+      }
   };
 
   const getInitials = (name) => {
