@@ -26,7 +26,7 @@ function LoginPage() {
         <div className='mt-3 flex w-full flex-col items-center justify-center gap-y-1'>
           <p className='parkinsans-bold text-4xl'>
             Chai
-            <span className='text-orange-500 dark:text-orange-400'>Team</span>
+            <span className='text-orange-500 dark:text-orange-400'>Hub</span>
           </p>
 
           <p>Welcome Back</p>

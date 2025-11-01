@@ -128,7 +128,7 @@ const Sidebar = () => {
           {!isCollapsed && (
             <span className={`logo-text ${darkMode ? '' : '!text-black'}`}>
               Chai
-              <span className='text-[var(--chaihub-orange)]'>Team</span>
+              <span className='text-[var(--chaihub-orange)]'>Hub</span>
             </span>
           )}
         </div>

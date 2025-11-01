@@ -31,6 +31,7 @@ function BatchPage() {
   const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [isUserEnrolledInBatch, setIsUserEnrolledInBatch] = useState(false);
 
   const { darkMode } = useTheme();
   const { authUser } = useAuthStore();
@@ -112,9 +113,17 @@ function BatchPage() {
           groupService.getUserGroup(batchId).catch(() => null),
           userService.getCurrentUser().catch(() => null),
         ]);
+        
+        
+        const isEnrolled = batch.batchMembers?.some(member => 
+          member.id === user?.id || 
+          member.email === user?.email
+        );
+        
         setBatchData(batch);
         setUserGroup(group);
         setCurrentUser(user);
+        setIsUserEnrolledInBatch(isEnrolled);
         setError(null);
       } catch (err) {
         console.error('Failed to fetch batch details:', err);
@@ -380,7 +389,7 @@ function BatchPage() {
                       darkMode ? 'text-white' : 'text-gray-900'
                     }`}
                   >
-                    {userGroup ? 'Enrolled' : 'Not Enrolled'}
+                    {isUserEnrolledInBatch ? 'Enrolled' : 'Not Enrolled'}
                   </p>
                 </div>
               </div>
@@ -409,8 +418,8 @@ function BatchPage() {
 
             {/* Action Buttons */}
             <div className='absolute right-0 bottom-2 flex gap-2'>
-              {/* Create Group button - only show if user doesn't have a group */}
-              {!userGroup && (
+              {/* Create Group button - only show if user doesn't have a group AND is enrolled in batch */}
+              {!userGroup && isUserEnrolledInBatch && (
                 <button
                   onClick={() => setShowCreateGroupModal(true)}
                   className='px-4 py-2 bg-[var(--chaihub-info)] text-white rounded-xl hover:bg-[var(--chaihub-info)]/90 
