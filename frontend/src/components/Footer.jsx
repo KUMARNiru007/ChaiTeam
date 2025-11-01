@@ -32,7 +32,7 @@ const Footer = () => {
                 color: "var(--chaihub-organe-dark)",
               }}
             >
-              Team.{" "}
+              Hub.{" "}
             </span>
             All rights reserved
           </span>

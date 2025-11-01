@@ -83,10 +83,13 @@ const Navbar = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.6, duration: 0.6, ease: 'easeIn' }}
     >
-      <div className='cursor-pointer'>
+      <div className='cursor-pointer flex'>
+        <div className='logo-icon'>
+            <i className='ri-graduation-cap-fill'></i>
+          </div>
         <Link to='/'>
           <span className='text-2xl text-[#F97316] font-bold'>Chai</span>
-          <span className='text-2xl font-medium'>Team</span>
+          <span className='text-2xl font-medium'>Hub</span>
         </Link>
       </div>
 

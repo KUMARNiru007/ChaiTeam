@@ -82,7 +82,7 @@ function LoginPage() {
         to='/'
         className='mt-2 w-full flex cursor-pointer items-center justify-center gap-1 text-center font-light hover:text-[var(--chaihub-orange-hover)]'
       >
-        👈 Back to home
+         Back to home
       </Link>
 
       <div className='flex flex-col items-center justify-center cursor-pointer mt-20'>

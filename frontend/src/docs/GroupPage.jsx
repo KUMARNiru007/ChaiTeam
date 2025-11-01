@@ -1118,7 +1118,7 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
                     disabled={loading}
                     className='px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white transition-all disabled:bg-gray-400 cursor-pointer font-medium'
                   >
-                    {loading ? 'leaving...' : 'leave Group'}
+                    {loading ? 'leaving...' : 'Leave Group'}
                   </button>
                 </div>
               </div>

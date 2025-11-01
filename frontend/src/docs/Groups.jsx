@@ -101,15 +101,13 @@ const Groups = ({ batchId }) => {
 
   const handleJoinGroup = () => {
     console.log('Join group:', selectedGroup.id);
-    // Add your join group API call here
-    // Example: await groupService.joinGroup(selectedGroup.id);
+
     closeGroupModal();
   };
 
   const handleLeaveGroup = () => {
     console.log('Leave group:', selectedGroup.id);
-    // Add your leave group API call here
-    // Example: await groupService.leaveGroup(selectedGroup.id);
+
     closeGroupModal();
   };
 
