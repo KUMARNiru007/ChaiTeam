@@ -31,7 +31,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.get('/', (req, res) => {
-  res.send('Hi, welcome to ChaiTeam');
+  res.send('Hi, welcome to ChaiHub');
 });
 
 app.use('/api/v1/auth', userAuthRoutes);

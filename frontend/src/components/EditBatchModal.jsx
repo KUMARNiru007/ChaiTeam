@@ -357,7 +357,7 @@ const EditBatchModal = ({ isOpen, onClose, onSave, batch }) => {
               <button
                 type='submit'
                 disabled={loading}
-                className='px-4 py-2 rounded-lg bg-[var(--chaiteam-btn-start)] hover:bg-[var(--chaiteam-btn-primary-hover)] text-white transition-all disabled:bg-gray-400 cursor-pointer font-medium'
+                className='px-4 py-2 rounded-lg bg-[var(--chaihub-btn-start)] hover:bg-[var(--chaihub-btn-primary-hover)] text-white transition-all disabled:bg-gray-400 cursor-pointer font-medium'
               >
                 {loading ? 'Updating...' : 'Save Changes'}
               </button>

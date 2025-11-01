@@ -75,7 +75,7 @@ function CreateNoticeModal({ batchId, userGroup, onClose, onCreate }) {
                 darkMode 
                   ? 'bg-[#1e1f22] border-[#3f4147] text-white' 
                   : 'bg-white border-gray-300 text-black'
-              } focus:outline-none focus:ring-2 focus:ring-[var(--chaiteam-orange)]`}
+              } focus:outline-none focus:ring-2 focus:ring-[var(--chaihub-orange)]`}
               required
             />
           </div>
@@ -91,7 +91,7 @@ function CreateNoticeModal({ batchId, userGroup, onClose, onCreate }) {
                 darkMode 
                   ? 'bg-[#1e1f22] border-[#3f4147] text-white' 
                   : 'bg-white border-gray-300 text-black'
-              } focus:outline-none focus:ring-2 focus:ring-[var(--chaiteam-orange)] min-h-[100px]`}
+              } focus:outline-none focus:ring-2 focus:ring-[var(--chaihub-orange)] min-h-[100px]`}
               required
             />
           </div>
@@ -107,7 +107,7 @@ function CreateNoticeModal({ batchId, userGroup, onClose, onCreate }) {
                 darkMode 
                   ? 'bg-[#1e1f22] border-[#3f4147] text-white' 
                   : 'bg-white border-gray-300 text-black'
-              } focus:outline-none focus:ring-2 focus:ring-[var(--chaiteam-orange)]`}
+              } focus:outline-none focus:ring-2 focus:ring-[var(--chaihub-orange)]`}
             >
               <option value="BATCH">Batch</option>
               <option value="GROUP" disabled={!userGroup}>
@@ -133,7 +133,7 @@ function CreateNoticeModal({ batchId, userGroup, onClose, onCreate }) {
                 darkMode 
                   ? 'bg-[#1e1f22] border-[#3f4147] text-white' 
                   : 'bg-white border-gray-300 text-black'
-              } focus:outline-none focus:ring-2 focus:ring-[var(--chaiteam-orange)]`}
+              } focus:outline-none focus:ring-2 focus:ring-[var(--chaihub-orange)]`}
             >
               <option value="NORMAL">Normal</option>
               <option value="PINNED">Pinned</option>
@@ -161,7 +161,7 @@ function CreateNoticeModal({ batchId, userGroup, onClose, onCreate }) {
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 bg-[var(--chaiteam-orange)] text-white rounded-xl hover:bg-[var(--chaiteam-orange)]/90 transition-all duration-200 disabled:opacity-50"
+              className="px-4 py-2 bg-[var(--chaihub-orange)] text-white rounded-xl hover:bg-[var(--chaihub-orange)]/90 transition-all duration-200 disabled:opacity-50"
             >
               {loading ? 'Creating...' : 'Create Notice'}
             </button>

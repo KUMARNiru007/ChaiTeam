@@ -96,7 +96,7 @@ function EditNoticeModal({ notice, onClose, onUpdate, onDelete }) {
                     darkMode
                       ? 'bg-[#1e1f22] border-[#3f4147] text-white'
                       : 'bg-white border-gray-300 text-black'
-                  } focus:outline-none focus:ring-2 focus:ring-[var(--chaiteam-orange)]`}
+                  } focus:outline-none focus:ring-2 focus:ring-[var(--chaihub-orange)]`}
                   required
                   placeholder='Enter notice title'
                 />
@@ -114,7 +114,7 @@ function EditNoticeModal({ notice, onClose, onUpdate, onDelete }) {
                     darkMode
                       ? 'bg-[#1e1f22] border-[#3f4147] text-white'
                       : 'bg-white border-gray-300 text-black'
-                  } focus:outline-none focus:ring-2 focus:ring-[var(--chaiteam-orange)] min-h-[120px] resize-none`}
+                  } focus:outline-none focus:ring-2 focus:ring-[var(--chaihub-orange)] min-h-[120px] resize-none`}
                   required
                   placeholder='Enter notice content'
                 />
@@ -132,7 +132,7 @@ function EditNoticeModal({ notice, onClose, onUpdate, onDelete }) {
                     darkMode
                       ? 'bg-[#1e1f22] border-[#3f4147] text-white'
                       : 'bg-white border-gray-300 text-black'
-                  } focus:outline-none focus:ring-2 focus:ring-[var(--chaiteam-orange)]`}
+                  } focus:outline-none focus:ring-2 focus:ring-[var(--chaihub-orange)]`}
                 >
                   <option value='NORMAL'>Normal</option>
                   <option value='PINNED'>Pinned</option>
@@ -186,7 +186,7 @@ function EditNoticeModal({ notice, onClose, onUpdate, onDelete }) {
               <button
                 type='submit'
                 disabled={loading}
-                className='px-4 py-2 rounded-lg bg-[var(--chaiteam-orange)] hover:bg-[var(--chaiteam-orange)]/90 text-white transition-all disabled:opacity-50 font-medium'
+                className='px-4 py-2 rounded-lg bg-[var(--chaihub-orange)] hover:bg-[var(--chaihub-orange)]/90 text-white transition-all disabled:opacity-50 font-medium'
               >
                 {loading ? 'Updating...' : 'Update Notice'}
               </button>

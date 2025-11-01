@@ -398,7 +398,7 @@ const CreateGroupModal = ({
             <button
               type='submit'
               disabled={loading}
-              className='px-4 py-2 rounded-lg bg-[var(--chaiteam-orange)] hover:bg-[var(--chaiteam-orange)]/90 text-white transition-all disabled:bg-gray-400 cursor-pointer font-medium'
+              className='px-4 py-2 rounded-lg bg-[var(--chaihub-orange)] hover:bg-[var(--chaihub-orange)]/90 text-white transition-all disabled:bg-gray-400 cursor-pointer font-medium'
             >
               {loading ? 'Creating Group...' : 'Create Group'}
             </button>

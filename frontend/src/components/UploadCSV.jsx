@@ -160,7 +160,7 @@ const UploadCSVModal = ({ isOpen, onClose, batches, onUpload }) => {
             <button
               type='submit'
               disabled={loading}
-              className='px-4 py-2 rounded-lg bg-[var(--chaiteam-btn-start)] hover:bg-[var(--chaiteam-btn-primary-hover)] text-white disabled:bg-gray-400'
+              className='px-4 py-2 rounded-lg bg-[var(--chaihub-btn-start)] hover:bg-[var(--chaihub-btn-primary-hover)] text-white disabled:bg-gray-400'
             >
               {loading ? 'Uploading...' : 'Upload'}
             </button>

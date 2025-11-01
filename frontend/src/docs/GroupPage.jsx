@@ -355,7 +355,7 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
           {groupMember ? (
             <button
               onClick={() => setShowCreateModal(true)}
-              className='px-4 py-2 bg-[var(--chaiteam-orange)] text-white rounded-xl hover:bg-[var(--chaiteam-orange)]/90 
+              className='px-4 py-2 bg-[var(--chaihub-orange)] text-white rounded-xl hover:bg-[var(--chaihub-orange)]/90 
                       cursor-pointer transition-all duration-200 flex items-center gap-2'
             >
               <i className='ri-add-line'></i>
@@ -373,7 +373,7 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
           {groupMember === leader && groupMember ? (
             <button
               onClick={() => setEditGroupModal(true)}
-              className='p-2 px-4 rounded-md text-sm bg-[var(--chaiteam-orange)] hover:bg-[var(--chaiteam-orange-hover)] cursor-pointer'
+              className='p-2 px-4 rounded-md text-sm bg-[var(--chaihub-orange)] hover:bg-[var(--chaihub-orange-hover)] cursor-pointer'
             >
               Edit Group
             </button>
@@ -405,7 +405,7 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
             onClick={() => setActiveTab(tab.id)}
             className={`px-4 py-2 font-semibold transition rounded-t-lg ${
               activeTab === tab.id
-                ? 'border-b-2 border-[var(--chaiteam-orange)] text-[var(--chaiteam-orange)]'
+                ? 'border-b-2 border-[var(--chaihub-orange)] text-[var(--chaihub-orange)]'
                 : darkMode
                 ? 'text-gray-400 hover:text-gray-200'
                 : 'text-gray-500 hover:text-gray-700'
@@ -421,7 +421,7 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
               onClick={() => setActiveTab(tab.id)}
               className={`px-4 py-2 font-semibold transition rounded-t-lg ${
                 activeTab === tab.id
-                  ? 'border-b-2 border-[var(--chaiteam-orange)] text-[var(--chaiteam-orange)]'
+                  ? 'border-b-2 border-[var(--chaihub-orange)] text-[var(--chaihub-orange)]'
                   : darkMode
                   ? 'text-gray-400 hover:text-gray-200'
                   : 'text-gray-500 hover:text-gray-700'
@@ -438,7 +438,7 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
               onClick={() => setActiveTab(tab.id)}
               className={`px-4 py-2 font-semibold transition rounded-t-lg ${
                 activeTab === tab.id
-                  ? 'border-b-2 border-[var(--chaiteam-orange)] text-[var(--chaiteam-orange)]'
+                  ? 'border-b-2 border-[var(--chaihub-orange)] text-[var(--chaihub-orange)]'
                   : darkMode
                   ? 'text-gray-400 hover:text-gray-200'
                   : 'text-gray-500 hover:text-gray-700'
@@ -1060,7 +1060,7 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
                   <button
                     type='submit'
                     disabled={loading}
-                    className='px-4 py-2 rounded-lg bg-[var(--chaiteam-btn-start)] hover:bg-[var(--chaiteam-btn-primary-hover)] text-white transition-all disabled:bg-gray-400 cursor-pointer font-medium'
+                    className='px-4 py-2 rounded-lg bg-[var(--chaihub-btn-start)] hover:bg-[var(--chaihub-btn-primary-hover)] text-white transition-all disabled:bg-gray-400 cursor-pointer font-medium'
                   >
                     {loading ? 'Sending...' : 'Send Application'}
                   </button>

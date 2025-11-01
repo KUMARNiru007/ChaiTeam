@@ -54,17 +54,17 @@ const NoticeBoard = () => {
         <div className="text-center p-8">
           <div className={`notice-spinner mx-auto ${
             darkMode 
-              ? 'border-4 border-chaiteam-border-primary border-l-chaiteam-orange' 
-              : 'border-4 border-gray-200 border-l-chaiteam-orange'
+              ? 'border-4 border-chaihub-border-primary border-l-chaihub-orange' 
+              : 'border-4 border-gray-200 border-l-chaihub-orange'
           }`}></div>
-          <p className={`mt-4 text-sm ${darkMode ? 'text-chaiteam-text-secondary' : 'text-gray-600'}`}>
+          <p className={`mt-4 text-sm ${darkMode ? 'text-chaihub-text-secondary' : 'text-gray-600'}`}>
             Loading...
           </p>
         </div>
       ) : error ? (
-        <div className={`empty-state ${darkMode ? 'bg-chaiteam-bg-secondary' : 'bg-gray-50'}`}>
-          <i className="ri-error-warning-line empty-state-icon text-chaiteam-error"></i>
-          <p className={`empty-state-message ${darkMode ? 'text-chaiteam-text-secondary' : 'text-gray-600'}`}>{error}</p>
+        <div className={`empty-state ${darkMode ? 'bg-chaihub-bg-secondary' : 'bg-gray-50'}`}>
+          <i className="ri-error-warning-line empty-state-icon text-chaihub-error"></i>
+          <p className={`empty-state-message ${darkMode ? 'text-chaihub-text-secondary' : 'text-gray-600'}`}>{error}</p>
           <button
             onClick={() => window.location.reload()}
             className="create-button mt-4"
@@ -81,7 +81,7 @@ const NoticeBoard = () => {
                 key={notice.id}
                 className={`notice-card ${
                   darkMode 
-                    ? 'bg-chaiteam-bg-secondary border-chaiteam-border-primary hover:bg-chaiteam-bg-elevated' 
+                    ? 'bg-chaihub-bg-secondary border-chaihub-border-primary hover:bg-chaihub-bg-elevated' 
                     : 'bg-white border-gray-200 hover:bg-gray-50'
                 }`}
                 onClick={() => setSelectedNotice(notice)}
@@ -104,14 +104,14 @@ const NoticeBoard = () => {
                 <div className="notice-metadata">
                   <div className="info-item">
                     <i className="ri-user-line info-icon"></i>
-                    <span className={`info-value ${darkMode ? 'text-chaiteam-text-secondary' : 'text-gray-700'}`}>
+                    <span className={`info-value ${darkMode ? 'text-chaihub-text-secondary' : 'text-gray-700'}`}>
                       {notice.createdBy?.name || "Unknown"}
                     </span>
                   </div>
 
                   <div className="info-item">
                     <i className="ri-time-line info-icon"></i>
-                    <span className={`info-value ${darkMode ? 'text-chaiteam-text-secondary' : 'text-gray-700'}`}>
+                    <span className={`info-value ${darkMode ? 'text-chaihub-text-secondary' : 'text-gray-700'}`}>
                       {new Date(notice.createdAt).toLocaleString()}
                       {notice.isEdited && " (edited)"}
                     </span>

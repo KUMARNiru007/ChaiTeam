@@ -15,10 +15,10 @@ const Footer = () => {
       }`}
     >
       <div className="text-center flex items-center justify-between gap-4">
-        <Link to="/" className="hover:text-[var(--chaiteam-orange-hover)]">
+        <Link to="/" className="hover:text-[var(--chaihub-orange-hover)]">
           Help & Support
         </Link>
-        <Link to="/" className="hover:text-[var(--chaiteam-orange-hover)]">
+        <Link to="/" className="hover:text-[var(--chaihub-orange-hover)]">
           Report a issue
         </Link>
       </div>
@@ -29,7 +29,7 @@ const Footer = () => {
             &copy; 2025 Chai
             <span
               style={{
-                color: "var(--chaiteam-organe-dark)",
+                color: "var(--chaihub-organe-dark)",
               }}
             >
               Team.{" "}
@@ -41,19 +41,19 @@ const Footer = () => {
         <div className="flex items-center justify-center gap-5">
           <Link
             to="/"
-            className="text-2xl hover:text-[var(--chaiteam-orange-hover)]"
+            className="text-2xl hover:text-[var(--chaihub-orange-hover)]"
           >
             <i className="ri-youtube-fill"></i>
           </Link>
           <Link
             to="/"
-            className="text-xl hover:text-[var(--chaiteam-orange-hover)]"
+            className="text-xl hover:text-[var(--chaihub-orange-hover)]"
           >
             <i className="ri-twitter-x-fill"></i>
           </Link>
           <Link
             to="/"
-            className="text-xl hover:text-[var(--chaiteam-orange-hover)]"
+            className="text-xl hover:text-[var(--chaihub-orange-hover)]"
           >
             <i className="ri-linkedin-fill"></i>
           </Link>

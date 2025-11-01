@@ -66,7 +66,7 @@ function UserProfile() {
       <div className={`w-full max-w-4xl mx-auto p-6 ${darkMode ? 'text-white' : 'text-black'}`}>
         <div className="flex justify-center items-center min-h-[60vh]">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--chaiteam-orange)] mx-auto"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--chaihub-orange)] mx-auto"></div>
             <p className="mt-4 text-gray-400">Loading...</p>
           </div>
         </div>
@@ -95,7 +95,7 @@ function UserProfile() {
             <p className="text-gray-400 mb-4">{error}</p>
             <button
               onClick={() => navigate(-1)}
-              className="px-6 py-2 bg-[var(--chaiteam-orange)] text-white rounded-lg hover:bg-[var(--chaiteam-orange)]/90 transition-colors"
+              className="px-6 py-2 bg-[var(--chaihub-orange)] text-white rounded-lg hover:bg-[var(--chaihub-orange)]/90 transition-colors"
             >
               Go Back
             </button>

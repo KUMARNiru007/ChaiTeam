@@ -246,7 +246,7 @@ const Batches = () => {
           <p
             style={{
               fontSize: '14px',
-              color: 'var(--chaiteam-text-secondary, #a0a0a0)',
+              color: 'var(--chaihub-text-secondary, #a0a0a0)',
               margin: 0,
             }}
           >

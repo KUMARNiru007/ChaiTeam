@@ -117,7 +117,7 @@ const Announcement = () => {
           <p
             style={{
               fontSize: "14px",
-              color: "var(--chaiteam-text-secondary, #a0a0a0)",
+              color: "var(--chaihub-text-secondary, #a0a0a0)",
               margin: 0,
             }}
           >
@@ -130,7 +130,7 @@ const Announcement = () => {
           {isAdmin && (
             <button
               onClick={() => setShowCreateModal(true)}
-              className="px-4 py-2 bg-[var(--chaiteam-orange)] text-white rounded-xl hover:bg-[var(--chaiteam-orange)]/90 
+              className="px-4 py-2 bg-[var(--chaihub-orange)] text-white rounded-xl hover:bg-[var(--chaihub-orange)]/90 
               cursor-pointer transition-all duration-200 flex items-center gap-2"
             >
               <i className="ri-add-line"></i>
