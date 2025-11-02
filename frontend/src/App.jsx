@@ -3,6 +3,7 @@ import './App.css';
 import { Routes, Route } from 'react-router-dom';
 import Layout from './Layout/Layout';
 import Home from './pages/Home';
+import AboutUs from './pages/AboutUs';
 import Batches from './docs/Batches';
 import BatchPage from './docs/BatchPage';
 import Groups from './docs/Groups';
@@ -46,6 +47,7 @@ function App() {
   return (
     <Routes>
       <Route path='/' element={<Home />} />
+      <Route path='/about' element={<AboutUs />} />
       <Route path='/login' element={<LoginPage />} />
 
       <Route element={<Layout />}>

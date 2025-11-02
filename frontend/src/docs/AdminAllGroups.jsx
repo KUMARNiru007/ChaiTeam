@@ -100,9 +100,9 @@ const AdminAllGroups = () => {
           All Groups
         </h2>
         <p
-          className={`text-sm font-semibold ${
+          className={`text font-semibold ${
             darkMode ? 'text-white/70' : 'text-gray-600'
-          } mt-2`}
+          }`}
         >
           Here, you can See and Manage all the groups on the Platform
         </p>

@@ -107,7 +107,7 @@ const Announcement = () => {
           <h1
             className={`${darkMode ? "text-white" : "text-black"}`}
             style={{
-              fontSize: "22px",
+              fontSize: "30px",
               fontWeight: "var(--font-weight-bold, 700)",
               margin: "0 0 0.5rem 0",
             }}
@@ -117,7 +117,8 @@ const Announcement = () => {
           <p
             style={{
               fontSize: "14px",
-              color: "var(--chaihub-text-secondary, #a0a0a0)",
+              fontWeight: '500',
+              color: "var(--chaihub-border-secondary)",
               margin: 0,
             }}
           >
@@ -131,7 +132,7 @@ const Announcement = () => {
             <button
               onClick={() => setShowCreateModal(true)}
               className="px-4 py-2 bg-[var(--chaihub-orange)] text-white rounded-xl hover:bg-[var(--chaihub-orange)]/90 
-              cursor-pointer transition-all duration-200 flex items-center gap-2"
+              cursor-pointer transition-all duration-200 flex items-center gap-2 relative top-7 right-2"
             >
               <i className="ri-add-line"></i>
               Add Notice

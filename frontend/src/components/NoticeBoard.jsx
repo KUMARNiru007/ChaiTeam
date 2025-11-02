@@ -90,11 +90,6 @@ const NoticeBoard = () => {
                   <h3 className="notice-title">
                     {notice.title}
                   </h3>
-
-                  <span className={`notice-type ${notice.type.toLowerCase()}`}>
-                  
-                    {notice.type.toLowerCase()}
-                  </span>
                 </div>
 
                 <p className="notice-content">
@@ -116,10 +111,6 @@ const NoticeBoard = () => {
                       {notice.isEdited && " (edited)"}
                     </span>
                   </div>
-
-                  <span className={`tag ${notice.scope.toLowerCase()}`}>
-                    {notice.scope.toLowerCase()}
-                  </span>
                 </div>
               </div>
             ))
@@ -132,7 +123,6 @@ const NoticeBoard = () => {
         </div>
       )}
 
-      {/* Selected notice modal remains the same */}
     </div>
   );
 };

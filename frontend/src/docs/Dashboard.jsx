@@ -50,16 +50,16 @@ function Dashboard() {
           }
         }
 
-        // Calculate statistics
+       
         const totalBatches = allBatches.length;
         const enrolledBatches = userBatches.length;
         const availableGroups = totalGroupsInBatches;
 
-        // Update stats with real data
+        // Update stats
         const updatedStats = [
           {
             title: 'Total Batches',
-            icon: 'ri-grid-line',
+            icon: 'ri-stack-line',
             value: totalBatches,
             total: `${totalBatches} Total`,
             pending: `${totalBatches} Available`,
@@ -68,7 +68,7 @@ function Dashboard() {
           },
           {
             title: 'My Groups',
-            icon: 'ri-edit-line',
+            icon: 'ri-team-line',
             value: userGroupsCount,
             total: `${userGroupsCount} Joined`,
             pending: `${availableGroups > 0 ? availableGroups : 0} Available`,
@@ -91,7 +91,7 @@ function Dashboard() {
         console.error('Error fetching dashboard data:', err);
         setError('Failed to load dashboard data. Please try again later.');
 
-        // Fallback to empty stats
+      
         setStats([
           {
             title: 'Total Batches',
@@ -131,40 +131,40 @@ function Dashboard() {
 
   const badges = [
     {
-      label: '0 Marks Earned',
-      icon: 'ri-close-line',
-      color: 'green-600',
-      backgroundColor: 'green-200',
+      label: 'Active Groups',
+      icon: 'ri-team-fill',
+      color: darkMode ? '#10b981' : '#059669',
+      backgroundColor: darkMode ? 'rgba(16, 185, 129, 0.2)' : 'rgba(5, 150, 105, 0.1)',
     },
     {
-      label: '0 Peer Evaluations',
-      icon: 'ri-checkbox-circle-line',
-      color: 'green-600',
-      backgroundColor: 'green-200',
+      label: 'Group Leader',
+      icon: 'ri-user-star-fill',
+      color: darkMode ? '#f59e0b' : '#d97706',
+      backgroundColor: darkMode ? 'rgba(245, 158, 11, 0.2)' : 'rgba(217, 119, 6, 0.1)',
     },
     {
-      label: '0.0/5 Code Quality Rating',
-      icon: 'ri-award-line',
-      color: 'orange-600',
-      backgroundColor: 'orange-200',
+      label: 'Batch Member',
+      icon: 'ri-book-open-fill',
+      color: darkMode ? '#3b82f6' : '#2563eb',
+      backgroundColor: darkMode ? 'rgba(59, 130, 246, 0.2)' : 'rgba(37, 99, 235, 0.1)',
     },
     {
-      label: '0.0/5 Writing Rating',
-      icon: 'ri-award-line',
-      color: 'orange-600',
-      backgroundColor: 'orange-200',
+      label: 'Active Participant',
+      icon: 'ri-user-voice-fill',
+      color: darkMode ? '#8b5cf6' : '#7c3aed',
+      backgroundColor: darkMode ? 'rgba(139, 92, 246, 0.2)' : 'rgba(124, 58, 237, 0.1)',
     },
     {
-      label: '0.0/5 Evaluation Rating',
-      icon: 'ri-award-line',
-      color: 'orange-600',
-      backgroundColor: 'orange-200',
+      label: 'Project Contributor',
+      icon: 'ri-git-repository-fill',
+      color: darkMode ? '#ec4899' : '#db2777',
+      backgroundColor: darkMode ? 'rgba(236, 72, 153, 0.2)' : 'rgba(219, 39, 119, 0.1)',
     },
     {
-      label: '0 Penalty Marks',
-      icon: 'ri-alert-line',
-      color: 'red-600',
-      backgroundColor: 'red-200',
+      label: 'Community Member',
+      icon: 'ri-community-fill',
+      color: darkMode ? '#06b6d4' : '#0891b2',
+      backgroundColor: darkMode ? 'rgba(6, 182, 212, 0.2)' : 'rgba(8, 145, 178, 0.1)',
     },
   ];
 
@@ -226,7 +226,7 @@ function Dashboard() {
             <h1
               className={`${darkMode ? 'text-white' : 'text-black'}`}
               style={{
-                fontSize: '22px',
+                fontSize: '30px',
                 fontWeight: 'var(--font-weight-bold, 700)',
                 margin: '0 0 0.5rem 0',
               }}
@@ -236,7 +236,8 @@ function Dashboard() {
             <p
               style={{
                 fontSize: '14px',
-                color: 'var(--chaihub-text-secondary, #a0a0a0)',
+                fontWeight: '500',
+                color: 'var(--chaihub-border-secondary)',
                 margin: 0,
               }}
             >
@@ -401,43 +402,73 @@ function Dashboard() {
           ))}
         </div>
 
-        {/* Badges */}
-        <div
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '1rem',
-            marginBottom: '3rem',
-          }}
-        >
-          {badges.map((badge, index) => (
-            <div
-              key={index}
-              className={`rounded-lg flex justify-center items-center px-3 py-2 ${
-                darkMode
-                  ? `bg-${badge.backgroundColor.replace(
-                      '200',
-                      '900',
-                    )} text-${badge.color.replace('600', '300')}`
-                  : `bg-${badge.backgroundColor} text-${badge.color}`
-              }`}
-              style={{
-                padding: '0.5rem 1rem',
-                gap: '0.5rem',
-                fontSize: 'var(--font-size-sm, 0.875rem)',
-                fontWeight: 'var(--font-weight-medium, 500)',
-              }}
-            >
-              <i className={badge.icon} style={{ fontSize: '14px' }}></i>
-              {badge.label}
-            </div>
-          ))}
+        {/* Badges Section */}
+        <div style={{ marginBottom: '2rem' }}>
+          <h2
+            className={`text-2xl underline underline-offset-3 ${
+              darkMode
+                ? 'decoration-[var(--chaihub-organe-dark)]'
+                : 'decoration-[var(--chaihub-orange)]'
+            }`}
+            style={{
+              fontWeight: 'var(--font-weight-bold, 700)',
+              marginBottom: '1.5rem',
+            }}
+          >
+            Activities
+          </h2>
+
+          {/* Badges */}
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '1rem',
+              marginBottom: '1rem',
+            }}
+          >
+            {badges.map((badge, index) => (
+              <div
+                key={index}
+                style={{
+                  padding: '0.75rem 1.25rem',
+                  gap: '0.5rem',
+                  fontSize: 'var(--font-size-sm, 0.875rem)',
+                  fontWeight: 'var(--font-weight-medium, 500)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  borderRadius: '2rem',
+                  backgroundColor: badge.backgroundColor,
+                  color: badge.color,
+                  border: `1px solid ${badge.color}20`,
+                  transition: 'all 0.2s ease',
+                  cursor: 'pointer',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
+              >
+                <i 
+                  className={badge.icon} 
+                  style={{ 
+                    fontSize: '16px',
+                  }}
+                ></i>
+                {badge.label}
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Upcoming Deadlines */}
         <div style={{ marginBottom: '2rem' }}>
           <h2
-            className={`text-2xl underline underline-offset-4 ${
+            className={`text-2xl underline underline-offset-3 ${
               darkMode
                 ? 'decoration-[var(--chaihub-organe-dark)]'
                 : 'decoration-[var(--chaihub-orange)]'

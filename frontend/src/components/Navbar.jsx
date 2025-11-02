@@ -84,12 +84,12 @@ const Navbar = () => {
       transition={{ delay: 0.6, duration: 0.6, ease: 'easeIn' }}
     >
       <div className='cursor-pointer flex'>
-        <div className='logo-icon'>
-            <i className='ri-graduation-cap-fill'></i>
-          </div>
-        <Link to='/'>
-          <span className='text-2xl text-[#F97316] font-bold'>Chai</span>
-          <span className='text-2xl font-medium'>Hub</span>
+        <Link to="/">
+          <img
+           src={darkMode ? "/logoDark.png" : "/logoLight.png"}
+           className="h-12 w-35"
+           alt="Logo"
+          />
         </Link>
       </div>
 

@@ -18,8 +18,8 @@ const Footer = () => {
         <Link to="/" className="hover:text-[var(--chaihub-orange-hover)]">
           Help & Support
         </Link>
-        <Link to="/" className="hover:text-[var(--chaihub-orange-hover)]">
-          Report a issue
+        <Link to="/about" className="hover:text-[var(--chaihub-orange-hover)]">
+          About
         </Link>
       </div>
 

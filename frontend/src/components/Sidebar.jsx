@@ -122,14 +122,19 @@ const Sidebar = () => {
       {/* Logo Section */}
       <NavLink to='/'>
         <div className='sidebar-logo text-center'>
-          <div className='logo-icon'>
-            <i className='ri-graduation-cap-fill'></i>
-          </div>
+          {isCollapsed && (
+            <img
+              src="/logo.png"
+              className="h-8 w-8 mt-2.75"
+              alt="Logo"
+            />
+          )}
           {!isCollapsed && (
-            <span className={`logo-text ${darkMode ? '' : '!text-black'}`}>
-              Chai
-              <span className='text-[var(--chaihub-orange)]'>Hub</span>
-            </span>
+            <img
+                src={darkMode ? "/logoDark.png" : "/logoLight.png"}
+                className="h-12 w-35 ml-5"
+                alt="Logo"
+            />
           )}
         </div>
       </NavLink>

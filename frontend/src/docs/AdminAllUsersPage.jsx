@@ -117,7 +117,7 @@ const AdminAllUsersPage = () => {
       </h2>
 
       <p
-        className={`text-sm font-semibold text-center mb-6 ${
+        className={`text font-semibold text-center mb-6 ${
           darkMode ? 'text-white/70' : 'text-gray-500'
         }`}
       >

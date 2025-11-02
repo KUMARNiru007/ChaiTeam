@@ -85,7 +85,7 @@ const AllApplications = () => {
         All Applications
       </h2>
       <p
-        className={`text-sm font-semibold text-center mb-4 ${
+        className={`text font-semibold text-center mb-4 ${
           darkMode ? 'text-white/70' : 'text-gray-500'
         }`}
       >

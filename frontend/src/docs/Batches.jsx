@@ -236,7 +236,7 @@ const Batches = () => {
           <h1
             className={`${darkMode ? 'text-white' : 'text-black'}`}
             style={{
-              fontSize: '22px',
+              fontSize: '30px',
               fontWeight: 'var(--font-weight-bold, 700)',
               margin: '0 0 0.5rem 0',
             }}
@@ -246,7 +246,8 @@ const Batches = () => {
           <p
             style={{
               fontSize: '14px',
-              color: 'var(--chaihub-text-secondary, #a0a0a0)',
+              fontWeight: '500',
+              color: 'var(--chaihub-border-secondary)',
               margin: 0,
             }}
           >
