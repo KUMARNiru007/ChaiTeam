@@ -15,7 +15,7 @@ const Footer = () => {
       }`}
     >
       <div className="text-center flex items-center justify-between gap-4">
-        <Link to="/" className="hover:text-[var(--chaihub-orange-hover)]">
+        <Link to="https://discord.com/invite/WDrH3zuWFb" className="hover:text-[var(--chaihub-orange-hover)]" target="_blank">
           Help & Support
         </Link>
         <Link to="/about" className="hover:text-[var(--chaihub-orange-hover)]">
