@@ -40,20 +40,23 @@ const Footer = () => {
 
         <div className="flex items-center justify-center gap-5">
           <Link
-            to="/"
+            to="https://www.youtube.com/@chaiaurcode"
             className="text-2xl hover:text-[var(--chaihub-orange-hover)]"
+            target="_blank"
           >
             <i className="ri-youtube-fill"></i>
           </Link>
           <Link
-            to="/"
+            to="https://x.com/chaicodehq/"
             className="text-xl hover:text-[var(--chaihub-orange-hover)]"
+            target="_blank"
           >
             <i className="ri-twitter-x-fill"></i>
           </Link>
           <Link
-            to="/"
+            to="https://www.linkedin.com/company/chaicodehq/"
             className="text-xl hover:text-[var(--chaihub-orange-hover)]"
+            target="_blank"
           >
             <i className="ri-linkedin-fill"></i>
           </Link>

@@ -83,7 +83,7 @@ const Navbar = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.6, duration: 0.6, ease: 'easeIn' }}
     >
-      <div className='cursor-pointer flex'>
+      <div className='cursor-pointer flex mb-2'>
         <Link to="/">
           <img
            src={darkMode ? "/logoDark.png" : "/logoLight.png"}
