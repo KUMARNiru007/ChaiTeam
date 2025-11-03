@@ -48,7 +48,7 @@ function AboutUs() {
             <div className={`p-6 rounded-lg border-1 transition-all duration-200 ${darkMode ? "bg-[#18181B] border-[#343434] hover:bg-[#9e9e9e]/20" : "bg-white border-slate-300 hover:bg-[#ff9335]/10"}`}>
               <h3 className="text-xl font-semibold mb-3">Our Vision</h3>
               <p>
-                To create a global network of student collaborators who support each other's growth and development through meaningful connections and shared experiences.
+                To create a network of student's who collaborat and support each other's growth and development through meaningful connections and shared experiences.
               </p>
             </div>
             
@@ -138,7 +138,9 @@ function AboutUs() {
                 </div>
               </div>
               <p className="text-center">
-                A creative designer with a keen eye for detail and user experience. Specializes in creating beautiful, functional interfaces that users love.
+               A committed full-stack developer specializing in React and Node.js. Focused on crafting seamless experiences and efficient server-side logic.
+
+
               </p>
             </div>
           </div>
