@@ -86,7 +86,7 @@ const Navbar = () => {
       <div className='cursor-pointer flex mb-2'>
         <Link to="/">
           <img
-           src={darkMode ? "/logoDark.png" : "/logoLight.png"}
+           src={darkMode ? "/logoDark.webp" : "/logoLight.webp"}
            className="h-12 w-35"
            alt="Logo"
           />

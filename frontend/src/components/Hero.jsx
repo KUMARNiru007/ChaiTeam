@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "motion/react";
 
 import { useTheme } from "../context/ThemeContext.jsx";
-import GroupImage from "../assets/Groups1.png";
+import GroupImage from "../assets/Groups1.webp";
 
 function Hero() {
   const navigate = useNavigate();

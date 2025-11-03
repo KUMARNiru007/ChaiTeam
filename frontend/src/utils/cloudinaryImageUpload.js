@@ -14,6 +14,7 @@ export const uploadToCloudinary = async (file) => {
     formData.append('timestamp', signatureData.Data.timestamp);
     formData.append('signature', signatureData.Data.signature);
     formData.append('folder', signatureData.Data.folder);
+    
 
     const response = await axios.post(
       `https://api.cloudinary.com/v1_1/dpze7fq1y/image/upload`,

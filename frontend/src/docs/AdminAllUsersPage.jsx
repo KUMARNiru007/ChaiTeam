@@ -305,7 +305,7 @@ const AdminAllUsersPage = () => {
 
             <div className='flex flex-col items-center mb-4 mt-4'>
               <img
-                src={selectedUser.image || '/default-avatar.png'}
+                src={selectedUser.image || profile}
                 alt={selectedUser.name}
                 className='w-20 h-20 rounded-full mb-3 object-cover border-2 border-gray-300'
               />

@@ -124,14 +124,14 @@ const Sidebar = () => {
         <div className='sidebar-logo text-center'>
           {isCollapsed && (
             <img
-              src="/logo.png"
+              src="/logo.webp"
               className="h-8 w-8 mt-2.75"
               alt="Logo"
             />
           )}
           {!isCollapsed && (
             <img
-                src={darkMode ? "/logoDark.png" : "/logoLight.png"}
+                src={darkMode ? "/logoDark.webp" : "/logoLight.webp"}
                 className="h-12 w-35 ml-5"
                 alt="Logo"
             />
