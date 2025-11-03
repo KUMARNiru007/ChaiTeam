@@ -1,6 +1,73 @@
 import { db } from '../libs/db.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 import { ApiError } from '../utils/ApiError.js';
+
+export const fetchUserAllApplications = async (req, res) => {
+  const { userId } = req.params;
+  try {
+    if (!userId) {
+      return res.status(400).json(new ApiError(400, 'User Id is required'));
+    }
+
+    const userApplications = await db.joinApplication.findMany({
+      where: { userId },
+      include: {
+        group: {
+          select: {
+            name: true,
+            batchName: true
+          }
+        }
+      }
+    });
+
+    if (!userApplications || userApplications.length === 0) {
+      return res
+        .status(200)
+        .json(
+          new ApiResponse(
+            200,
+            [],
+            'No applications found for this user',
+          ),
+        );
+    }
+
+    const applicationsWithGroupInfo = userApplications.map(app => ({
+      id: app.id,
+      userId: app.userId,
+      groupId: app.groupId,
+      name: app.name,
+      email: app.email,
+      reason: app.reason,
+      status: app.status,
+      createdAT: app.createdAT,
+      updatedAT: app.updatedAT,
+      groupName: app.group?.name || 'N/A',
+      batchName: app.group?.batchName || 'N/A'
+    }));
+
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          applicationsWithGroupInfo,
+          'All user applications fetched successfully',
+        ),
+      );
+  } catch (error) {
+    console.error('Error while fetching the user Join applications: ', error);
+    return res
+      .status(400)
+      .json(
+        new ApiError(
+          400,
+          'Error while fetching the user Join applications',
+        ),
+      );
+  }
+};
 export const createGroup = async (req, res) => {
   try {
     const { name, description, tags, batchId, logoImageUrl, groupImageUrl } =
@@ -49,13 +116,6 @@ export const createGroup = async (req, res) => {
       },
       include: { member: true },
     });
-
-    // await db.user.update({
-    //   where: { id: userId },
-    //   data: {
-    //     isInGroup: true,
-    //   },
-    // });
 
     await db.userActivity.create({
       data: {
@@ -186,17 +246,8 @@ export const ApplyToJoinGroup = async (req, res) => {
         );
     }
 
-    const newApplication = await prisma.joinApplication.upsert({
-      where: {
-        userId_groupId: {
-          userId: req.user.id,
-          groupId: groupId,
-        },
-      },
-      update: {
-        status: 'PENDING', // or whatever update logic you want
-      },
-      create: {
+    const newApplication = await db.joinApplication.create({
+      data: {
         userId: req.user.id,
         groupId,
         name: req.user.name,
@@ -231,51 +282,6 @@ export const ApplyToJoinGroup = async (req, res) => {
     return res
       .status(500)
       .json(new ApiError(500, 'Failed to send join group request', error));
-  }
-};
-
-export const fetchUserAllApplications = async (req, res) => {
-  const { userId } = req.params;
-  try {
-    if (!userId) {
-      return res.status(400).json(new ApiError(400, 'User Id is required'));
-    }
-
-    const userAplications = await db.joinApplication.findMany({
-      where: { userId },
-    });
-
-    if (!userAplications) {
-      return res
-        .status(400)
-        .json(
-          new ApiError(
-            404,
-            'No application found. User didn;t applied to any group',
-          ),
-        );
-    }
-
-    return res
-      .status(200)
-      .json(
-        new ApiResponse(
-          200,
-          userAplications,
-          'All user aplications fethed successfully',
-        ),
-      );
-  } catch (error) {
-    console.error('Error while fethcing the user Join applications: ', error);
-    return res
-      .status(400)
-      .json(
-        new ApiError(
-          400,
-          'Error while fethcing the user Join applications: ',
-          error,
-        ),
-      );
   }
 };
 
@@ -374,12 +380,10 @@ export const addMemberToGroup = async (req, res) => {
       },
     });
 
-    await prisma.joinApplication.update({
+    await db.joinApplication.updateMany({
       where: {
-        userId_groupId: {
-          userId: userId,
-          groupId: groupId,
-        },
+        userId: userId,
+        groupId: groupId,
       },
       data: {
         status: 'APPROVED',
@@ -469,12 +473,10 @@ export const rejectJoinApplication = async (req, res) => {
         .json(new ApiError(400, 'Both userId and groupId are required'));
     }
 
-    await prisma.joinApplication.update({
+    await db.joinApplication.updateMany({
       where: {
-        userId_groupId: {
-          userId: userId,
-          groupId: groupId,
-        },
+        userId: userId,
+        groupId: groupId,
       },
       data: {
         status: 'REJECTED',
@@ -546,13 +548,6 @@ export const leaveGroup = async (req, res) => {
         capacity: { decrement: 1 },
       },
     });
-
-    // const user = await db.user.update({
-    //   where: { id: userId },
-    //   data: {
-    //     isInGroup: false,
-    //   },
-    // });
 
     await db.userActivity.create({
       data: {
@@ -631,8 +626,6 @@ export const kickMemberFromGroup = async (req, res) => {
         );
     }
 
-    // Storing the reason and userDetails heer in notice board
-
     await db.groupMember.delete({
       where: { id: member.id },
     });
@@ -643,13 +636,6 @@ export const kickMemberFromGroup = async (req, res) => {
         capacity: { decrement: 1 },
       },
     });
-
-    // const user = await db.user.update({
-    //   where: { id: userId },
-    //   data: {
-    //     isInGroup: false,
-    //   },
-    // });
 
     await db.userActivity.create({
       data: {
@@ -760,13 +746,6 @@ export const deleteGroup = async (req, res) => {
     await db.groups.delete({
       where: { id: groupId },
     });
-
-    // await db.user.update({
-    //   where: { id: req.user.id },
-    //   data: {
-    //     isInGroup: false,
-    //   },
-    // });
 
     await db.userActivity.create({
       data: {

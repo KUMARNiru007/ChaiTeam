@@ -25,6 +25,11 @@ const Sidebar = () => {
       icon: 'ri-megaphone-line',    
     },
     { path: '/batches', label: 'Batches', icon: 'ri-school-line' },
+    {
+      path: '/allApplications',
+      label: 'Applications',
+      icon: 'ri-mail-unread-line',
+    },
   ];
   
   const adminNavItems = [
@@ -32,11 +37,6 @@ const Sidebar = () => {
       path: '/create-batch',
       label: 'Manage Batches',
       icon: 'ri-add-box-line',
-    },
-    {
-      path: '/allApplications',
-      label: 'All Applications',
-      icon: 'ri-mail-unread-line',
     },
     { path: '/allUsers', label: 'All Users', icon: 'ri-user-search-line' },
     { path: '/allGroups', label: 'All Groups', icon: 'ri-parent-line' },
