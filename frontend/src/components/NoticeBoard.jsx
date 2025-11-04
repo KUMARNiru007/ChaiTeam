@@ -13,7 +13,6 @@ const NoticeBoard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light');
   }, [darkMode]);
@@ -35,6 +34,27 @@ const NoticeBoard = () => {
 
     fetchNotices();
   }, []);
+
+  // Close modal when clicking outside or pressing Escape key
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === 'Escape') {
+        setSelectedNotice(null);
+      }
+    };
+
+    if (selectedNotice) {
+      document.addEventListener('keydown', handleEscape);
+      document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+      document.body.style.overflow = 'unset';
+    };
+  }, [selectedNotice]);
 
   const filteredNotices = noticesData.filter((notice) => {
     const matchesSearch =
@@ -123,6 +143,54 @@ const NoticeBoard = () => {
         </div>
       )}
 
+      {/* Notice Detail Modal */}
+      {selectedNotice && (
+        <div 
+          className={`modal-overlay ${darkMode ? 'dark' : 'light'}`}
+          onClick={() => setSelectedNotice(null)}
+        >
+          <div 
+            className={`modal-content ${darkMode ? 'bg-chaihub-bg-secondary' : 'bg-white'}`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="modal-header">
+              <h2 className={`modal-title ${darkMode ? 'text-chaihub-text-primary' : 'text-gray-900'}`}>
+                {selectedNotice.title}
+              </h2>
+              <button 
+                className={`close-button ${darkMode ? 'text-chaihub-text-secondary hover:text-chaihub-text-primary' : 'text-gray-500 hover:text-gray-700'}`}
+                onClick={() => setSelectedNotice(null)}
+              >
+                <i className="ri-close-line"></i>
+              </button>
+            </div>
+            
+            <div className="modal-body">
+              <p className={`notice-full-content ${darkMode ? 'text-chaihub-text-secondary' : 'text-gray-700'}`}>
+                {selectedNotice.content}
+              </p>
+              
+              <div className={`modal-metadata ${darkMode ? 'text-chaihub-text-tertiary' : 'text-gray-500'}`}>
+                <div className="metadata-item">
+                  <i className="ri-user-line"></i>
+                  <span>Created by: {selectedNotice.createdBy?.name || "Unknown"}</span>
+                </div>
+                <div className="metadata-item">
+                  <i className="ri-time-line"></i>
+                  <span>Created: {new Date(selectedNotice.createdAt).toLocaleString()}</span>
+                  {selectedNotice.isEdited && " (edited)"}
+                </div>
+                {selectedNotice.updatedAt && selectedNotice.updatedAt !== selectedNotice.createdAt && (
+                  <div className="metadata-item">
+                    <i className="ri-history-line"></i>
+                    <span>Last updated: {new Date(selectedNotice.updatedAt).toLocaleString()}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
