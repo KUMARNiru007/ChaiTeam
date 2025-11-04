@@ -26,7 +26,7 @@ const Sidebar = () => {
     },
     { path: '/batches', label: 'Batches', icon: 'ri-school-line' },
     {
-      path: '/allApplications',
+      path: '/applications',
       label: 'Applications',
       icon: 'ri-mail-unread-line',
     },

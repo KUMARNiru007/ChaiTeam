@@ -56,7 +56,7 @@ function App() {
         <Route path='/batches/:batchId' element={<BatchPage />} />
         <Route path='/batches/:batchId/groups' element={<Groups />} />
         <Route path='/groups/:groupId' element={<GroupPageWrapper />} />
-        <Route path='/allApplications' element={<AllApplications />} />
+        <Route path='/applications' element={<AllApplications />} />
         <Route path='/create-batch' element={<AdminBatchPage />} />
         <Route path='/allUsers' element={<AdminAllUsersPage />} />
         <Route path='/allGroups' element={<AdminAllGroups />} />
