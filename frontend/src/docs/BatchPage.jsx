@@ -214,26 +214,44 @@ function BatchPage() {
         </div>
       ) : batchData ? (
         <div className='max-w-7xl mx-auto'>
-          {/* Navigation*/}
-          <div className='sticky top-0 w-full bg-white text-black p-2 flex items-center justify-between shadow-sm z-50 '>
-            <div className='flex gap-1'>
-              <button
-                onClick={() => navigate(-1)}
-                className='bg-slate-300 rounded-md p-1 text-xl pl-2 pr-2 cursor-pointer'
-              >
-                <i className='ri-arrow-left-line'></i>
-              </button>
-              <button
-                onClick={() => navigate(1)}
-                className='bg-slate-300 rounded-md p-1 text-xl pl-2 pr-2 cursor-pointer'
-              >
-                <i className='ri-arrow-right-line'></i>
-              </button>
-            </div>
-            <div className='w-full h-full text-center flex flex-col items-center font-semibold text-xl'>
-              <span>{batchData.name}</span>
-            </div>
-          </div>
+          {/* Navigation Bar */}
+<div
+  className={`sticky top-0 w-full p-2 flex items-center justify-between shadow-sm z-50 ${
+    darkMode 
+      ? 'bg-[#1e1f22] text-white border-b border-gray-700' 
+      : 'bg-white text-black border-b border-gray-200'
+  }`}
+>
+  <div className='flex gap-1'>
+    <button
+      onClick={() => navigate(-1)}
+      className={`rounded-md p-1 text-xl pl-2 pr-2 cursor-pointer transition-all duration-200 ${
+        darkMode 
+          ? 'bg-[#313338] hover:bg-[#3b3d44] text-white' 
+          : 'bg-slate-200 hover:bg-slate-300 text-black'
+      }`}
+    >
+      <i className='ri-arrow-left-line'></i>
+    </button>
+
+    <button
+      onClick={() => navigate(1)}
+      className={`rounded-md p-1 text-xl pl-2 pr-2 cursor-pointer transition-all duration-200 ${
+        darkMode 
+          ? 'bg-[#313338] hover:bg-[#3b3d44] text-white' 
+          : 'bg-slate-200 hover:bg-slate-300 text-black'
+      }`}
+    >
+      <i className='ri-arrow-right-line'></i>
+    </button>
+  </div>
+
+  <div className='w-full h-full text-center flex flex-col items-center font-semibold text-xl'>
+    <span className={darkMode ? 'text-white' : 'text-gray-900'}>
+      {batchData.name}
+    </span>
+  </div>
+</div>
           
           {/* Header Section with Banner */}
           <div
