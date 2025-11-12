@@ -5,7 +5,7 @@ import { groupService } from '../services/api.js';
 import { useAuthStore } from '../store/useAuthStore.js';
 import EditNoticeModal from '../components/EditNoticeModal.jsx';
 import CreateNoticeModal from '../components/CreateNoticeModel.jsx';
-import EditGroupModal from '../components/editGroupModal.jsx';
+import EditGroupModal from '../components/EditGroupModal.jsx';
 
 const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -31,7 +31,7 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
   const [reasonToleave, setReasonToleave] = useState('');
   const [editGroupModal, setEditGroupModal] = useState(false);
 
-  const { darkMode} = useTheme();
+  const { darkMode } = useTheme();
   const navigate = useNavigate();
   const { authUser } = useAuthStore();
 
@@ -289,32 +289,32 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
       className='parkinsans-light'
     >
       {/* Nav/Header */}
-<div
-  className={`sticky top-0 w-full p-2 flex items-center justify-between shadow-sm z-50 ${
-    darkMode 
-      ? 'bg-[#1e1f22] text-white border-b border-gray-700' 
-      : 'bg-white text-black border-b border-gray-200'
-  }`}
->
-  <div className='flex gap-1'>
-    <button
-      onClick={() => navigate(-1)}
-      className={`rounded-md p-1 text-xl pl-2 pr-2 cursor-pointer transition-all duration-200 ${
-        darkMode 
-          ? 'bg-[#313338] hover:bg-[#3b3d44] text-white' 
-          : 'bg-slate-200 hover:bg-slate-300 text-black'
-      }`}
-    >
-      <i className='ri-arrow-left-line'></i>
-    </button>
-  </div>
-  
-  <div className='w-full h-full text-center flex flex-col items-center font-semibold text-xl'>
-    <span className={darkMode ? 'text-white' : 'text-gray-900'}>
-      {group.name}
-    </span>
-  </div>
-</div>
+      <div
+        className={`sticky top-0 w-full p-2 flex items-center justify-between shadow-sm z-50 ${
+          darkMode
+            ? 'bg-[#1e1f22] text-white border-b border-gray-700'
+            : 'bg-white text-black border-b border-gray-200'
+        }`}
+      >
+        <div className='flex gap-1'>
+          <button
+            onClick={() => navigate(-1)}
+            className={`rounded-md p-1 text-xl pl-2 pr-2 cursor-pointer transition-all duration-200 ${
+              darkMode
+                ? 'bg-[#313338] hover:bg-[#3b3d44] text-white'
+                : 'bg-slate-200 hover:bg-slate-300 text-black'
+            }`}
+          >
+            <i className='ri-arrow-left-line'></i>
+          </button>
+        </div>
+
+        <div className='w-full h-full text-center flex flex-col items-center font-semibold text-xl'>
+          <span className={darkMode ? 'text-white' : 'text-gray-900'}>
+            {group.name}
+          </span>
+        </div>
+      </div>
 
       {/* Header / Banner Section */}
       <div className='max-w-7xl mx-auto mt-0.5'>
@@ -667,15 +667,14 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
                         <button
                           onClick={viewProfile(member.userId)}
                           className={`px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-2 ${
-                             darkMode
-                               ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                               : 'bg-blue-500 hover:bg-blue-600 text-white'
-                               } transition-colors cursor-pointer`}
+                            darkMode
+                              ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                              : 'bg-blue-500 hover:bg-blue-600 text-white'
+                          } transition-colors cursor-pointer`}
                         >
-                       <i className="ri-user-line text-xs"></i>
-                        View Profile
-                      </button>
-
+                          <i className='ri-user-line text-xs'></i>
+                          View Profile
+                        </button>
 
                         {/* Kick Button - Only for leader and non-leader members */}
                         {leader === groupMember && member.role !== 'LEADER' && (
