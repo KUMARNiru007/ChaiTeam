@@ -3,7 +3,7 @@ import axios, { formToJSON } from 'axios';
 export const uploadToCloudinary = async (file) => {
   try {
     const { data: signatureData } = await axios.get(
-      'http://localhost:3000/api/v1/cloudinary/get-signature',
+      'https://api.chaiteam.in/api/v1/cloudinary/get-signature',
     );
 
     console.log('Signature Data: ', signatureData);

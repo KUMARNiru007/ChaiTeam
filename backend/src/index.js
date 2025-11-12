@@ -20,11 +20,11 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: [process.env.FRONTEND_URL, process.env.PRODUCTION_URL],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authroization'],
-  }),
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
 );
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
