@@ -26,7 +26,7 @@ function Hero() {
           Find Your{" "}
           <span
             style={{
-              color: "var(--chaihub-organe-dark)",
+              color: "var(--chaiteam-organe-dark)",
             }}
           >
             Tribe,
@@ -55,7 +55,7 @@ function Hero() {
       {/* Button */}
       <motion.button
         style={{
-          backgroundColor: "var(--chaihub-btn-start)",
+          backgroundColor: "var(--chaiteam-btn-start)",
           color: `${darkMode ? "white" : "black"}`,
           border: "none",
           padding: "9px 24px",
@@ -70,10 +70,10 @@ function Hero() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.6, duration: 0.8, ease: "easeOut" }}
         onMouseEnter={(e) =>
-          (e.target.style.backgroundColor = "var(--chaihub-btn-primary-hover)")
+          (e.target.style.backgroundColor = "var(--chaiteam-btn-primary-hover)")
         }
         onMouseLeave={(e) =>
-          (e.target.style.backgroundColor = "var(--chaihub-btn-start)")
+          (e.target.style.backgroundColor = "var(--chaiteam-btn-start)")
         }
         onClick={() => navigate("/dashboard")}
         className="z-10"

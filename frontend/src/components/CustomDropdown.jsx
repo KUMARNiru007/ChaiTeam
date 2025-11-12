@@ -41,7 +41,7 @@ const CustomDropdown = ({ options, placeholder, onSelect }) => {
           darkMode
             ? 'bg-[#27272A] border-white/30'
             : 'border-gray-300 bg-gray-50 text-gray-700 focus:bg-gray-100 hover:bg-gray-10'
-        } py-2 px-3 pr-8 text-left focus:border-[var(--chaihub-orange)] focus:outline-none0 transition-colors cursor-pointer`}
+        } py-2 px-3 pr-8 text-left focus:border-[var(--chaiteam-orange)] focus:outline-none0 transition-colors cursor-pointer`}
       >
         {selectedValue}
         <i
@@ -55,7 +55,7 @@ const CustomDropdown = ({ options, placeholder, onSelect }) => {
         <div
           className={`absolute mt-2 w-full rounded-2xl border ${
             darkMode
-              ? 'bg-[var(--chaihub-bg-primary)] text-white border-white/30'
+              ? 'bg-[var(--chaiteam-bg-primary)] text-white border-white/30'
               : 'border-gray-200 bg-white'
           } shadow-lg z-10 overflow-hidden max-h-60 overflow-y-auto cursor-pointer p-2`}
         >
@@ -65,11 +65,11 @@ const CustomDropdown = ({ options, placeholder, onSelect }) => {
               onClick={() => handleSelect(option)}
               className={`px-3 py-2 m-1 cursor-pointer ${
                 darkMode
-                  ? 'hover:bg-[var(--chaihub-bg-secondary)]/50 text-white hover:text-white'
-                  : 'hover:bg-[var(--chaihub-bg-secondary)]/30'
+                  ? 'hover:bg-[var(--chaiteam-bg-secondary)]/50 text-white hover:text-white'
+                  : 'hover:bg-[var(--chaiteam-bg-secondary)]/30'
               }  transition-colors rounded-lg ${
                 selectedValue === option.label
-                  ? 'bg-[var(--chaihub-bg-secondary)]/40 text-[var(--chaihub-bg-primary)] font-medium'
+                  ? 'bg-[var(--chaiteam-bg-secondary)]/40 text-[var(--chaiteam-bg-primary)] font-medium'
                   : 'text-gray-700'
               }`}
             >

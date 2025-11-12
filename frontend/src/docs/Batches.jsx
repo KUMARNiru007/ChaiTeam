@@ -247,7 +247,7 @@ const Batches = () => {
             style={{
               fontSize: '14px',
               fontWeight: '500',
-              color: 'var(--chaihub-border-secondary)',
+              color: 'var(--chaiteam-border-secondary)',
               margin: 0,
             }}
           >

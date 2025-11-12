@@ -115,7 +115,7 @@ const Sidebar = () => {
 
   return (
     <aside
-      className={`parkinsans-light chaihub-sidebar ${
+      className={`parkinsans-light chaiteam-sidebar ${
         isCollapsed ? 'collapsed' : ''
       } ${darkMode ? '' : '!bg-white !text-black'} transition-all duration-200`}
     >
@@ -206,7 +206,7 @@ const Sidebar = () => {
           }`}
           onClick={() => setOpenProfileModal(!openProfileModal)}
         >
-          <div className='nav-item-content border border-[var(--chaihub-border-primary)] rounded-lg'>
+          <div className='nav-item-content border border-[var(--chaiteam-border-primary)] rounded-lg'>
             <div className='nav-item-icon'>
               {loading ? (
                 <div className='w-6 h-6 flex items-center justify-center'>
@@ -236,8 +236,8 @@ const Sidebar = () => {
         <button
           className={`absolute -right-4 top-7 rounded-full border-[1px] px-1.5 py-1 cursor-pointer flex items-center justify-center ${
             darkMode
-              ? 'bg-[var(--chaihub-bg-secondary)] text-white border-[var(--chaihub-border-primary)]'
-              : 'text-[var(--chaihub-bg-primary)] bg-white'
+              ? 'bg-[var(--chaiteam-bg-secondary)] text-white border-[var(--chaiteam-border-primary)]'
+              : 'text-[var(--chaiteam-bg-primary)] bg-white'
           }`}
           onClick={() => dispatch(toggleSidebar())}
           aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
@@ -259,7 +259,7 @@ const Sidebar = () => {
               transition={{ duration: 0.2, ease: 'easeOut' }}
               className={`absolute left-2 bottom-[78px] border-[1px] p-4 text-sm rounded-xl w-[250px] ${
                 darkMode
-                  ? 'bg-[var(--chaihub-bg-primary)] text-white border-white/30'
+                  ? 'bg-[var(--chaiteam-bg-primary)] text-white border-white/30'
                   : 'bg-white text-black border-gray-300'
               } shadow-xl`}
             >
@@ -270,10 +270,10 @@ const Sidebar = () => {
                     <img
                       src={currentUser.image}
                       alt={currentUser.name}
-                      className='w-12 h-12 rounded-full object-cover border-2 border-[var(--chaihub-orange)]'
+                      className='w-12 h-12 rounded-full object-cover border-2 border-[var(--chaiteam-orange)]'
                     />
                   ) : (
-                    <div className={`w-12 h-12 rounded-full flex items-center justify-center border-2 border-[var(--chaihub-orange)] ${
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center border-2 border-[var(--chaiteam-orange)] ${
                       darkMode ? 'bg-gray-600' : 'bg-gray-300'
                     }`}>
                       <span className='text-lg font-bold text-white'>
@@ -311,7 +311,7 @@ const Sidebar = () => {
                   onClick={() => setOpenProfileModal(false)}
                   className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 ${
                     darkMode
-                      ? 'hover:bg-[var(--chaihub-bg-secondary)] text-white'
+                      ? 'hover:bg-[var(--chaiteam-bg-secondary)] text-white'
                       : 'hover:bg-gray-100 text-gray-700'
                   }`}
                 >
@@ -322,7 +322,7 @@ const Sidebar = () => {
                   onClick={toggleTheme}
                   className={`flex items-center justify-between w-full px-3 py-2 rounded-lg transition-all duration-200 ${
                     darkMode
-                      ? 'hover:bg-[var(--chaihub-bg-secondary)] text-white'
+                      ? 'hover:bg-[var(--chaiteam-bg-secondary)] text-white'
                       : 'hover:bg-gray-100 text-gray-700'
                   }`}
                 >

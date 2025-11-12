@@ -14,7 +14,7 @@ function Layout() {
     <div
       className={`flex min-h-screen ${
         darkMode
-          ? 'bg-[var{--chaihub-bg-primary)] text-white'
+          ? 'bg-[var{--chaiteam-bg-primary)] text-white'
           : 'bg-white text-black'
       }`}
     >

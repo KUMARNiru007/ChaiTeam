@@ -126,8 +126,8 @@ const Navbar = () => {
             <button
               className={`w-10 h-10 rounded-full border-2 cursor-pointer flex items-center justify-center transition-all duration-200 ${
                 openProfileModal 
-                  ? 'border-[var(--chaihub-orange)]' 
-                  : 'border-transparent hover:border-[var(--chaihub-orange)]'
+                  ? 'border-[var(--chaiteam-orange)]' 
+                  : 'border-transparent hover:border-[var(--chaiteam-orange)]'
               }`}
               onClick={() => setOpenProfileModal(!openProfileModal)}
             >
@@ -154,7 +154,7 @@ const Navbar = () => {
                 transition={{ duration: 0.2, ease: 'easeOut' }}
                 className={`absolute right-0 top-12 border-[1px] p-4 text-sm rounded-xl w-64 ${
                   darkMode
-                    ? 'bg-[var(--chaihub-bg-primary)] text-white border-white/30'
+                    ? 'bg-[var(--chaiteam-bg-primary)] text-white border-white/30'
                     : 'bg-white text-black border-gray-300'
                 } shadow-lg`}
               >
@@ -195,7 +195,7 @@ const Navbar = () => {
                     onClick={() => setOpenProfileModal(false)}
                     className={`block w-full text-left px-3 py-2 rounded-lg transition-all duration-200 ${
                       darkMode
-                        ? 'hover:bg-[var(--chaihub-bg-secondary)] text-white'
+                        ? 'hover:bg-[var(--chaiteam-bg-secondary)] text-white'
                         : 'hover:bg-gray-100'
                     }`}
                   >
@@ -208,7 +208,7 @@ const Navbar = () => {
                     onClick={() => setOpenProfileModal(false)}
                     className={`block w-full text-left px-3 py-2 rounded-lg transition-all duration-200 ${
                       darkMode
-                        ? 'hover:bg-[var(--chaihub-bg-secondary)] text-white'
+                        ? 'hover:bg-[var(--chaiteam-bg-secondary)] text-white'
                         : 'hover:bg-gray-100'
                     }`}
                   >
@@ -220,7 +220,7 @@ const Navbar = () => {
                     onClick={toggleTheme}
                     className={`w-full text-left px-3 py-2 rounded-lg transition-all duration-200 flex items-center justify-between ${
                       darkMode
-                        ? 'hover:bg-[var(--chaihub-bg-secondary)] text-white'
+                        ? 'hover:bg-[var(--chaiteam-bg-secondary)] text-white'
                         : 'hover:bg-gray-100'
                     }`}
                   >
@@ -245,7 +245,7 @@ const Navbar = () => {
         ) : (
           <button
             style={{
-              backgroundColor: 'var(--chaihub-btn-start)',
+              backgroundColor: 'var(--chaiteam-btn-start)',
               color: `${darkMode ? 'white' : 'black'}`,
               border: 'none',
               padding: '9px 18px',
@@ -257,10 +257,10 @@ const Navbar = () => {
             }}
             onMouseEnter={(e) =>
               (e.target.style.backgroundColor =
-                'var(--chaihub-btn-primary-hover)')
+                'var(--chaiteam-btn-primary-hover)')
             }
             onMouseLeave={(e) =>
-              (e.target.style.backgroundColor = 'var(--chaihub-btn-start)')
+              (e.target.style.backgroundColor = 'var(--chaiteam-btn-start)')
             }
             onClick={() => navigate('/login')}
           >

@@ -322,7 +322,7 @@ const AdminBatchPage = () => {
             </button>
             <button
               onClick={() => setShowModal(true)}
-              className='bg-[var(--chaihub-btn-start)] hover:bg-[var(--chaihub-btn-primary-hover)] text-white px-5 py-2 rounded-lg transition-all cursor-pointer'
+              className='bg-[var(--chaiteam-btn-start)] hover:bg-[var(--chaiteam-btn-primary-hover)] text-white px-5 py-2 rounded-lg transition-all cursor-pointer'
             >
               + Create New Batch
             </button>

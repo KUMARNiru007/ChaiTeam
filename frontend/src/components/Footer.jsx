@@ -15,10 +15,10 @@ const Footer = () => {
       }`}
     >
       <div className="text-center flex items-center justify-between gap-4">
-        <Link to="https://discord.com/invite/WDrH3zuWFb" className="hover:text-[var(--chaihub-orange-hover)]" target="_blank">
+        <Link to="https://discord.com/invite/WDrH3zuWFb" className="hover:text-[var(--chaiteam-orange-hover)]" target="_blank">
           Help & Support
         </Link>
-        <Link to="/about" className="hover:text-[var(--chaihub-orange-hover)]">
+        <Link to="/about" className="hover:text-[var(--chaiteam-orange-hover)]">
           About
         </Link>
       </div>
@@ -29,7 +29,7 @@ const Footer = () => {
             &copy; 2025 Chai
             <span
               style={{
-                color: "var(--chaihub-organe-dark)",
+                color: "var(--chaiteam-organe-dark)",
               }}
             >
               Hub.{" "}
@@ -41,21 +41,21 @@ const Footer = () => {
         <div className="flex items-center justify-center gap-5">
           <Link
             to="https://www.youtube.com/@chaiaurcode"
-            className="text-2xl hover:text-[var(--chaihub-orange-hover)]"
+            className="text-2xl hover:text-[var(--chaiteam-orange-hover)]"
             target="_blank"
           >
             <i className="ri-youtube-fill"></i>
           </Link>
           <Link
             to="https://x.com/chaicodehq/"
-            className="text-xl hover:text-[var(--chaihub-orange-hover)]"
+            className="text-xl hover:text-[var(--chaiteam-orange-hover)]"
             target="_blank"
           >
             <i className="ri-twitter-x-fill"></i>
           </Link>
           <Link
             to="https://www.linkedin.com/company/chaicodehq/"
-            className="text-xl hover:text-[var(--chaihub-orange-hover)]"
+            className="text-xl hover:text-[var(--chaiteam-orange-hover)]"
             target="_blank"
           >
             <i className="ri-linkedin-fill"></i>

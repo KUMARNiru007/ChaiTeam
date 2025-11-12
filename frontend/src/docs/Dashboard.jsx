@@ -205,7 +205,7 @@ function Dashboard() {
       <div
         className={`${
           darkMode
-            ? 'bg-[var(--chaihub-bg-primary)] text-white'
+            ? 'bg-[var(--chaiteam-bg-primary)] text-white'
             : 'bg-white text-black'
         }`}
         style={{
@@ -237,7 +237,7 @@ function Dashboard() {
               style={{
                 fontSize: '14px',
                 fontWeight: '500',
-                color: 'var(--chaihub-border-secondary)',
+                color: 'var(--chaiteam-border-secondary)',
                 margin: 0,
               }}
             >
@@ -298,7 +298,7 @@ function Dashboard() {
             <div
               className={`${
                 darkMode
-                  ? 'bg-[var(--chaihub-card-bg)] text-white hover:bg-[#313338]/50 hover:border-[#313338]/50'
+                  ? 'bg-[var(--chaiteam-card-bg)] text-white hover:bg-[#313338]/50 hover:border-[#313338]/50'
                   : 'bg-white text-black border border-black/20 hover:bg-[#ff9335]/10 hover:border-[#ff9335]/20'
               }`}
               key={index}
@@ -407,8 +407,8 @@ function Dashboard() {
           <h2
             className={`text-2xl underline underline-offset-3 ${
               darkMode
-                ? 'decoration-[var(--chaihub-organe-dark)]'
-                : 'decoration-[var(--chaihub-orange)]'
+                ? 'decoration-[var(--chaiteam-organe-dark)]'
+                : 'decoration-[var(--chaiteam-orange)]'
             }`}
             style={{
               fontWeight: 'var(--font-weight-bold, 700)',
@@ -470,8 +470,8 @@ function Dashboard() {
           <h2
             className={`text-2xl underline underline-offset-3 ${
               darkMode
-                ? 'decoration-[var(--chaihub-organe-dark)]'
-                : 'decoration-[var(--chaihub-orange)]'
+                ? 'decoration-[var(--chaiteam-organe-dark)]'
+                : 'decoration-[var(--chaiteam-orange)]'
             }`}
             style={{
               fontWeight: 'var(--font-weight-bold, 700)',

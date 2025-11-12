@@ -314,7 +314,7 @@ function BatchPage() {
             <div
               className={`p-5 rounded-xl transition-all duration-200 ${
                 darkMode
-                  ? 'bg-[var(--chaihub-card-bg)] hover:bg-[#313338]/50'
+                  ? 'bg-[var(--chaiteam-card-bg)] hover:bg-[#313338]/50'
                   : 'bg-gray-50 hover:bg-gray-100 border border-gray-200'
               }`}
             >
@@ -348,7 +348,7 @@ function BatchPage() {
             <div
               className={`p-5 rounded-xl transition-all duration-200 ${
                 darkMode
-                  ? 'bg-[var(--chaihub-card-bg)] hover:bg-[#313338]/50'
+                  ? 'bg-[var(--chaiteam-card-bg)] hover:bg-[#313338]/50'
                   : 'bg-gray-50 hover:bg-gray-100 border border-gray-200'
               }`}
             >
@@ -382,7 +382,7 @@ function BatchPage() {
             <div
               className={`p-5 rounded-xl transition-all duration-200 ${
                 darkMode
-                  ? 'bg-[var(--chaihub-card-bg)] hover:bg-[#313338]/50'
+                  ? 'bg-[var(--chaiteam-card-bg)] hover:bg-[#313338]/50'
                   : 'bg-gray-50 hover:bg-gray-100 border border-gray-200'
               }`}
             >
@@ -423,7 +423,7 @@ function BatchPage() {
                   onClick={() => setActiveTab(tab.id)}
                   className={`px-4 py-2 font-semibold transition rounded-t-lg ${
                     activeTab === tab.id
-                      ? 'border-b-2 border-[var(--chaihub-orange)] text-[var(--chaihub-orange)]'
+                      ? 'border-b-2 border-[var(--chaiteam-orange)] text-[var(--chaiteam-orange)]'
                       : darkMode
                       ? 'text-gray-400 hover:text-gray-200'
                       : 'text-gray-500 hover:text-gray-700'
@@ -440,7 +440,7 @@ function BatchPage() {
               {!userGroup && isUserEnrolledInBatch && (
                 <button
                   onClick={() => setShowCreateGroupModal(true)}
-                  className='px-4 py-2 bg-[var(--chaihub-info)] text-white rounded-xl hover:bg-[var(--chaihub-info)]/90 
+                  className='px-4 py-2 bg-[var(--chaiteam-info)] text-white rounded-xl hover:bg-[var(--chaiteam-info)]/90 
                   cursor-pointer transition-all duration-200 flex items-center gap-2'
                 >
                   <i className='ri-add-line'></i>
@@ -452,7 +452,7 @@ function BatchPage() {
               {isAdmin && (
                 <button
                   onClick={() => setShowCreateModal(true)}
-                  className='px-4 py-2 bg-[var(--chaihub-orange)] text-white rounded-xl hover:bg-[var(--chaihub-orange)]/90 
+                  className='px-4 py-2 bg-[var(--chaiteam-orange)] text-white rounded-xl hover:bg-[var(--chaiteam-orange)]/90 
                   cursor-pointer transition-all duration-200 flex items-center gap-2'
                 >
                   <i className='ri-add-line'></i>
@@ -540,7 +540,7 @@ function BatchPage() {
                         darkMode 
                           ? 'bg-[#18181B] border-[#343434] text-white placeholder-gray-400' 
                           : 'bg-white border-gray-300 text-black placeholder-gray-500'
-                      } focus:outline-none focus:ring-2 focus:ring-[var(--chaihub-orange)] focus:border-transparent`}
+                      } focus:outline-none focus:ring-2 focus:ring-[var(--chaiteam-orange)] focus:border-transparent`}
                     />
                   </div>
                   <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
