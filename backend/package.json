@@ -8,7 +8,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/index.js",
-    "build":"npm run build"
+    "start": "node src/index.js",
+    "build": "echo 'No build step required for backend'"
   },
   "dependencies": {
     "@prisma/client": "^6.15.0",
