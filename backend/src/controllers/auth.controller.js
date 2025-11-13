@@ -128,7 +128,7 @@ const googleLogin = async (req, res) => {
     res.cookie('accessToken', accessToken, accessCookieOptions);
     res.cookie('refreshToken', refreshToken, refreshCookieOptions);
 
-    return res.redirect(`${process.env.FRONTEND_URL}/dashboard`);
+    return res.redirect(`${process.env.PRODUCTION_URL}/dashboard`);
   } catch (error) {
     console.error(
       'Google OAuth Error Response:',
