@@ -253,12 +253,15 @@ function Profile() {
                         </h3>
                         <span className="text-xs text-gray-400">
                           {activity.createdAT
-                            ? new Date(activity.createdAT).toLocaleDateString(
+                            ? new Date(activity.createdAT).toLocaleString(
                                 'en-IN',
                                 {
                                    year: 'numeric',
                                    month: 'short',
                                    day: 'numeric',
+                                   hour: '2-digit',
+                                   minute: '2-digit',
+                                   hour12: true,
                                 }
                               )
                             : 'Date not available'}
