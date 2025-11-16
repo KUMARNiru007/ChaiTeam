@@ -91,6 +91,7 @@ const googleLogin = async (req, res) => {
         },
       });
     } else if (!userInBatch) {
+      res.redirect(`${process.env.PRODUCTION_URL}/access-denied`);
       return res
         .status(401)
         .json(

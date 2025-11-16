@@ -21,6 +21,7 @@ import AdminAllUsersPage from './docs/AdminAllUsersPage.jsx';
 import AdminAllGroups from './docs/AdminAllGroups.jsx';
 
 import { useAuthStore } from './store/useAuthStore.js';
+import AccessDenied from './pages/AccessDenied.jsx';
 
 function App() {
   const { authUser, checkAuth, refreshToken } = useAuthStore();
@@ -65,6 +66,7 @@ function App() {
         <Route path='/user-profile/:userId' element={<UserProfile />} />
       </Route>
 
+      <Route path='/access-denied' element={<AccessDenied />} />
       <Route path='*' element={<NotFound />} />
     </Routes>
   );
