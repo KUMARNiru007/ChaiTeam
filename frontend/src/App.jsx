@@ -1,6 +1,7 @@
 import react, { useState, useEffect } from 'react';
 import './App.css';
 import { Routes, Route } from 'react-router-dom';
+import {Toaster} from "sonner";
 import Layout from './Layout/Layout';
 import Home from './pages/Home';
 import AboutUs from './pages/AboutUs';
@@ -46,6 +47,8 @@ function App() {
   }, [checkAuth, refreshToken]);
 
   return (
+    <>
+    <Toaster/>
     <Routes>
       <Route path='/' element={<Home />} />
       <Route path='/about' element={<AboutUs />} />
@@ -69,6 +72,7 @@ function App() {
       <Route path='/access-denied' element={<AccessDenied />} />
       <Route path='*' element={<NotFound />} />
     </Routes>
+    </>
   );
 }
 
