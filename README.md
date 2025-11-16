@@ -12,7 +12,7 @@
 
 ## 📖 About
 
-ChaiTeam is a collaborative web project built by for **Chaicode cohort** to streamline team coordination, task management, and knowledge sharing. Our mission is to create a lightweight but powerful platform where every team member can:
+ChaiTeam is a collaborative web project built for **Chaicode cohort** to streamline team coordination, task management, and knowledge sharing. Our mission is to create a lightweight but powerful platform where every team member can:
 
 - **Communicate**: Share updates, chat, and centralize discussions.
 - **Organize**: Create, assign, and track tasks with clear visibility.
@@ -34,10 +34,6 @@ We designed ChaiTeam with simplicity and flexibility in mind — it's intuitive 
 **👥 Team Creation & Collaboration** – Create teams, invite members, and collaborate seamlessly
 
 **📚 Group Knowledge Hub** – Share resources, guides, and important updates within your team
-
-**📝 Task & Project Management** – Assign tasks, set deadlines, and track progress in real time
-
-**💬 In-App Messaging** – Communicate with teammates through integrated chat and discussion threads
 
 **📅 Activity Timeline** – View team updates, announcements, and recent activity in one place
 
