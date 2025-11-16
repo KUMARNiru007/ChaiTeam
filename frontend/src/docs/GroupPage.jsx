@@ -6,6 +6,7 @@ import { useAuthStore } from '../store/useAuthStore.js';
 import EditNoticeModal from '../components/EditNoticeModal.jsx';
 import CreateNoticeModal from '../components/CreateNoticeModel.jsx';
 import EditGroupModal from '../components/EditGroupModal.jsx';
+import { toast } from 'sonner';
 
 const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -81,6 +82,7 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
       } catch (error) {
         console.error('Error while fethcing the Group Activity: ', error);
         setActivityError(error);
+        toast.error('Error while fethcing the Group Activity.');
       } finally {
         setActivityLoading(false);
       }
@@ -96,6 +98,7 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
       } catch (error) {
         console.error('Error while fetching the Group Notices: ', error);
         setNoticeserror(error);
+        toast.error('Error while fetching the Group Notices');
       } finally {
         setNoticesLoading(false);
       }
@@ -108,8 +111,9 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
         // console.log('Applications: ', response);
         setJoinApplications(response || []);
       } catch (error) {
-        console.error('error while fethcing group applications: ', error);
+        console.error('Error while fethcing group applications: ', error);
         setJoinApplicationsError(error);
+        toast.error('Error while fethcing group applications');
       }
     };
 
@@ -133,14 +137,14 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
         reasonToJoin,
       );
       console.log('Application response: ', response);
-      alert('Application sent Successfully');
+      toast.success('Application sent Successfully');
       handleOnClose();
     } catch (error) {
       console.error(
         'erro while send the join Application: ',
         error.response.data.errors[0],
       );
-      alert(error.response.data.errors[0]);
+      toast.error(error.response.data.errors[0]);
     } finally {
       setLoading(false);
     }
@@ -171,13 +175,13 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
         selectedMember,
         reasonTokick,
       );
-      alert('Memeber has been kicked Sucessfully');
+      toast.success('Memeber has been kicked Sucessfully');
       setOpenKickMemberModal(false);
       setSelectedMember(null);
       setReasonToKick('');
     } catch (error) {
       console.error('Error while kicking the member from group: ', error);
-      alert('failed to kick the member from group');
+      toast.error('failed to kick the member from group');
     } finally {
       setLoading(false);
     }
@@ -205,13 +209,13 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
     setLoading(true);
     try {
       await groupService.leaveGroup(group.id, selectedMember, reasonToleave);
-      alert('Group left Successfully');
+      toast.success('Group left Successfully');
       setLeaveGroupModal(false);
       setSelectedMember(null);
       setReasonToleave('');
     } catch (error) {
       console.error('Error while leaving the group ', error);
-      alert(error);
+      toast.error(error);
     } finally {
       setLoading(false);
     }
@@ -233,10 +237,10 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
         name,
         email,
       );
-      alert('Member added to the Group Successfully');
+      toast.success('Member added to the Group Successfully');
     } catch (error) {
       console.error('Error while adding member to group: ', error);
-      alert('Failed to add memebr to group');
+      toast.error('Failed to add memebr to group');
     } finally {
       setApplicationLoading(false);
     }
@@ -247,10 +251,10 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
     try {
       setLoading(true);
       await groupService.rejectApplication(group.id, userId);
-      alert('Application Rejected Successfully');
+      toast.success('Application Rejected Successfully');
     } catch (error) {
       console.error('Error while rejecting the join application: ', error);
-      alert('Error: ', error);
+      toast.error('Error: ', error);
     } finally {
       setLoading(false);
     }
@@ -265,10 +269,10 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
 
       await groupService.updateGroup(groupId, payload);
       setEditGroupModal(false);
-      alert('Group updated successfully');
+      toast.success('Group updated successfully');
     } catch (error) {
       console.error('Error while Deleting the group: ', error);
-      alert('failed to update Batch.');
+      toast.error('Failed to update Group');
     }
   };
 
@@ -276,10 +280,10 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
     if (!groupId) return;
     try {
       await groupService.disbannedGroup(groupId);
-      alert('Group Deleted Successfully');
+      toast.success('Group Deleted Successfully');
     } catch (error) {
       console.log('Error while delteing the Group: ', error);
-      alert('Error in deleting the batch: ', error);
+      toast.error('Error in deleting the batch: ', error);
     }
   };
 

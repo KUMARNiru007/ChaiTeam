@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import { toast } from 'sonner';
 import { useTheme } from '../context/ThemeContext.jsx';
 import {
   batchService,
@@ -92,10 +93,12 @@ function BatchPage() {
   };
 
   // Filter members based on search term - using batchMembers from batchData
-  const filteredMembers = batchData?.batchMembers?.filter(member => 
-    member.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    member.email?.toLowerCase().includes(searchTerm.toLowerCase())
-  ) || [];
+  const filteredMembers =
+    batchData?.batchMembers?.filter(
+      (member) =>
+        member.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        member.email?.toLowerCase().includes(searchTerm.toLowerCase()),
+    ) || [];
 
   const tabs = [
     { id: 'overview', label: 'Overview' },
@@ -113,21 +116,21 @@ function BatchPage() {
           groupService.getUserGroup(batchId).catch(() => null),
           userService.getCurrentUser().catch(() => null),
         ]);
-        
-        
-        const isEnrolled = batch.batchMembers?.some(member => 
-          member.id === user?.id || 
-          member.email === user?.email
+
+        const isEnrolled = batch.batchMembers?.some(
+          (member) => member.id === user?.id || member.email === user?.email,
         );
-        
+
         setBatchData(batch);
         setUserGroup(group);
         setCurrentUser(user);
         setIsUserEnrolledInBatch(isEnrolled);
         setError(null);
+        toast.success('Batch Detials fetched successfully');
       } catch (err) {
         console.error('Failed to fetch batch details:', err);
         setError('Failed to load batch details. Please try again later.');
+        toast.error('Failed to load batch details. Please try again later.');
       } finally {
         setLoading(false);
       }
@@ -215,44 +218,44 @@ function BatchPage() {
       ) : batchData ? (
         <div className='max-w-7xl mx-auto'>
           {/* Navigation Bar */}
-<div
-  className={`sticky top-0 w-full p-2 flex items-center justify-between shadow-sm z-50 ${
-    darkMode 
-      ? 'bg-[#1e1f22] text-white border-b border-gray-700' 
-      : 'bg-white text-black border-b border-gray-200'
-  }`}
->
-  <div className='flex gap-1'>
-    <button
-      onClick={() => navigate(-1)}
-      className={`rounded-md p-1 text-xl pl-2 pr-2 cursor-pointer transition-all duration-200 ${
-        darkMode 
-          ? 'bg-[#313338] hover:bg-[#3b3d44] text-white' 
-          : 'bg-slate-200 hover:bg-slate-300 text-black'
-      }`}
-    >
-      <i className='ri-arrow-left-line'></i>
-    </button>
+          <div
+            className={`sticky top-0 w-full p-2 flex items-center justify-between shadow-sm z-50 ${
+              darkMode
+                ? 'bg-[#1e1f22] text-white border-b border-gray-700'
+                : 'bg-white text-black border-b border-gray-200'
+            }`}
+          >
+            <div className='flex gap-1'>
+              <button
+                onClick={() => navigate(-1)}
+                className={`rounded-md p-1 text-xl pl-2 pr-2 cursor-pointer transition-all duration-200 ${
+                  darkMode
+                    ? 'bg-[#313338] hover:bg-[#3b3d44] text-white'
+                    : 'bg-slate-200 hover:bg-slate-300 text-black'
+                }`}
+              >
+                <i className='ri-arrow-left-line'></i>
+              </button>
 
-    <button
-      onClick={() => navigate(1)}
-      className={`rounded-md p-1 text-xl pl-2 pr-2 cursor-pointer transition-all duration-200 ${
-        darkMode 
-          ? 'bg-[#313338] hover:bg-[#3b3d44] text-white' 
-          : 'bg-slate-200 hover:bg-slate-300 text-black'
-      }`}
-    >
-      <i className='ri-arrow-right-line'></i>
-    </button>
-  </div>
+              <button
+                onClick={() => navigate(1)}
+                className={`rounded-md p-1 text-xl pl-2 pr-2 cursor-pointer transition-all duration-200 ${
+                  darkMode
+                    ? 'bg-[#313338] hover:bg-[#3b3d44] text-white'
+                    : 'bg-slate-200 hover:bg-slate-300 text-black'
+                }`}
+              >
+                <i className='ri-arrow-right-line'></i>
+              </button>
+            </div>
 
-  <div className='w-full h-full text-center flex flex-col items-center font-semibold text-xl'>
-    <span className={darkMode ? 'text-white' : 'text-gray-900'}>
-      {batchData.name}
-    </span>
-  </div>
-</div>
-          
+            <div className='w-full h-full text-center flex flex-col items-center font-semibold text-xl'>
+              <span className={darkMode ? 'text-white' : 'text-gray-900'}>
+                {batchData.name}
+              </span>
+            </div>
+          </div>
+
           {/* Header Section with Banner */}
           <div
             className={`relative overflow-hidden mb-6 ${
@@ -306,7 +309,7 @@ function BatchPage() {
                   </p>
                 </div>
               </div>
-            </div>           
+            </div>
           </div>
 
           {/* Quick Stats */}
@@ -528,23 +531,32 @@ function BatchPage() {
             {activeTab === 'members' && (
               <div className='space-y-6'>
                 {/* Search Bar */}
-                <div className="flex items-center gap-4 mb-4">
-                  <div className={`relative flex-1 max-w-md ${darkMode ? 'text-white' : 'text-black'}`}>
-                    <i className="ri-search-line absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                <div className='flex items-center gap-4 mb-4'>
+                  <div
+                    className={`relative flex-1 max-w-md ${
+                      darkMode ? 'text-white' : 'text-black'
+                    }`}
+                  >
+                    <i className='ri-search-line absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400'></i>
                     <input
-                      type="text"
-                      placeholder="Search members by name or email..."
+                      type='text'
+                      placeholder='Search members by name or email...'
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                       className={`w-full pl-10 pr-4 py-2 rounded-lg border ${
-                        darkMode 
-                          ? 'bg-[#18181B] border-[#343434] text-white placeholder-gray-400' 
+                        darkMode
+                          ? 'bg-[#18181B] border-[#343434] text-white placeholder-gray-400'
                           : 'bg-white border-gray-300 text-black placeholder-gray-500'
                       } focus:outline-none focus:ring-2 focus:ring-[var(--chaiteam-orange)] focus:border-transparent`}
                     />
                   </div>
-                  <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                    {filteredMembers.length} of {batchData.batchMembers?.length || 0} members
+                  <div
+                    className={`text-sm ${
+                      darkMode ? 'text-gray-400' : 'text-gray-600'
+                    }`}
+                  >
+                    {filteredMembers.length} of{' '}
+                    {batchData.batchMembers?.length || 0} members
                   </div>
                 </div>
 
@@ -602,7 +614,7 @@ function BatchPage() {
                               : 'bg-blue-500 hover:bg-blue-600 text-white'
                           } transition-colors cursor-pointer`}
                         >
-                          <i className="ri-user-line text-xs"></i>
+                          <i className='ri-user-line text-xs'></i>
                           View Profile
                         </button>
                       </div>
@@ -638,7 +650,9 @@ function BatchPage() {
                           darkMode ? 'text-gray-400' : 'text-gray-500'
                         }`}
                       >
-                        {searchTerm ? 'No members found matching your search' : 'No members in this batch'}
+                        {searchTerm
+                          ? 'No members found matching your search'
+                          : 'No members in this batch'}
                       </p>
                     </div>
                   ) : (

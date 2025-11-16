@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { groupService } from '../services/api.js';
 import { uploadToCloudinary } from '../utils/cloudinaryImageUpload.js';
 import { useTheme } from '../context/ThemeContext.jsx';
+import { toast } from 'sonner';
 
 const CreateGroupModal = ({
   isOpen,
@@ -38,7 +39,7 @@ const CreateGroupModal = ({
     if (!file) return;
 
     if (!file.type.startsWith('image/')) {
-      alert('Please select a valid image file');
+      toast.error('Please select a valid image file');
       return;
     }
 
@@ -93,7 +94,7 @@ const CreateGroupModal = ({
     e.preventDefault();
 
     if (!formData.name || !formData.description || !formData.tags) {
-      alert('Please fill all required fields!');
+      toast.error('Please fill all required fields!');
       return;
     }
 
@@ -122,11 +123,11 @@ const CreateGroupModal = ({
       // Call the parent callback
       onCreateGroup();
 
-      alert('Group created successfully!');
+      toast.success('Group created successfully!');
       handleClose();
     } catch (err) {
       console.error('Error creating group:', err);
-      alert('Failed to create group. Please try again.');
+      toast.error('Failed to create group. Please try again.');
     } finally {
       setLoading(false);
     }

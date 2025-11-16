@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { uploadToCloudinary } from '../utils/cloudinaryImageUpload.js';
 import { useTheme } from '../context/ThemeContext.jsx';
+import { toast } from 'sonner';
 
 const EditGroupModal = ({ group, onClose, onSave }) => {
   const [name, setName] = useState(group?.name || '');
@@ -125,7 +126,7 @@ const EditGroupModal = ({ group, onClose, onSave }) => {
     e.preventDefault();
 
     if (!name || !description) {
-      alert('Please fill all required fields!');
+      toast.error('Please fill all required fields');
       return;
     }
 
@@ -148,10 +149,11 @@ const EditGroupModal = ({ group, onClose, onSave }) => {
       }
 
       await onSave(group.id, payload);
+      toast.success('Group Details updated Successfully');
       onClose();
     } catch (err) {
       console.error('Error updating group:', err);
-      alert('Failed to update group.');
+      toast.error('Failed to update group.');
     } finally {
       setLoading(false);
     }
@@ -162,10 +164,11 @@ const EditGroupModal = ({ group, onClose, onSave }) => {
     if (window.confirm('Are you sure you want to delete this group?')) {
       try {
         await onSave(group.id, null); // Pass null as payload to indicate deletion
+        toast.success('Group Delted Successfully');
         onClose();
       } catch (err) {
         console.error('Error deleting group:', err);
-        alert('Failed to delete group.');
+        toast.error('Failed to delete group.');
       } finally {
         setDeleteLoading(false);
       }

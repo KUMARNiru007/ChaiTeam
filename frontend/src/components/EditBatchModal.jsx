@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { uploadToCloudinary } from '../utils/cloudinaryImageUpload.js';
 import { useTheme } from '../context/ThemeContext.jsx';
+import { toast } from 'sonner';
 
 const EditBatchModal = ({ isOpen, onClose, onSave, batch }) => {
   const [name, setName] = useState(batch?.name || '');
@@ -80,7 +81,7 @@ const EditBatchModal = ({ isOpen, onClose, onSave, batch }) => {
     e.preventDefault();
 
     if (!name || !description) {
-      alert('Please fill all required fields!');
+      toast.error('Please fill all required fields!');
       return;
     }
 
@@ -104,10 +105,11 @@ const EditBatchModal = ({ isOpen, onClose, onSave, batch }) => {
 
       // Call parent save function
       await onSave(batch.id, payload);
+      toast.success('Batch updated Successfully');
       onClose();
     } catch (err) {
       console.error('Error updating batch:', err);
-      alert('Failed to update batch.');
+      toast.error('Failed to update batch.');
     } finally {
       setLoading(false);
     }
@@ -117,10 +119,11 @@ const EditBatchModal = ({ isOpen, onClose, onSave, batch }) => {
     if (window.confirm('Are you sure you want to delete this batch?')) {
       try {
         await onSave(batch.id, null); // Pass null as payload to indicate deletion
+        toast.success('Batch Deleted Successfully');
         onClose();
       } catch (err) {
         console.error('Error deleting batch:', err);
-        alert('Failed to delete batch.');
+        toast.error('Failed to delete batch.');
       }
     }
   };

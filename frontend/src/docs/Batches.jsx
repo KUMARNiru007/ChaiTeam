@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { batchService } from '../services/api';
+import { toast } from 'sonner';
 import { useTheme } from '../context/ThemeContext.jsx';
 
 import CustomDropdown from '../components/CustomDropdown.jsx';
@@ -9,7 +10,7 @@ const Batches = () => {
   const [batchOptions, setBatchOptions] = useState([
     { id: 1, label: 'All Batches', value: 'all' },
   ]);
-  
+
   const [statusOptions, setStatusOptions] = useState([
     { id: 1, label: 'All Status', value: 'all' },
   ]);
@@ -21,7 +22,7 @@ const Batches = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const { darkMode} = useTheme();
+  const { darkMode } = useTheme();
 
   useEffect(() => {
     const fetchBatches = async () => {
@@ -36,11 +37,11 @@ const Batches = () => {
         const uniqueBatches = batches.map((batch, index) => ({
           id: index + 2, // Start from 2 since 1 is "All Batches"
           label: batch.name,
-          value: batch.id
+          value: batch.id,
         }));
         setBatchOptions([
           { id: 1, label: 'All Batches', value: 'all' },
-          ...uniqueBatches
+          ...uniqueBatches,
         ]);
 
         // status options
@@ -48,13 +49,15 @@ const Batches = () => {
           { id: 1, label: 'All Status', value: 'all' },
           { id: 2, label: 'Active', value: 'ACTIVE' },
           { id: 3, label: 'Completed', value: 'COMPLETED' },
-          { id: 4, label: 'Inactive', value: 'INACTIVE' }
+          { id: 4, label: 'Inactive', value: 'INACTIVE' },
         ]);
 
         setError(null);
+        toast.success('Batches fetched succesfully.');
       } catch (err) {
         console.error('Failed to fetch batches:', err);
         setError('Failed to load batches. Please try again later.');
+        toast.error('Failed to load batches. Please try again later.');
       } finally {
         setLoading(false);
       }
@@ -98,8 +101,7 @@ const Batches = () => {
 
     // Status filter
     const matchesCategory =
-      selectedStatus === 'all' ||
-      batch.status === selectedStatus;
+      selectedStatus === 'all' || batch.status === selectedStatus;
 
     return matchesSearch && matchesTab && matchesBatch && matchesCategory;
   });
@@ -116,6 +118,7 @@ const Batches = () => {
           setTotalStudents(response.batchMembers?.length || 0);
         } catch (error) {
           console.error('Error fetching batch members:', error);
+          toast.error('Error in fetching batch members');
         }
       };
       fetchBatchMembers();
@@ -191,17 +194,26 @@ const Batches = () => {
             }`}
           >
             <div className='flex items-center gap-1.5'>
-              <div className={`w-2 h-2 rounded-full ${
-                batch.status === 'ACTIVE' ? 'bg-green-500' :
-                batch.status === 'COMPLETED' ? 'bg-blue-500' :
-                batch.status === 'INACTIVE' ? 'bg-red-500' : 'bg-gray-500'
-              }`}></div>
-              <span className='font-medium'>{
-                batch.status === 'ACTIVE' ? 'Active' :
-                batch.status === 'COMPLETED' ? 'Completed' :
-                batch.status === 'INACTIVE' ? 'Inactive' :
-                batch.status
-              }</span>
+              <div
+                className={`w-2 h-2 rounded-full ${
+                  batch.status === 'ACTIVE'
+                    ? 'bg-green-500'
+                    : batch.status === 'COMPLETED'
+                    ? 'bg-blue-500'
+                    : batch.status === 'INACTIVE'
+                    ? 'bg-red-500'
+                    : 'bg-gray-500'
+                }`}
+              ></div>
+              <span className='font-medium'>
+                {batch.status === 'ACTIVE'
+                  ? 'Active'
+                  : batch.status === 'COMPLETED'
+                  ? 'Completed'
+                  : batch.status === 'INACTIVE'
+                  ? 'Inactive'
+                  : batch.status}
+              </span>
             </div>
             <div className='flex items-center gap-1.5'>
               <div
@@ -329,9 +341,7 @@ const Batches = () => {
               }
             }
           `}</style>
-          <p style={{ marginTop: '1rem', color: '#b3b3b3' }}>
-            Loading...
-          </p>
+          <p style={{ marginTop: '1rem', color: '#b3b3b3' }}>Loading...</p>
         </div>
       ) : error ? (
         <div style={{ textAlign: 'center', padding: '2rem', color: '#ff4d4f' }}>

@@ -3,7 +3,8 @@ import { userService } from '../services/api.js';
 import { useTheme } from '../context/ThemeContext.jsx';
 import { useNavigate } from 'react-router-dom';
 import CustomDropdown from '../components/CustomDropdown.jsx';
-import profile from '../assets/avatar1.webp'
+import profile from '../assets/avatar1.webp';
+import { toast } from 'sonner';
 
 const AdminAllUsersPage = () => {
   const { darkMode } = useTheme();
@@ -16,7 +17,7 @@ const AdminAllUsersPage = () => {
   const [updating, setUpdating] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
   const [errorModal, setErrorModal] = useState(false);
-  const [actionType, setActionType] = useState(''); 
+  const [actionType, setActionType] = useState('');
   const [selectedRole, setSelectedRole] = useState('all');
 
   const [loading, setLoading] = useState(true);
@@ -26,7 +27,7 @@ const AdminAllUsersPage = () => {
   const roleOptions = [
     { id: 1, label: 'All Roles', value: 'all' },
     { id: 2, label: 'Admin', value: 'ADMIN' },
-    { id: 3, label: 'User', value: 'USER' }
+    { id: 3, label: 'User', value: 'USER' },
   ];
 
   useEffect(() => {
@@ -46,14 +47,12 @@ const AdminAllUsersPage = () => {
   }, []);
 
   // Filter users based on search term and role
-  const filteredUsers = users.filter(user => {
-    const matchesSearch = 
+  const filteredUsers = users.filter((user) => {
+    const matchesSearch =
       user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesRole = 
-      selectedRole === 'all' || 
-      user.role === selectedRole;
+
+    const matchesRole = selectedRole === 'all' || user.role === selectedRole;
 
     return matchesSearch && matchesRole;
   });
@@ -81,20 +80,22 @@ const AdminAllUsersPage = () => {
     setUpdating(true);
     try {
       await userService.updateRole(selectedUser.id);
-      
+
       const newRole = selectedUser.role === 'USER' ? 'ADMIN' : 'USER';
-      
+
       // Update local state
       setUsers((prev) =>
         prev.map((u) =>
-          u.id === selectedUser.id ? { ...u, role: newRole } : u
-        )
+          u.id === selectedUser.id ? { ...u, role: newRole } : u,
+        ),
       );
       setSelectedUser((prev) => ({ ...prev, role: newRole }));
       setSuccessModal(true);
+      toast.success('User Role Updated Successfully');
     } catch (err) {
       console.error('Error updating role:', err);
       setErrorModal(true);
+      toast.error('Error updating role:', err);
     } finally {
       setUpdating(false);
       setShowModal(false);
@@ -106,13 +107,13 @@ const AdminAllUsersPage = () => {
   };
 
   return (
-   <div className='realtive parkinsans-light text-center p-6'>
+    <div className='realtive parkinsans-light text-center p-6'>
       {/* Heading */}
       <h2
-          className={`text-3xl font-semibold ${
-            darkMode ? 'text-white' : 'text-gray-800'
-          } mb-2`}
-        >
+        className={`text-3xl font-semibold ${
+          darkMode ? 'text-white' : 'text-gray-800'
+        } mb-2`}
+      >
         All Students
       </h2>
 
@@ -179,15 +180,18 @@ const AdminAllUsersPage = () => {
 
           <style jsx>{`
             @keyframes spin {
-              0% { transform: rotate(0deg); }
-              100% { transform: rotate(360deg); }
+              0% {
+                transform: rotate(0deg);
+              }
+              100% {
+                transform: rotate(360deg);
+              }
             }
           `}</style>
 
           <p style={{ marginTop: '1rem', color: '#b3b3b3' }}>Loading...</p>
         </div>
       ) : error ? (
-
         <div style={{ textAlign: 'center', padding: '2rem', color: '#ff4d4f' }}>
           <i className='ri-error-warning-line' style={{ fontSize: '2rem' }}></i>
           <p style={{ marginTop: '1rem' }}>{error}</p>
@@ -240,7 +244,7 @@ const AdminAllUsersPage = () => {
                   </span>
 
                   {/* Action Buttons */}
-                  <div className="flex gap-2 mt-2">
+                  <div className='flex gap-2 mt-2'>
                     <button
                       onClick={() => handleViewProfile(user.id)}
                       className={`px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-2 ${
@@ -252,28 +256,30 @@ const AdminAllUsersPage = () => {
                       <i className='ri-user-line text-xs'></i>
                       View Profile
                     </button>
-                    
+
                     <button
-                      onClick={() => 
-                        user.role === 'USER' 
-                          ? handlePromoteClick(user) 
+                      onClick={() =>
+                        user.role === 'USER'
+                          ? handlePromoteClick(user)
                           : handleDemoteClick(user)
                       }
                       className={`px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-2 ${
                         user.role === 'USER'
-                          ? (darkMode
-                              ? 'bg-green-600 hover:bg-green-700 text-white'
-                              : 'bg-green-500 hover:bg-green-600 text-white')
-                          : (darkMode
-                              ? 'bg-orange-600 hover:bg-orange-700 text-white'
-                              : 'bg-orange-500 hover:bg-orange-600 text-white')
+                          ? darkMode
+                            ? 'bg-green-600 hover:bg-green-700 text-white'
+                            : 'bg-green-500 hover:bg-green-600 text-white'
+                          : darkMode
+                          ? 'bg-orange-600 hover:bg-orange-700 text-white'
+                          : 'bg-orange-500 hover:bg-orange-600 text-white'
                       } transition-colors cursor-pointer`}
                     >
-                      <i className={`text-xs ${
-                        user.role === 'USER' 
-                          ? 'ri-user-star-line' 
-                          : 'ri-user-unfollow-line'
-                      }`}></i>
+                      <i
+                        className={`text-xs ${
+                          user.role === 'USER'
+                            ? 'ri-user-star-line'
+                            : 'ri-user-unfollow-line'
+                        }`}
+                      ></i>
                       {user.role === 'USER' ? 'Promote' : 'Demote'}
                     </button>
                   </div>
@@ -282,10 +288,9 @@ const AdminAllUsersPage = () => {
             </div>
           ) : (
             <div className='bg-slate-300 text-red-500 flex items-center justify-center text-center min-w-2xl mt-5 min-h-20 text-xl'>
-              {users.length === 0 
-                ? "No Users are currently registered on the Platform."
-                : "No users match your search criteria."
-              }
+              {users.length === 0
+                ? 'No Users are currently registered on the Platform.'
+                : 'No users match your search criteria.'}
             </div>
           )}
         </>
@@ -324,8 +329,8 @@ const AdminAllUsersPage = () => {
 
             <div className='text-center mb-4'>
               <p className='text-lg font-medium'>
-                {actionType === 'promote' 
-                  ? 'Promote to Admin?' 
+                {actionType === 'promote'
+                  ? 'Promote to Admin?'
                   : 'Demote to User?'}
               </p>
               <p className='text-sm text-gray-500 mt-1'>
@@ -339,12 +344,16 @@ const AdminAllUsersPage = () => {
               onClick={handleRoleChange}
               disabled={updating}
               className={`w-full text-white py-2 rounded-lg hover:opacity-90 transition cursor-pointer ${
-                actionType === 'promote' 
-                  ? 'bg-green-500 hover:bg-green-600' 
+                actionType === 'promote'
+                  ? 'bg-green-500 hover:bg-green-600'
                   : 'bg-orange-500 hover:bg-orange-600'
               }`}
             >
-              {updating ? 'Updating...' : actionType === 'promote' ? 'Promote to Admin' : 'Demote to User'}
+              {updating
+                ? 'Updating...'
+                : actionType === 'promote'
+                ? 'Promote to Admin'
+                : 'Demote to User'}
             </button>
 
             <button

@@ -7,6 +7,7 @@ import { batchService } from '../services/api.js';
 import { useTheme } from '../context/ThemeContext.jsx';
 import CustomDropdown from '../components/CustomDropdown.jsx';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 const AdminBatchPage = () => {
   const { name, description, logoUrl, bannerUrl } = useBatchStore();
@@ -48,10 +49,10 @@ const AdminBatchPage = () => {
         ),
       );
       setShowEditModal(false);
-      alert('Batch updated successfully!');
+      toast.success('Batch updated successfully!');
     } catch (err) {
       console.error('Update batch error:', err);
-      alert('Failed to update batch');
+      toast.error('Failed to update batch');
     }
   };
 
@@ -61,7 +62,7 @@ const AdminBatchPage = () => {
       formData.append('file', file);
 
       await batchService.uploadBatchCSV(batchId, formData);
-      alert('CSV uploaded successfully!');
+      toast.success('CSV uploaded successfully!');
       // Refresh the batch members count
       const updatedBatch = await batchService.getBatchById(batchId);
       setBatchesData((prevBatches) =>
@@ -71,6 +72,7 @@ const AdminBatchPage = () => {
       );
     } catch (error) {
       console.error('Error uploading CSV:', error);
+      toast.error('Error uploading CSV:', error);
       throw error;
     }
   };
@@ -139,12 +141,12 @@ const AdminBatchPage = () => {
   const handleSave = async (payload) => {
     try {
       const data = await batchService.createBatch(payload);
-      alert('Batch created successfully!');
+      toast.success('Batch created successfully!');
       setShowModal(false);
       setBatchesData((prev) => [...prev, data]); // Add new batch to list
     } catch (err) {
       console.error('Create batch error:', err);
-      alert('Failed to create batch');
+      toast.error('Failed to create batch');
     }
   };
 
@@ -154,10 +156,12 @@ const AdminBatchPage = () => {
       setBatchesData((prevBatches) =>
         prevBatches.filter((batch) => batch.id !== batchId),
       );
-      alert('Batch deleted successfully!');
+      toast.success('Batch deleted successfully!');
     } catch (error) {
       console.error('Error while Deleting Batch: ', error);
-      alert('Failed to delete batch. Maybe the batch has some active groups.');
+      toast.error(
+        'Failed to delete batch. Maybe the batch has some active groups.',
+      );
     }
   };
 
@@ -309,10 +313,12 @@ const AdminBatchPage = () => {
       >
         <div className='flex justify-between items-center mb-1'>
           <h2
-          className={`text-3xl font-semibold ${
-            darkMode ? 'text-white' : 'text-gray-800'
-          } mb-2`}
-        >Manage Batches</h2>
+            className={`text-3xl font-semibold ${
+              darkMode ? 'text-white' : 'text-gray-800'
+            } mb-2`}
+          >
+            Manage Batches
+          </h2>
           <div className='flex gap-3'>
             <button
               onClick={() => setShowCSVModal(true)}
@@ -417,9 +423,7 @@ const AdminBatchPage = () => {
               }
             }
           `}</style>
-          <p style={{ marginTop: '1rem', color: '#b3b3b3' }}>
-            Loading...
-          </p>
+          <p style={{ marginTop: '1rem', color: '#b3b3b3' }}>Loading...</p>
         </div>
       ) : error ? (
         <div style={{ textAlign: 'center', padding: '2rem', color: '#ff4d4f' }}>

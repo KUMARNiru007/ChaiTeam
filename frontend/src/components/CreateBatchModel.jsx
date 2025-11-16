@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useBatchStore } from '../store/useBatchStore.js';
 import { uploadToCloudinary } from '../utils/cloudinaryImageUpload.js';
 import { useTheme } from '../context/ThemeContext.jsx';
+import { toast } from 'sonner';
 
 const CreateBatchModal = ({ isOpen, onClose, onSave }) => {
   const { name, description, logoImage, bannerImage, setField, resetForm } =
@@ -20,7 +21,7 @@ const CreateBatchModal = ({ isOpen, onClose, onSave }) => {
 
     // Validate file type
     if (!file.type.startsWith('image/')) {
-      alert('Please select a valid image file');
+      toast.error('Please select a valid image file');
       return;
     }
 
@@ -73,7 +74,7 @@ const CreateBatchModal = ({ isOpen, onClose, onSave }) => {
     e.preventDefault();
 
     if (!name || !description || !logoImage || !bannerImage) {
-      alert('Please fill all required fields!');
+      toast.error('Please fill all required fields!');
       return;
     }
 
@@ -95,14 +96,14 @@ const CreateBatchModal = ({ isOpen, onClose, onSave }) => {
       // Call parent save function
       await onSave(payload);
 
-      alert('Batch created successfully!');
+      toast.success('Batch created successfully!');
       resetForm();
       setPreviewLogo(null);
       setPreviewBanner(null);
       onClose();
     } catch (err) {
       console.error('Error creating batch:', err);
-      alert('Failed to create batch.');
+      toast.error('Failed to create batch.');
     } finally {
       setLoading(false);
     }

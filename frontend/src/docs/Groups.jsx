@@ -4,6 +4,7 @@ import { groupService } from '../services/api';
 import CustomDropdown from '../components/CustomDropdown.jsx';
 import GroupsPage from './GroupPage.jsx';
 import { useTheme } from '../context/ThemeContext.jsx';
+import { toast } from 'sonner';
 
 const Groups = ({ batchId }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -30,6 +31,7 @@ const Groups = ({ batchId }) => {
       } catch (err) {
         console.error('Failed to fetch groups:', err);
         setError('Failed to load groups. Please try again later.');
+        toast.error('Failed to load groups. Please try again later.');
       } finally {
         setLoading(false);
       }

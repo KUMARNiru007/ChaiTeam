@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { noticeService } from '../services/api';
 import { useTheme } from '../context/ThemeContext';
+import { toast } from 'sonner';
 
 function EditNoticeModal({ notice, onClose, onUpdate, onDelete }) {
   const [title, setTitle] = useState(notice.title);
@@ -23,8 +24,10 @@ function EditNoticeModal({ notice, onClose, onUpdate, onDelete }) {
         type,
       });
       onUpdate(updatedNotice);
+      toast.success('Notice updated Successfully');
       onClose();
     } catch (err) {
+      toast.error('Failed to update notice. Please try again.');
       setError('Failed to update notice. Please try again.');
       console.error('Error updating notice:', err);
     } finally {
@@ -47,8 +50,10 @@ function EditNoticeModal({ notice, onClose, onUpdate, onDelete }) {
     try {
       await noticeService.deleteNotice(notice.id);
       onDelete(notice.id);
+      toast.success('Notice Deleted Successfully');
       onClose();
     } catch (err) {
+      toast.error('Failed to delete notice. Please try again.');
       setError('Failed to delete notice. Please try again.');
       console.error('Error deleting notice:', err);
     } finally {

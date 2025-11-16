@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { noticeService } from '../services/api';
 import { useTheme } from '../context/ThemeContext';
+import { toast } from 'sonner';
 
 function CreateNoticeModal({ batchId, userGroup, onClose, onCreate }) {
   const [title, setTitle] = useState('');
@@ -21,7 +22,7 @@ function CreateNoticeModal({ batchId, userGroup, onClose, onCreate }) {
       title,
       content,
       scope,
-      type
+      type,
     };
 
     // Add scope-specific IDs
@@ -35,8 +36,10 @@ function CreateNoticeModal({ batchId, userGroup, onClose, onCreate }) {
     try {
       const newNotice = await noticeService.createNotice(noticeData);
       onCreate(newNotice);
+      toast.success('Notice Created Successfully');
       onClose();
     } catch (err) {
+      toast.error('Failed to create notice. Please try again.');
       setError('Failed to create notice. Please try again.');
       console.error('Error creating notice:', err);
     } finally {
@@ -45,35 +48,35 @@ function CreateNoticeModal({ batchId, userGroup, onClose, onCreate }) {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/50">
-      <div className={`relative w-full max-w-md p-6 rounded-2xl shadow-lg ${
-        darkMode ? 'bg-[#2b2d31] text-white' : 'bg-white text-black'
-      }`}>
+    <div className='fixed inset-0 flex items-center justify-center z-50 bg-black/50'>
+      <div
+        className={`relative w-full max-w-md p-6 rounded-2xl shadow-lg ${
+          darkMode ? 'bg-[#2b2d31] text-white' : 'bg-white text-black'
+        }`}
+      >
         <button
           onClick={onClose}
           className={`absolute top-4 right-4 p-2 rounded-xl transition-all duration-200 ${
-            darkMode 
-              ? 'hover:bg-white/10 text-white' 
+            darkMode
+              ? 'hover:bg-white/10 text-white'
               : 'hover:bg-black/10 text-black'
           }`}
         >
-          <i className="ri-close-line text-xl"></i>
+          <i className='ri-close-line text-xl'></i>
         </button>
 
-        <h2 className="text-xl font-bold mb-4">Create New Notice</h2>
+        <h2 className='text-xl font-bold mb-4'>Create New Notice</h2>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className='space-y-4'>
           <div>
-            <label className="block mb-2 text-sm font-medium">
-              Title
-            </label>
+            <label className='block mb-2 text-sm font-medium'>Title</label>
             <input
-              type="text"
+              type='text'
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className={`w-full p-3 rounded-xl border ${
-                darkMode 
-                  ? 'bg-[#1e1f22] border-[#3f4147] text-white' 
+                darkMode
+                  ? 'bg-[#1e1f22] border-[#3f4147] text-white'
                   : 'bg-white border-gray-300 text-black'
               } focus:outline-none focus:ring-2 focus:ring-[var(--chaiteam-orange)]`}
               required
@@ -81,15 +84,13 @@ function CreateNoticeModal({ batchId, userGroup, onClose, onCreate }) {
           </div>
 
           <div>
-            <label className="block mb-2 text-sm font-medium">
-              Content
-            </label>
+            <label className='block mb-2 text-sm font-medium'>Content</label>
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
               className={`w-full p-3 rounded-xl border ${
-                darkMode 
-                  ? 'bg-[#1e1f22] border-[#3f4147] text-white' 
+                darkMode
+                  ? 'bg-[#1e1f22] border-[#3f4147] text-white'
                   : 'bg-white border-gray-300 text-black'
               } focus:outline-none focus:ring-2 focus:ring-[var(--chaiteam-orange)] min-h-[100px]`}
               required
@@ -97,58 +98,52 @@ function CreateNoticeModal({ batchId, userGroup, onClose, onCreate }) {
           </div>
 
           <div>
-            <label className="block mb-2 text-sm font-medium">
-              Scope
-            </label>
+            <label className='block mb-2 text-sm font-medium'>Scope</label>
             <select
               value={scope}
               onChange={(e) => setScope(e.target.value)}
               className={`w-full p-3 rounded-xl border ${
-                darkMode 
-                  ? 'bg-[#1e1f22] border-[#3f4147] text-white' 
+                darkMode
+                  ? 'bg-[#1e1f22] border-[#3f4147] text-white'
                   : 'bg-white border-gray-300 text-black'
               } focus:outline-none focus:ring-2 focus:ring-[var(--chaiteam-orange)]`}
             >
-              <option value="BATCH">Batch</option>
-              <option value="GROUP" disabled={!userGroup}>
+              <option value='BATCH'>Batch</option>
+              <option value='GROUP' disabled={!userGroup}>
                 {userGroup ? 'Group' : 'Group (Join a group first)'}
               </option>
-              <option value="GLOBAL">Global</option>
+              <option value='GLOBAL'>Global</option>
             </select>
-            <p className="text-xs text-gray-500 mt-1">
-              {scope === 'BATCH' && 'Notice will be visible to all batch members'}
-              {scope === 'GROUP' && 'Notice will be visible only to your group members'}
+            <p className='text-xs text-gray-500 mt-1'>
+              {scope === 'BATCH' &&
+                'Notice will be visible to all batch members'}
+              {scope === 'GROUP' &&
+                'Notice will be visible only to your group members'}
               {scope === 'GLOBAL' && 'Notice will be visible to all users'}
             </p>
           </div>
 
           <div>
-            <label className="block mb-2 text-sm font-medium">
-              Type
-            </label>
+            <label className='block mb-2 text-sm font-medium'>Type</label>
             <select
               value={type}
               onChange={(e) => setType(e.target.value)}
               className={`w-full p-3 rounded-xl border ${
-                darkMode 
-                  ? 'bg-[#1e1f22] border-[#3f4147] text-white' 
+                darkMode
+                  ? 'bg-[#1e1f22] border-[#3f4147] text-white'
                   : 'bg-white border-gray-300 text-black'
               } focus:outline-none focus:ring-2 focus:ring-[var(--chaiteam-orange)]`}
             >
-              <option value="NORMAL">Normal</option>
-              <option value="PINNED">Pinned</option>
+              <option value='NORMAL'>Normal</option>
+              <option value='PINNED'>Pinned</option>
             </select>
           </div>
 
-          {error && (
-            <div className="text-red-500 text-sm mt-2">
-              {error}
-            </div>
-          )}
+          {error && <div className='text-red-500 text-sm mt-2'>{error}</div>}
 
-          <div className="flex justify-end gap-3 mt-6">
+          <div className='flex justify-end gap-3 mt-6'>
             <button
-              type="button"
+              type='button'
               onClick={onClose}
               className={`px-4 py-2 rounded-xl transition-all duration-200 ${
                 darkMode
@@ -159,9 +154,9 @@ function CreateNoticeModal({ batchId, userGroup, onClose, onCreate }) {
               Cancel
             </button>
             <button
-              type="submit"
+              type='submit'
               disabled={loading}
-              className="px-4 py-2 bg-[var(--chaiteam-orange)] text-white rounded-xl hover:bg-[var(--chaiteam-orange)]/90 transition-all duration-200 disabled:opacity-50"
+              className='px-4 py-2 bg-[var(--chaiteam-orange)] text-white rounded-xl hover:bg-[var(--chaiteam-orange)]/90 transition-all duration-200 disabled:opacity-50'
             >
               {loading ? 'Creating...' : 'Create Notice'}
             </button>
