@@ -12,7 +12,7 @@
 
 ## 📖 About
 
-ChaiTeam is a collaborative web project built by our Chaicode cohort to streamline team coordination, task management, and knowledge sharing. Our mission is to create a lightweight but powerful platform where every team member can:
+ChaiTeam is a collaborative web project built by for **Chaicode cohort** to streamline team coordination, task management, and knowledge sharing. Our mission is to create a lightweight but powerful platform where every team member can:
 
 - **Communicate**: Share updates, chat, and centralize discussions.
 - **Organize**: Create, assign, and track tasks with clear visibility.
@@ -46,8 +46,6 @@ We designed ChaiTeam with simplicity and flexibility in mind — it's intuitive 
 **🌙 Light & Dark Mode** – Switch themes for a personalized and comfortable workspace
 
 **🔐 Secure Authenticatio**n – Protect accounts with secure login and role-based safeguards
-
-## Getting Started
 
 ### Prerequisites
 
@@ -105,24 +103,6 @@ We designed ChaiTeam with simplicity and flexibility in mind — it's intuitive 
 3. You will be automatically in the batch related to your Cohort.
 4. Explore new groups and join suitable groups or Lead your own group.
 5. Make new friends and do not break the rules of the platform.
-
-## Contributing
-
-We welcome contributions from the community! Here's how you can help:
-
-1. **Fork the repository**
-2. **Create a feature branch** (`git checkout -b feature/amazing-feature`)
-3. **Commit your changes** (`git commit -m 'Add some amazing feature'`)
-4. **Push to the branch** (`git push origin feature/amazing-feature`)
-5. **Open a Pull Request**
-
-### Development Guidelines
-
-- Follow the existing code style
-- Write meaningful commit messages
-- Add tests for new features
-- Update documentation as needed
-- Ensure all tests pass before submitting
 
 ## Support
 
