@@ -49,7 +49,6 @@ We designed ChaiTeam with simplicity and flexibility in mind — it's intuitive 
 - npm or yarn
 - Modern web browser
 
-### Installation
 
 1. **Clone the repository**
 
