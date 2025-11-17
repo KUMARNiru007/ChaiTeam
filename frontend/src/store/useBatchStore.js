@@ -6,7 +6,7 @@ export const useBatchStore = create((set) => ({
   logoImage: null,
   bannerImage: null,
 
-  setField: (filed, value) => set({ [filed]: value }),
+  setField: (field, value) => set({ [field]: value }),
   resetForm: () => {
     set({
       name: '',

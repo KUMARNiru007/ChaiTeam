@@ -49,8 +49,9 @@ export const batchService = {
   },
   createBatch: async (payload) => {
     try {
-      const response = axiosInstance.post('/batch/create', payload);
+      const response = await axiosInstance.post('/batch/create', payload);
       // console.log('Batch Create Data: ', response);
+       return response.data.Data; 
     } catch (error) {
       console.error('Error while creating the Batch: ', error);
       throw error;

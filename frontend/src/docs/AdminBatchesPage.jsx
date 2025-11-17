@@ -10,8 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
 const AdminBatchPage = () => {
-  // const { name, description, logoUrl, bannerUrl } = useBatchStore();
-  const { darkMode, toggleTheme } = useTheme();
+  const { darkMode } = useTheme();
   const navigate = useNavigate();
 
   const [batchOptions, setBatchOptions] = useState([
@@ -36,13 +35,11 @@ const AdminBatchPage = () => {
   const handleUpdateBatch = async (batchId, payload) => {
     try {
       if (!payload) {
-        // If payload is null, this is a delete operation
         await handleDeleteBatch(batchId);
         return;
       }
 
       await batchService.updateBatch(batchId, payload);
-      // Update the batch in the list
       setBatchesData((prevBatches) =>
         prevBatches.map((batch) =>
           batch.id === batchId ? { ...batch, ...payload } : batch,
@@ -63,7 +60,6 @@ const AdminBatchPage = () => {
 
       await batchService.uploadBatchCSV(batchId, formData);
       toast.success('CSV uploaded successfully!');
-      // Refresh the batch members count
       const updatedBatch = await batchService.getBatchById(batchId);
       setBatchesData((prevBatches) =>
         prevBatches.map((batch) =>
@@ -72,7 +68,7 @@ const AdminBatchPage = () => {
       );
     } catch (error) {
       console.error('Error uploading CSV:', error);
-      toast.error('Error uploading CSV:', error);
+      toast.error('Error uploading CSV');
       throw error;
     }
   };
@@ -84,7 +80,9 @@ const AdminBatchPage = () => {
         setLoading(true);
         const data = await batchService.getAllBatches();
         console.log('ALL Batches: ', data);
-        const batches = Array.isArray(data) ? data : [];
+        
+        // Filter out any null/undefined batches
+        const batches = Array.isArray(data) ? data.filter(batch => batch != null) : [];
         setBatchesData(batches);
 
         // Update batch options dynamically
@@ -98,7 +96,6 @@ const AdminBatchPage = () => {
           ...uniqueBatches,
         ]);
 
-        // Update status options
         setStatusOptions([
           { id: 1, label: 'All Status', value: 'all' },
           { id: 2, label: 'Active', value: 'ACTIVE' },
@@ -117,10 +114,13 @@ const AdminBatchPage = () => {
     fetchBatches();
   }, []);
 
-  // Filtered batches based on search, batch, and status
+  // Fixed: Safe filtering with null checks
   const filteredBatches = batchesData.filter((batch) => {
-    const batchName = batch?.name ?? '';
-    const batchDescription = batch?.description ?? '';
+    // Skip undefined or null batches
+    if (!batch) return false;
+
+    const batchName = batch.name || '';
+    const batchDescription = batch.description || '';
 
     const matchesSearch =
       batchName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -165,6 +165,9 @@ const AdminBatchPage = () => {
   };
 
   const BatchCard = ({ batch }) => {
+    // Fixed: Add null check at the beginning
+    if (!batch) return null;
+
     const [totalStudents, setTotalStudents] = useState(0);
     const [showEditButton, setShowEditButton] = useState(false);
 
