@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
 const AdminBatchPage = () => {
-  const { name, description, logoUrl, bannerUrl } = useBatchStore();
+  // const { name, description, logoUrl, bannerUrl } = useBatchStore();
   const { darkMode, toggleTheme } = useTheme();
   const navigate = useNavigate();
 
@@ -119,19 +119,18 @@ const AdminBatchPage = () => {
 
   // Filtered batches based on search, batch, and status
   const filteredBatches = batchesData.filter((batch) => {
-    // Search filter
-    const matchesSearch =
-      batch.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (batch.description &&
-        batch.description.toLowerCase().includes(searchTerm.toLowerCase()));
+    const batchName = batch?.name ?? '';
+    const batchDescription = batch?.description ?? '';
 
-    // Batch dropdown filter
+    const matchesSearch =
+      batchName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      batchDescription.toLowerCase().includes(searchTerm.toLowerCase());
+
     const matchesBatch =
       selectedBatch === 'all' ||
-      batch.name.toLowerCase().includes(selectedBatch.toLowerCase()) ||
+      batchName.toLowerCase().includes(selectedBatch.toLowerCase()) ||
       batch.id === selectedBatch;
 
-    // Status filter
     const matchesStatus =
       selectedStatus === 'all' || batch.status === selectedStatus;
 
