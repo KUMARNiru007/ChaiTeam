@@ -13,7 +13,7 @@ export const createBatch = async (req, res) => {
     const adminId = req.user?.id;
 
     if (!name || !description) {
-      throw new ApiError(400, 'Name, Description, and Capacity are required');
+      throw new ApiError(400, 'Name and Description are required');
     }
 
     const newBatch = await db.batch.create({
@@ -24,37 +24,6 @@ export const createBatch = async (req, res) => {
         logoImageUrl: logoImageUrl || undefined,
       },
     });
-
-    // await db.batchActivity.create({
-    //   data: {
-    //     id: crypto.randomUUID(),
-    //     batch_id: newBatch.id,
-    //     user_id: null,
-    //     activity_type: 'batch_created',
-    //     description: `Batch '${newBatch.name}' created by Admin ${adminId}`,
-    //     performed_by: adminId,
-    //     metadata: { capacity, metadata },
-    //     created_at: new Date(),
-    //     is_milestone: true,
-    //   },
-    // });
-
-    // await db.adminActivity.create({
-    //   data: {
-    //     id: crypto.randomUUID(),
-    //     admin_id: adminId,
-    //     target_type: 'batch',
-    //     target_id: newBatch.id,
-    //     activity_type: 'batch_created',
-    //     description: `Created batch '${newBatch.name}'`,
-    //     reason: reason || 'Batch creation',
-    //     metadata: { capacity, metadata },
-    //     created_at: new Date(),
-    //     ip_address: req.ip,
-    //     user_agent: req.headers['user-agent'],
-    //     severity: 'medium',
-    //   },
-    // });
 
     return res
       .status(201)
@@ -80,7 +49,7 @@ export const getAllBatches = async (req, res) => {
         where,
         skip,
         take,
-        orderBy: { createdAT: 'desc' },
+        orderBy: { createdAT: 'desc' }, 
       }),
       db.batch.count({ where }),
     ]);
@@ -90,7 +59,7 @@ export const getAllBatches = async (req, res) => {
       .json(new ApiResponse(200, batches, 'All Batch fetched successfully'));
   } catch (error) {
     console.error('Error fetching batch:', error);
-    return next(new ApiError(500, 'Internal server error', error));
+    return res.status(500).json(new ApiError(500, 'Internal server error'));
   }
 };
 
@@ -107,7 +76,7 @@ export const getBatchById = async (req, res, next) => {
       .json(new ApiResponse(200, batch, 'Batch fetched successfully'));
   } catch (error) {
     console.error('Error fetching batch:', error);
-    return next(new ApiError(500, 'Internal server error', error));
+    return next(new ApiError(500, 'Internal server error'));
   }
 };
 
@@ -139,7 +108,7 @@ export const updateBatch = async (req, res, next) => {
       .json(new ApiResponse(200, updatedBatch, 'Batch updated successfully'));
   } catch (err) {
     console.error('Error updating batch:', err);
-    return next(new ApiError(500, 'Internal server error', err));
+    return next(new ApiError(500, 'Internal server error'));
   }
 };
 
@@ -160,7 +129,7 @@ export const deleteBatch = async (req, res, next) => {
       .json(new ApiResponse(200, null, 'Batch deleted successfully'));
   } catch (err) {
     console.error('Error deleting batch:', err);
-    return next(new ApiError(500, 'Internal server error', err));
+    return next(new ApiError(500, 'Internal server error'));
   }
 };
 
@@ -172,7 +141,6 @@ export const uploadBatchCSV = async (req, res) => {
       return res.status(400).json(new ApiError(400, 'Batch ID is required'));
     }
 
-    await db.$disconnect();
     const Batch = await db.batch.findUnique({
       where: { id: batchId },
       include: { batchMembers: true },
@@ -188,7 +156,6 @@ export const uploadBatchCSV = async (req, res) => {
     fs.createReadStream(req.file.path)
       .pipe(csv())
       .on('data', (row) => {
-        // Skips if email field is empty
         if (row.email && row.email.trim() !== '') {
           results.push({
             name: row.name?.trim() || null,
@@ -223,9 +190,59 @@ export const uploadBatchCSV = async (req, res) => {
       });
   } catch (error) {
     console.log(error);
-    return res.status(500).json(new ApiError(500, 'Failed to uplaod Students'));
+    return res.status(500).json(new ApiError(500, 'Failed to upload Students'));
   }
 };
+
+export const getAllUserBatches = async (req, res) => {
+  try {
+    const email = req.user?.email;
+    if (!email) {
+      return res
+        .status(400)
+        .json(new ApiError(401, 'Unauthorized - User not found in request'));
+    }
+
+    const batches = await db.batch.findMany({
+      where: {
+        batchMembers: {
+          some: {
+            email: email,
+          },
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        status: true,
+        logoImageUrl: true,
+        bannerImageUrl: true,
+        createdAT: true, 
+        updatedAT: true, 
+      },
+    });
+
+    if (!batches || batches.length === 0) {
+      throw new ApiError(404, 'No batch assigned to this user');
+    }
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, batches, 'User batch fetched successfully'));
+  } catch (err) {
+    console.error('Error in getMyBatch:', err);
+    return res
+      .status(err.statusCode || 500)
+      .json(
+        new ApiError(
+          err.statusCode || 500,
+          err.message || 'Internal server error',
+        ),
+      );
+  }
+};
+
 
 export const assignUserToBatch = async (req, res) => {
   try {
@@ -247,7 +264,6 @@ export const assignUserToBatch = async (req, res) => {
       return res.status(404).json(new ApiError(404, 'User not found'));
     }
 
-    // Check if already assigned
     const existing = await db.batch_members.findFirst({
       where: {
         batch_id: batchId,
@@ -260,7 +276,6 @@ export const assignUserToBatch = async (req, res) => {
         .json(new ApiError(400, 'User already assigned to this batch'));
     }
 
-    // Assign user
     const batchMember = await db.batch_members.create({
       data: {
         batch_id: batchId,
@@ -282,6 +297,7 @@ export const assignUserToBatch = async (req, res) => {
     return res.status(500).json(new ApiError(500, 'Internal server error'));
   }
 };
+
 export const removeUserFromBatch = async (req, res) => {
   try {
     const batch = req.batch;
@@ -367,55 +383,6 @@ export const getBatchUsers = async (req, res) => {
       .json(new ApiResponse(200, users, 'Batch users fetched successfully'));
   } catch (err) {
     console.error('Error fetching batch users:', err);
-    return res
-      .status(err.statusCode || 500)
-      .json(
-        new ApiError(
-          err.statusCode || 500,
-          err.message || 'Internal server error',
-        ),
-      );
-  }
-};
-
-export const getAllUserBatches = async (req, res) => {
-  try {
-    const email = req.user?.email; // Assuming userId comes from middleware (JWT/session)
-    if (!email) {
-      return res
-        .status(400)
-        .json(new ApiError(401, 'Unauthorized - User not found in request'));
-    }
-
-    const batches = await db.batch.findMany({
-      where: {
-        batchMembers: {
-          some: {
-            email: email,
-          },
-        },
-      },
-      select: {
-        id: true,
-        name: true,
-        description: true,
-        status: true,
-        logoImageUrl: true,
-        bannerImageUrl: true,
-        createdAT: true,
-        updatedAT: true,
-      },
-    });
-
-    if (!batches || batches.length === 0) {
-      throw new ApiError(404, 'No batch assigned to this user');
-    }
-
-    return res
-      .status(200)
-      .json(new ApiResponse(200, batches, 'User batch fetched successfully'));
-  } catch (err) {
-    console.error('Error in getMyBatch:', err);
     return res
       .status(err.statusCode || 500)
       .json(
