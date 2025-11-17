@@ -43,54 +43,6 @@ We designed ChaiTeam with simplicity and flexibility in mind — it's intuitive 
 
 **🔐 Secure Authenticatio**n – Protect accounts with secure login and role-based safeguards
 
-### Prerequisites
-
-- Node.js (v14 or higher)
-- npm or yarn
-- Modern web browser
-
-
-1. **Clone the repository**
-
-   ```bash
-   git clone https://github.com/KUMARNiru007/ChaiTeam
-   cd ChaiTeam
-   ```
-
-2. **Backend Setup**
-
-   ```bash
-   cd BACKEND
-   npm install
-   # Set up environment variables
-   cp .env.example .env
-   # Edit .env with your database and API configuration
-
-   # Set up Prisma database
-   npx prisma generate
-   npx prisma db push
-   npx prisma db seed
-
-   # Start the backend server
-   npm start
-   # Backend will run on http://localhost:5000
-   ```
-
-3. **Frontend Setup**
-
-   ```bash
-   cd ../FRONTEND
-   npm install
-   # Start the frontend development server
-   npm run dev
-   # Frontend will run on http://localhost:5173
-   ```
-
-4. **Open your browser**
-   Navigate to `http://localhost:5173`
-
----
-
 ## How to Use
 
 1. To access the platform you should be an part of any **Cohort** of the **ChaiCode**.
