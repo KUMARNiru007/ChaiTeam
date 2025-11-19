@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useTheme } from '../context/ThemeContext.jsx';
 import { toggleSidebar } from '../redux/sidebarSlice.js';
 import { userService, authService } from '../services/api';
-import profile from '../assets/avatar1.webp'
+import profile from '../assets/avatar1.webp';
 
 const Sidebar = () => {
   const isCollapsed = useSelector((state) => state.sidebar.isCollapsed);
@@ -22,7 +22,7 @@ const Sidebar = () => {
     {
       path: '/announcement',
       label: 'Announcement',
-      icon: 'ri-megaphone-line',    
+      icon: 'ri-megaphone-line',
     },
     { path: '/batches', label: 'Batches', icon: 'ri-school-line' },
     {
@@ -31,7 +31,7 @@ const Sidebar = () => {
       icon: 'ri-mail-unread-line',
     },
   ];
-  
+
   const adminNavItems = [
     {
       path: '/create-batch',
@@ -51,11 +51,11 @@ const Sidebar = () => {
         setCurrentUser(userData);
       } catch (error) {
         console.error('Failed to fetch user data:', error);
-        setCurrentUser({ 
-          name: 'User', 
+        setCurrentUser({
+          name: 'User',
           email: 'user@example.com',
           role: 'USER',
-          image: null 
+          image: null,
         });
       } finally {
         setLoading(false);
@@ -90,12 +90,12 @@ const Sidebar = () => {
       console.log('Logout initiated from sidebar');
       await authService.logout();
       // console.log('Logout API call successful');
-      
+
       // Clear any client-side storage
       localStorage.removeItem('isLoggedOut');
       localStorage.removeItem('user');
       localStorage.removeItem('token');
-      
+
       setOpenProfileModal(false);
       // console.log('Redirecting to home');
       window.location.href = '/';
@@ -110,7 +110,13 @@ const Sidebar = () => {
   };
 
   const getInitials = (name) => {
-    return name ? name.split(' ').map(n => n[0]).join('').toUpperCase() : 'U';
+    return name
+      ? name
+          .split(' ')
+          .map((n) => n[0])
+          .join('')
+          .toUpperCase()
+      : 'U';
   };
 
   return (
@@ -123,17 +129,13 @@ const Sidebar = () => {
       <NavLink to='/'>
         <div className='sidebar-logo text-center'>
           {isCollapsed && (
-            <img
-              src="/logo.webp"
-              className="h-8 w-8 mt-2.75"
-              alt="Logo"
-            />
+            <img src='/logo.webp' className='h-8 w-8 mt-2.75' alt='Logo' />
           )}
           {!isCollapsed && (
             <img
-                src={darkMode ? "/logoDark.webp" : "/logoLight.webp"}
-                className="h-12 w-35 ml-5"
-                alt="Logo"
+              src={darkMode ? '/logoDark.webp' : '/logoLight.webp'}
+              className='h-12 w-35 ml-5'
+              alt='Logo'
             />
           )}
         </div>
@@ -261,7 +263,7 @@ const Sidebar = () => {
                 darkMode
                   ? 'bg-[var(--chaiteam-bg-primary)] text-white border-white/30'
                   : 'bg-white text-black border-gray-300'
-              } shadow-xl`}
+              } shadow-xl z-50`}
             >
               {/* User Info Section */}
               <div className='flex items-center gap-3 pb-3 mb-3 border-b border-gray-200 dark:border-gray-600'>
@@ -273,16 +275,18 @@ const Sidebar = () => {
                       className='w-12 h-12 rounded-full object-cover border-2 border-[var(--chaiteam-orange)]'
                     />
                   ) : (
-                    <div className={`w-12 h-12 rounded-full flex items-center justify-center border-2 border-[var(--chaiteam-orange)] ${
-                      darkMode ? 'bg-gray-600' : 'bg-gray-300'
-                    }`}>
+                    <div
+                      className={`w-12 h-12 rounded-full flex items-center justify-center border-2 border-[var(--chaiteam-orange)] ${
+                        darkMode ? 'bg-gray-600' : 'bg-gray-300'
+                      }`}
+                    >
                       <span className='text-lg font-bold text-white'>
                         {getInitials(currentUser?.name)}
                       </span>
                     </div>
                   )}
                 </div>
-                
+
                 <div className='flex-1 min-w-0'>
                   <h3 className='font-semibold text-sm truncate'>
                     {currentUser?.name || 'User'}
@@ -291,13 +295,15 @@ const Sidebar = () => {
                     {currentUser?.email || 'No email'}
                   </p>
                   <div className='flex items-center gap-2 mt-1'>
-                    <span className={`px-2 py-1 rounded text-xs font-medium capitalize ${
-                      currentUser?.role === 'ADMIN' 
-                        ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-                        : currentUser?.role === 'LEADER'
-                        ? 'bg-blue-100 text-blue-800 dark:bg-blue-300 dark:text-blue-200'
-                        : 'bg-green-100 text-green-800 dark:bg-green-300 dark:text-green-200'
-                    }`}>
+                    <span
+                      className={`px-2 py-1 rounded text-xs font-medium capitalize ${
+                        currentUser?.role === 'ADMIN'
+                          ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+                          : currentUser?.role === 'LEADER'
+                          ? 'bg-blue-100 text-blue-800 dark:bg-blue-300 dark:text-blue-200'
+                          : 'bg-green-100 text-green-800 dark:bg-green-300 dark:text-green-200'
+                      }`}
+                    >
                       {currentUser?.role?.toLowerCase() || 'user'}
                     </span>
                   </div>
@@ -330,7 +336,9 @@ const Sidebar = () => {
                     <i className='ri-contrast-2-line text-base'></i>
                     <span>Toggle Theme</span>
                   </div>
-                  <i className={`ri-${darkMode ? 'sun' : 'moon'}-fill text-base`}></i>
+                  <i
+                    className={`ri-${darkMode ? 'sun' : 'moon'}-fill text-base`}
+                  ></i>
                 </button>
               </div>
 
