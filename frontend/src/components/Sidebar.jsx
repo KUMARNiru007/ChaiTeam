@@ -121,7 +121,7 @@ const Sidebar = () => {
 
   return (
     <aside
-      className={`parkinsans-light chaiteam-sidebar ${
+      className={`parkinsans-light chaiteam-sidebar z-[100] ${
         isCollapsed ? 'collapsed' : ''
       } ${darkMode ? '' : '!bg-white !text-black'} transition-all duration-200`}
     >
