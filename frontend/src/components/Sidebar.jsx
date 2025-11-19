@@ -301,7 +301,7 @@ const Sidebar = () => {
                           ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
                           : currentUser?.role === 'LEADER'
                           ? 'bg-blue-100 text-blue-800 dark:bg-blue-300 dark:text-blue-200'
-                          : 'bg-green-100 text-green-800 dark:bg-green-300 dark:text-green-200'
+                          : 'bg-green-100 text-green-900 dark:bg-green-200 dark:text-green-600'
                       }`}
                     >
                       {currentUser?.role?.toLowerCase() || 'user'}
