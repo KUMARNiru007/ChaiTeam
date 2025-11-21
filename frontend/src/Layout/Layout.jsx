@@ -18,7 +18,7 @@ function Layout() {
           : 'bg-white text-black'
       }`}
     >
-      <div className='hidden md:block w-[280px] fixed top-0 left-0 h-full z-[100]'>
+      <div className='hidden md:block w-[280px] fixed top-0 left-0 h-full z-10'>
         <Sidebar />
       </div>
 
