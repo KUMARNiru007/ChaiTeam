@@ -113,7 +113,11 @@ function UserProfile() {
           <div className="flex items-center gap-4">
             <button
             onClick={() => navigate(-1)}
-            className='bg-slate-300 rounded-md p-1 text-xl pl-2 pr-2 cursor-pointer'
+            className={`rounded-md p-1 text-xl pl-2 pr-2 cursor-pointer transition-all duration-200 ${
+                  darkMode
+                    ? 'bg-[#313338] hover:bg-[#3b3d44] text-white'
+                    : 'bg-slate-200 hover:bg-slate-300 text-black'
+                }`}
           >
               <i className="ri-arrow-left-line"></i>
             </button>
