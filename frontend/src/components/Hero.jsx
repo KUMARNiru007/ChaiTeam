@@ -1,15 +1,30 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "motion/react";
 
 import { useTheme } from "../context/ThemeContext.jsx";
-import { useAuthStore } from "../store/useAuthStore.jsx";
+import { userService } from "../services/api";
 import GroupImage from "../assets/Groups1.webp";
 
 function Hero() {
   const navigate = useNavigate();
   const { darkMode } = useTheme();
-  const { authUser, checkAuth } = useAuthStore();
+  const [currentUser, setCurrentUser] = useState(null);
+
+  // Fetch current user data on component mount
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        const userData = await userService.getCurrentUser();
+        setCurrentUser(userData);
+      } catch (error) {
+        console.error('Failed to fetch user data:', error);
+        setCurrentUser(null);
+      }
+    };
+
+    fetchCurrentUser();
+  }, []);
 
   return (
     <div
@@ -77,9 +92,8 @@ function Hero() {
         onMouseLeave={(e) =>
           (e.target.style.backgroundColor = "var(--chaiteam-btn-start)")
         }
-        onClick={async () => {
-          await checkAuth();
-          if (authUser) {
+        onClick={() => {
+          if (currentUser) {
             navigate("/dashboard");
           } else {
             navigate("/login");
