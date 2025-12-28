@@ -5,7 +5,6 @@ import GroupsPage from '../docs/GroupPage.jsx';
 
 const GroupPageWrapper = () => {
   const { groupId } = useParams();
-  console.log('GroupId: ', groupId);
   const navigate = useNavigate();
   const [group, setGroup] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -17,11 +16,10 @@ const GroupPageWrapper = () => {
         setLoading(true);
 
         const data = await groupService.getGroupById(groupId);
-        console.log('group fetched Data: ', data);
         setGroup(data);
         setError(null);
       } catch (error) {
-        console.log('Failed to fetch data: ', error);
+        console.error('Failed to fetch data: ', error);
         setError('Failed to load group details');
       } finally {
         setLoading(false);

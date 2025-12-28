@@ -25,7 +25,6 @@ const Groups = ({ batchId }) => {
       try {
         setLoading(true);
         const data = await groupService.getBatchGroups(batchId);
-        console.log('Groups Data: ', data);
         setGroupsData(data);
         setError(null);
       } catch (err) {
@@ -102,14 +101,10 @@ const Groups = ({ batchId }) => {
   };
 
   const handleJoinGroup = () => {
-    console.log('Join group:', selectedGroup.id);
-
     closeGroupModal();
   };
 
   const handleLeaveGroup = () => {
-    console.log('Leave group:', selectedGroup.id);
-
     closeGroupModal();
   };
 
@@ -147,7 +142,6 @@ const Groups = ({ batchId }) => {
             options={tagOptions}
             placeholder='All Tags'
             onSelect={(option) => {
-              console.log('Selected tag:', option.label);
               setSelectedTag(option.label || 'All Tags');
             }}
           />

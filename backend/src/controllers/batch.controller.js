@@ -7,7 +7,6 @@ import { ApiError } from '../utils/ApiError.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 
 export const createBatch = async (req, res) => {
-  console.log('Request Body: ', req.body);
   try {
     const { name, description, bannerImageUrl, logoImageUrl } = req.body;
     const adminId = req.user?.id;
@@ -165,7 +164,6 @@ export const uploadBatchCSV = async (req, res) => {
         }
       })
       .on('end', async () => {
-        console.log('Results: ', results);
 
         if (results.length === 0) {
           return res
@@ -189,7 +187,7 @@ export const uploadBatchCSV = async (req, res) => {
           );
       });
   } catch (error) {
-    console.log(error);
+    console.eror(error);
     return res.status(500).json(new ApiError(500, 'Failed to upload Students'));
   }
 };

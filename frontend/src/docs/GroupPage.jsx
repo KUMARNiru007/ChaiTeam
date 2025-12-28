@@ -93,7 +93,6 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
       try {
         setNoticesLoading(true);
         const response = await groupService.getGroupNotices(group.id);
-        // console.log('GROUP NOTICES: ', response);
         setNotices(response);
       } catch (error) {
         console.error('Error while fetching the Group Notices: ', error);
@@ -108,7 +107,6 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
       if (!group.id) return;
       try {
         const response = await groupService.getAllJoinApplications(group.id);
-        // console.log('Applications: ', response);
         setJoinApplications(response || []);
       } catch (error) {
         console.error('Error while fethcing group applications: ', error);
@@ -136,7 +134,6 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
         group.id,
         reasonToJoin,
       );
-      console.log('Application response: ', response);
       toast.success('Application sent Successfully');
       handleOnClose();
     } catch (error) {
@@ -282,7 +279,7 @@ const GroupsPage = ({ group, userGroupId, onJoin, onLeave, onBack }) => {
       await groupService.disbannedGroup(groupId);
       toast.success('Group Deleted Successfully');
     } catch (error) {
-      console.log('Error while delteing the Group: ', error);
+      console.error('Error while delteing the Group: ', error);
       toast.error('Error in deleting the batch: ', error);
     }
   };

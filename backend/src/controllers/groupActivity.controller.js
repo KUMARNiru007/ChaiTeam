@@ -30,7 +30,7 @@ export const fetchWholeGroupActivity = async (req, res) => {
         ),
       );
   } catch (error) {
-    console.log('Error while fetching group activity: ', error);
+    console.error('Error while fetching group activity: ', error);
     return res
       .status(500)
       .json(new ApiError(500, 'Error while fetching group activity: ', error));

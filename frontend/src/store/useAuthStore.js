@@ -25,13 +25,11 @@ export const useAuthStore = create((set) => ({
 
     try {
       const response = await axiosInstance.get('/auth/check');
-      console.log('Auth User: ', response.data.Data);
       set({ authUser: response.data.Data });
       set({ isLoggedOut: false });
       localStorage.removeItem('isLoggedOut'); // Clear persisted logout state
-      console.log('Auth user: ', response.data);
     } catch (error) {
-      console.log('Error checking auth:', error);
+      console.error('Error checking auth:', error);
       if (error.response?.status === 401 && !isLoggedOut) {
         try {
           await axiosInstance.get('/auth/refreshTokens');
@@ -40,7 +38,7 @@ export const useAuthStore = create((set) => ({
           set({ isLoggedOut: false });
           localStorage.removeItem('isLoggedOut'); // Clear persisted logout state
         } catch (refreshError) {
-          console.log('Error refreshing token:', refreshError);
+          console.error('Error refreshing token:', refreshError);
           set({ authUser: null });
         }
       } else {
@@ -62,7 +60,7 @@ export const useAuthStore = create((set) => ({
       set({ token: response.data.user.tokens });
       toast.success(response.data.message);
     } catch (error) {
-      console.log('Error while signing up: ', error);
+      console.error('Error while signing up: ', error);
       toast.error('Error while signing up');
     } finally {
       set({ isSigninUp: false });
@@ -78,7 +76,7 @@ export const useAuthStore = create((set) => ({
       localStorage.removeItem('isLoggedOut'); // Clear persisted logout state
       toast.success(response.data.message);
     } catch (error) {
-      console.log('Error while logging in user: ', error);
+      console.error('Error while logging in user: ', error);
       toast.error(
         error.response?.data?.message || 'Error while logging in user',
       );
@@ -95,7 +93,7 @@ export const useAuthStore = create((set) => ({
       localStorage.setItem('isLoggedOut', 'true'); // Persist logout state
       toast.success('Logout successful');
     } catch (error) {
-      console.log('Error while logging out user: ', error);
+      console.error('Error while logging out user: ', error);
 
       set({ authUser: null });
       set({ isLoggedOut: true });
@@ -114,7 +112,7 @@ export const useAuthStore = create((set) => ({
         withCredentials: true,
       });
       set({ authUser: response.data.Data });
-      console.log('Tokens refreshed successfully');
+      console.error('Tokens refreshed successfully');
     } catch (error) {
       console.error('Error refreshing tokens: ', error);
     }
@@ -129,7 +127,7 @@ export const useAuthStore = create((set) => ({
       toast.success('Successfully logged in with Google');
       return true;
     } catch (error) {
-      console.log('Error completing Google auth:', error);
+      console.error('Error completing Google auth:', error);
       toast.error('Failed to complete Google login');
       return false;
     }

@@ -50,7 +50,6 @@ export const batchService = {
   createBatch: async (payload) => {
     try {
       const response = await axiosInstance.post('/batch/create', payload);
-      // console.log('Batch Create Data: ', response);
        return response.data.Data; 
     } catch (error) {
       console.error('Error while creating the Batch: ', error);
@@ -64,7 +63,6 @@ export const batchService = {
         `/batch/upload-csv/${batchId}`,
         payload,
       );
-      // console.log('Upload Result: ', response);
     } catch (error) {
       console.error('error while uploading students Data: ', error);
       throw error;
@@ -172,7 +170,6 @@ export const groupService = {
       const response = await axiosInstance.post('/activity/GroupActivity', {
         groupId,
       });
-      // console.log('Group Activity: ', response.data);
       return response.data.Data;
     } catch (error) {
       console.error('Error while fetching the Group Activity: ', error);
@@ -185,7 +182,6 @@ export const groupService = {
       const response = await axiosInstance.get(
         `/noticeboard/getGroupNotices/${groupId}`,
       );
-      // console.log('Group Noticeboard: ', response.data);
       return response.data.Data;
     } catch (error) {
       console.error('error while fethcing the Group Notices: ', error);
@@ -199,7 +195,6 @@ export const groupService = {
         `/groups/applyToJoinGroup/${groupId}`,
         { reason },
       );
-      console.log('Application Data: ', response.data.Data);
     } catch (error) {
       console.error('Error while send application to join the group: ', error);
       throw error;
@@ -211,7 +206,6 @@ export const groupService = {
       const response = await axiosInstance.get(
         `/groups/allApplications/${groupId}`,
       );
-      // console.log('All Applications: ', response.data.Data);
       return response.data.Data;
     } catch (error) {
       console.error('Error while fetching group join Applications: ', error);
@@ -224,7 +218,6 @@ export const groupService = {
       const resposne = await axiosInstance.get(
         `/groups/userApplications/${userId}`,
       );
-      // console.log('User Applications: ', resposne);
       return resposne.data.Data;
     } catch (error) {
       console.error('Error while fetching all user applications: ', error);
@@ -261,7 +254,6 @@ export const groupService = {
         `/groups/addMemberToGroup/${groupId}`,
         { userId, name, email },
       );
-      console.log('Added Member: ', response.data.Data);
     } catch (error) {
       console.error('Error while adding user to the group: ', error);
       throw error;
@@ -285,7 +277,6 @@ export const groupService = {
         `/groups/kickMember/${groupId}`,
         { userId, reason },
       );
-      console.log('Kicked Memeber: ', response.data.Data);
     } catch (error) {
       console.error('Eror while kicking the member from group: ', error);
       throw error;
@@ -298,7 +289,6 @@ export const groupService = {
         `/groups/leaveGroup/${groupId}`,
         { userId, reason },
       );
-      // console.log('Leaved Memeber: ', resposne.data.Data);
     } catch (error) {
       console.error('Error while leaving the group: ', error);
       throw error;
@@ -310,7 +300,6 @@ export const groupService = {
       const response = await axiosInstance.delete(
         `/groups/disbannedGroup/${groupId}`,
       );
-      // console.log('Delted Group: ', response.data.Data);
     } catch (error) {
       console.error('Error while Deleting the group: ', error);
       throw error;
@@ -323,7 +312,6 @@ export const groupService = {
         `/groups/updateGroup/${groupId}`,
         payload,
       );
-      console.log('Updated Data: ', response.data.Data);
     } catch (error) {
       console.error('Error while Updating the group: ', error);
       throw error;
@@ -470,7 +458,6 @@ export const userService = {
   getAllUsers: async () => {
     try {
       const response = await axiosInstance.get('/user/allUsers');
-      // console.log('Usesr Reposne: ', response.data.Data);
       return response.data.Data;
     } catch (error) {
       console.error('Error while fetching all Users: ', error);
@@ -483,7 +470,6 @@ export const userService = {
       const response = await axiosInstance.post('/user/updateRole', {
         userId: payload,
       });
-      // console.log('Update Response: ', response);
       return response.data;
     } catch (error) {
       console.error('Error while updating the User Role: ', error);

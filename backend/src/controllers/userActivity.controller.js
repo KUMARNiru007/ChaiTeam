@@ -26,7 +26,7 @@ export const fetchWholeUserActivity = async (req, res) => {
         new ApiResponse(200, UserAcitvity, 'User activity fetched Successfuly'),
       );
   } catch (error) {
-    console.log('error while fethcing user activity: ', error);
+    console.error('error while fethcing user activity: ', error);
     return res
       .status(500)
       .json(new ApiError(500, 'error while fethcing user activity: ', error));

@@ -20,7 +20,6 @@ const AdminAllGroups = () => {
       try {
         setLoading(true);
         const data = await groupService.getAllGroups();
-        console.log('GRoups Data: ', data);
         setGroupsData(data);
         setError(null);
       } catch (error) {
@@ -42,13 +41,9 @@ const AdminAllGroups = () => {
     ),
   ].sort();
 
-  //   console.log('All Tags: ', allTags);
-
   const allBatches = [
     ...new Set(groupsData.map((group) => group.batchName)),
   ].sort();
-
-  //   console.log('All Batch Names:', allBatches);
 
   const tagOptions = [
     { id: 'all-tags', label: 'All Tags' },
@@ -140,7 +135,6 @@ const AdminAllGroups = () => {
             options={tagOptions}
             placeholder='All Tags'
             onSelect={(option) => {
-              console.log('Selected tag:', option.label);
               setSelectedTag(option.label || 'All Tags');
             }}
           />
@@ -152,7 +146,6 @@ const AdminAllGroups = () => {
             options={batchOptions}
             placeholder='All Batches'
             onSelect={(option) => {
-              console.log('Selected Batch:', option.label);
               setSelectedBatchName(option.label || 'All Batch');
             }}
           />

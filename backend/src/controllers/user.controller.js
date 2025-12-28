@@ -31,7 +31,7 @@ export const updateProfile = async (req, res) => {
         new ApiResponse(200, updatedUser, 'User profile updated Successfully'),
       );
   } catch (error) {
-    console.log('Error while updating user profile details: ', error);
+    console.error('Error while updating user profile details: ', error);
     return res
       .status(500)
       .json(
@@ -63,7 +63,7 @@ export const getUserBatches = async (req, res) => {
       ),
     );
   } catch (error) {
-    console.log('Error while fetching user batches: ', error);
+    console.error('Error while fetching user batches: ', error);
     return res
       .status(500)
       .json(new ApiError(500, 'Error while fetching user batches', error));
@@ -97,7 +97,7 @@ export const getUserGroup = async (req, res) => {
         new ApiResponse(200, group.group, 'User group fetched successfully'),
       );
   } catch (error) {
-    console.log('Error while fetching user group: ', error);
+    console.error('Error while fetching user group: ', error);
     return res
       .status(500)
       .json(new ApiError(500, 'Error while fetching user group', error));
@@ -116,7 +116,7 @@ export const getAllUsers = async (req, res) => {
       .status(200)
       .json(new ApiResponse(200, allUsers, 'All user Fetched Successfullly'));
   } catch (error) {
-    console.log('Error while fething All Users: ', error);
+    console.error('Error while fething All Users: ', error);
     return res
       .status(500)
       .json(new ApiError(500, 'Error while fetching All Users: ', error));
@@ -198,7 +198,7 @@ export const getUserById = async (req, res) => {
 
     return res.status(200).json(new ApiResponse(200, user, 'User fetched successfully'));
   } catch (error) {
-    console.log('Error while fetching user: ', error);
+    console.error('Error while fetching user: ', error);
     return res.status(500).json(new ApiError(500, 'Error while fetching user', error));
   }
 };
@@ -219,7 +219,7 @@ export const getUserActivities = async (req, res) => {
 
     return res.status(200).json(new ApiResponse(200, activities, 'User activities fetched successfully'));
   } catch (error) {
-    console.log('Error while fetching user activities: ', error);
+    console.error('Error while fetching user activities: ', error);
     return res.status(500).json(new ApiError(500, 'Error while fetching user activities', error));
   }
 };

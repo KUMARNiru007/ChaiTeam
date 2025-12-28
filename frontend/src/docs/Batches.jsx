@@ -29,7 +29,6 @@ const Batches = () => {
       try {
         setLoading(true);
         const data = await batchService.getUserBatches();
-        console.log('DATA: ', data);
         const batches = Array.isArray(data) ? data : [];
         setBatchesData(batches);
 

@@ -59,7 +59,7 @@ export const createNotice = async (req, res) => {
       .status(201)
       .json(new ApiResponse(201, newNotice, 'New notice created Successfully'));
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res
       .status(500)
       .json(new ApiError(500, 'Error while creating notice', error));
@@ -86,8 +86,6 @@ export const getGroupNotices = async (req, res) => {
       orderBy: { createdAt: 'desc' },
     });
 
-    // console.log('Group Notices: ', groupNotices);
-
     return res
       .status(200)
       .json(
@@ -98,7 +96,7 @@ export const getGroupNotices = async (req, res) => {
         ),
       );
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res
       .status(500)
       .json(new ApiError(500, 'Error while fetching all notices of the group'));
@@ -135,7 +133,7 @@ export const getBatchNotices = async (req, res) => {
         ),
       );
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res
       .status(500)
       .json(new ApiError(500, 'Error while fetching batch notices', error));
@@ -166,7 +164,7 @@ export const getGlobalNotices = async (req, res) => {
         ),
       );
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res
       .status(500)
       .json(
@@ -297,7 +295,7 @@ export const deleteNotice = async (req, res) => {
       .status(200)
       .json(new ApiResponse(200, null, 'Notice deleted Successfully'));
   } catch (error) {
-    console.log('Error while deleting notice: ', error);
+    console.error('Error while deleting notice: ', error);
     return res
       .status(500)
       .json(new ApiError(500, 'Error while deleting notice: ', error));

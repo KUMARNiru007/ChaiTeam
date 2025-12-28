@@ -137,7 +137,7 @@ export const createGroup = async (req, res) => {
       .status(201)
       .json(new ApiResponse(201, group, 'Group created successfully'));
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res
       .status(error.statusCode || 500)
       .json(new ApiError(error.statusCode || 500, error.message));
@@ -278,7 +278,7 @@ export const ApplyToJoinGroup = async (req, res) => {
         ),
       );
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res
       .status(500)
       .json(new ApiError(500, 'Failed to send join group request', error));
@@ -318,7 +318,7 @@ export const fetchAllGroupApplications = async (req, res) => {
         ),
       );
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res
       .status(500)
       .json(
@@ -423,7 +423,7 @@ export const addMemberToGroup = async (req, res) => {
         ),
       );
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res
       .status(500)
       .json(
@@ -572,7 +572,7 @@ export const leaveGroup = async (req, res) => {
       .status(200)
       .json(new ApiResponse(200, null, 'User left the group successfully'));
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res
       .status(500)
       .json(new ApiError(500, 'Failed to leave the group', error));
@@ -663,7 +663,7 @@ export const kickMemberFromGroup = async (req, res) => {
         new ApiResponse(400, null, 'User kicked from the group successfully'),
       );
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res
       .status(500)
       .json(
@@ -759,7 +759,7 @@ export const deleteGroup = async (req, res) => {
       .status(200)
       .json(new ApiResponse(200, null, 'Group Deletd Successfully'));
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res
       .status(500)
       .json(new ApiError(500, 'Failed to Delete the group', error));

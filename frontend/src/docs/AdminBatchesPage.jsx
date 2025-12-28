@@ -79,7 +79,6 @@ const AdminBatchPage = () => {
       try {
         setLoading(true);
         const data = await batchService.getAllBatches();
-        console.log('ALL Batches: ', data);
         
         // Filter out any null/undefined batches
         const batches = Array.isArray(data) ? data.filter(batch => batch != null) : [];

@@ -34,7 +34,7 @@ function Dashboard() {
             const batchGroups = await groupService.getBatchGroups(batch.id);
             totalGroupsInBatches += batchGroups ? batchGroups.length : 0;
           } catch (err) {
-            console.log(`No groups found for batch ${batch.id}:`, err.message);
+            console.error(`No groups found for batch ${batch.id}:`, err.message);
           }
         }
 
@@ -46,7 +46,7 @@ function Dashboard() {
               userGroupsCount++;
             }
           } catch (err) {
-            console.log(`No user group found for batch ${batch.id}:`, err.message);
+            console.error(`No user group found for batch ${batch.id}:`, err.message);
           }
         }
 

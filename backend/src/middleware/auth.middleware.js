@@ -40,7 +40,7 @@ export const authMiddleWare = async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res
       .status(400)
       .json(new ApiError(400, 'Error while authenticating'));

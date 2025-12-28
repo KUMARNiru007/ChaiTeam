@@ -6,8 +6,6 @@ export const uploadToCloudinary = async (file) => {
       'https://api.chaiteam.in/api/v1/cloudinary/get-signature',
     );
 
-    console.log('Signature Data: ', signatureData);
-
     const formData = new FormData();
     formData.append('file', file);
     formData.append('api_key', signatureData.Data.apiKey);

@@ -87,17 +87,13 @@ const Sidebar = () => {
 
   const handleLogout = async () => {
     try {
-      console.log('Logout initiated from sidebar');
       await authService.logout();
-      // console.log('Logout API call successful');
-
       // Clear any client-side storage
       localStorage.removeItem('isLoggedOut');
       localStorage.removeItem('user');
       localStorage.removeItem('token');
 
       setOpenProfileModal(false);
-      // console.log('Redirecting to home');
       window.location.href = '/';
     } catch (error) {
       console.error('Logout API failed:', error);

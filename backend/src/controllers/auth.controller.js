@@ -12,7 +12,6 @@ import {
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const googleLogin = async (req, res) => {
-  // console.log('Auth code from Google:', req.query.code);
   const code = req.query.code;
 
   if (!code) {
@@ -273,7 +272,7 @@ const check = async (req, res) => {
       .status(200)
       .json(new ApiResponse(200, req.user, 'User AUthenticated Successfully'));
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res
       .status(400)
       .json(new ApiError(400, 'Error while checking authencity of the user'));
@@ -282,10 +281,8 @@ const check = async (req, res) => {
 
 const tokenRefresh = async (req, res) => {
   try {
-    console.log(req.cookies);
     const refreshToken = req.cookies?.refreshToken;
 
-    console.log('Refresh Token Found', refreshToken ? 'YES' : 'NO');
     if (!refreshToken) {
       return res.status(403).json(new ApiError(403, 'Refresh token Not Found'));
     }
@@ -355,7 +352,7 @@ const tokenRefresh = async (req, res) => {
         new ApiResponse(200, refreshedUser, 'Token Refreshed Successfully'),
       );
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res.status(400).json(new ApiError(400, error.message));
   }
 };
@@ -388,7 +385,7 @@ const logout = async (req, res) => {
       .status(200)
       .json(new ApiResponse(200, null, 'User LoggedOut Successfully'));
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res.status(400).json(new ApiError(400, error.message));
   }
 };
