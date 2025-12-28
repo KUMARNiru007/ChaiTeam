@@ -12,21 +12,21 @@
     "build": "echo 'No build step required for backend'"
   },
   "dependencies": {
-    "@prisma/client": "^6.15.0",
-    "axios": "^1.11.0",
-    "cloudinary": "^2.7.0",
+    "@prisma/client": "^7.2.0",
+    "axios": "^1.13.2",
+    "cloudinary": "^2.8.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "csv-parser": "^3.2.0",
-    "dotenv": "^17.2.1",
-    "express": "^5.1.0",
-    "google-auth-library": "^10.2.1",
-    "jsonwebtoken": "^9.0.2",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "google-auth-library": "^10.5.0",
+    "jsonwebtoken": "^9.0.3",
     "multer": "^2.0.2",
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.1.11"
   },
   "devDependencies": {
-    "prisma": "^6.15.0"
+    "prisma": "^7.2.0"
   }
 }
