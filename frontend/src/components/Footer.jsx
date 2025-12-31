@@ -5,6 +5,7 @@ import { useTheme } from "../context/ThemeContext.jsx";
 
 const Footer = () => {
   const { darkMode } = useTheme();
+  const currentYear = new Date().getFullYear();
 
   return (
     <footer
@@ -26,7 +27,7 @@ const Footer = () => {
       <div className="text-center flex items-center justify-between gap-10">
         <div>
           <span>
-            &copy; 2025 Chai
+            &copy; {currentYear}  Chai
             <span
               style={{
                 color: "var(--chaiteam-organe-dark)",
